@@ -1,2 +1,2 @@
-# numbox
-通过termux实现的wine开源pc模拟器
+# NumBox
+NumBox是SmartBox64项目提供的文件基础上的重新实现，NumBox是一系列bash脚本的组合实现
