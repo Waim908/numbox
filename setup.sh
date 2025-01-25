@@ -55,7 +55,7 @@ echo 开始安装本地deb包
 cd ~/NumBox/npt_install/ && apt install ./*.deb
 echo 开始安装通用vulkan驱动
 cd ~/NumBox/npt_install/drive && apt insatll ./mesa-vulkan-icd-wrapper_*.deb
-echo "开始禁用turnip(非dri3)驱动更新,因为这会导致termux软件源里的旧驱动取代新驱动"
+echo "开始禁用turnip(非dri3)驱动更新,因为更新会导致termux软件源里的旧驱动取代新驱动"
 apt-mark  hold mesa-vulkan-icd-freedreno
 echo 开始修复依赖
 yes | apt install -f
