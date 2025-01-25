@@ -21,3 +21,4 @@
 
 [wine-termux](https://github.com/Waim908/wine-termux)
 
+[termux改版](https://github.com/jiaxinchen-max/termux-app)
