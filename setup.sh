@@ -14,7 +14,6 @@ while [ "$pid" ]; do
 done
 echo -e "\n"
 }
-cp /sdcrad/setup.sh ~
 echo "注意,NumBox无法与mobox共存,这会导致mobox的glibc库被覆盖,如果已经安装mobox请先卸载mobox或者清理termux数据。"
 echo "安装Tips:"
 echo "1.NumBox为x11合体版设计,请先下载x11合体版termux"
@@ -41,7 +40,6 @@ INPUT_CMD () { tar -xf /sdcard/NumBox数据包.tar.xz -C ~ ;} && load && echo "(
 INPUT_CMD () { tar -xf ~/home.tar.xz -C ~ ;} && load && echo "(2/4)"
 INPUT_CMD () { tar -xf ~/sdcard.tar.xz -C /sdcard ;} && load && echo "(3/4)"
 INPUT_CMD () { tar -xf ~/glibc.tar.xz -C $PREFIX ;} && load && echo "(4/4)"
-mv ~/collect_process_info ~/..
 mv ~/startup-wine.sh ~/..
 echo "开始清理文件"
 rm -rf ~/home.tar.xz && rm -rf ~/sdcard.tar.xz && rm -rf ~/glibc.tar.xz
