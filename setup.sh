@@ -20,7 +20,7 @@ echo "1.NumBox为x11合体版设计,请先下载x11合体版termux"
 echo "2.给予termux全部权限"
 echo "3.电池设置允许termux高耗电"
 echo "4.任意方法进入adb shell都可,按照网上的教程解除安卓24线程限制"
-echo "5.确保NumBox数据包在/sdcard/NumBox数据包.tar.xz (或者/storage/emulated/0/NumBox数据包.tar.xz)如果此包不存在将跳转到123网盘下载链接"
+echo "5.确保NumBox数据包在/sdcard/NumBox数据包.tar.xz (或者/storage/emulated/0/NumBox数据包.tar.xz)如果此包不存在请先下载"
 read -n1 -p "输入y开始安装，其他任意字符退出" select
 if [[ ! $select == y ]]; then
     echo "退出"
