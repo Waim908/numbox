@@ -77,7 +77,7 @@ yes | apt upgrade
 echo 安装x11-repo
 yes | pkg install x11-repo
 echo 开始安装必要软件包
-yes | apt install xkeyboard-config xwayland htop openssl wget imagemagick virglrenderer vulkan-tools mangohud mesa-demos pigz tmux virglrenderer-android vulkan-loader vulkan-loader-generic mangohud pulseaudio angle-android
+yes | apt install xkeyboard-config xwayland htop openssl wget imagemagick virglrenderer vulkan-tools mangohud mesa-demos pigz tmux virglrenderer-android vulkan-loader vulkan-loader-generic pulseaudio angle-android
 echo 开始安装x11
 cd ~/NumBox/npt_install/ && apt install ./*.deb
 echo 开始修复依赖
