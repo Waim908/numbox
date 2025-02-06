@@ -45,8 +45,6 @@
 
 [glibc](https://github.com/termux-pacman/glibc-packages)
 
-[驱动包](https://github.com/sabamdarif/termux-desktop)
-
 [box64](https://github.com/ptitSeb/box64)
 
 [dxvk](https://github.com/doitsujin/dxvk)
