@@ -33,13 +33,18 @@ github=$(ping -c 1 github.com | awk -F'/' 'END {print $5}')
 llkk=$(ping -c 1 gh.llkk.cc | awk -F'/' 'END {print $5}')
 ghp=$(ping -c 1 ghproxy.net | awk -F'/' 'END {print $5}')
 moeyy=$(ping -c 1 github.moeyy.xyz | awk -F'/' 'END {print $5}')
-echo "PING测试结果如下:"
-echo "1 github.com ($github ms)"
-echo "2 gh.llkk.cc ($llkk ms)"
-echo "3 ghproxy.net ($ghp ms)"
-echo "4 github.moeyy.xyz ($moeyy ms)"
-echo "无需选择为空或者出错的结果"
-read -p "请选择一个下载源(输入数字)：" SELECT
+# echo "PING测试结果如下:"
+# echo "1 github.com ($github ms)"
+# echo "2 gh.llkk.cc ($llkk ms)"
+# echo "3 ghproxy.net ($ghp ms)"
+# echo "4 github.moeyy.xyz ($moeyy ms)"
+# echo "无需选择为空或者出错的结果"
+# read -p "请选择一个下载源(输入数字)：" SELECT
+SELECT=$(dialog --no-cancel --title "选择一个站点" --menu "不要选延迟为空或者错误的选项" 0 0 0 \
+       1 "github.com ($github ms)" \
+       2 "gh.llkk.cc ($llkk ms)" \
+       3 "ghproxy.net ($ghp ms)" \
+       4 "github.moeyy.xyz ($moeyy ms)" 2>&1 >/dev/tty)
 case $SELECT in
     *) echo "无效的选项" && exit 0 ;;
     1) echo "开始下载文件(github.com)"
