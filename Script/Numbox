@@ -1,0 +1,148 @@
+#!/bin/bash
+clear
+stopserver
+export DEFAULT_CONTAINER_NAME=$(cat ~/NumBox/default_startup_container)
+rm -rf $TMPDIR/cmd 2>&1 >/dev/null
+rm -rf $TMPDIR/container_name.txt 2>&1 >/dev/null
+rm -rf ~/.config/pulse/
+pulseaudio -k >/dev/null 2>&1 
+pkill -f com.termux.x11 >/dev/null 2>&1
+read L W H < ~/NumBox/custom-size
+numbox_ver=$(cat ~/NumBox/.version) 
+MAIN_MENU=$(dialog --title "主菜单" --no-shadow --backtitle "NumBox 版本：$numbox_ver" --menu "触控或方向键选择" $L $W $H \
+  1 "️🍷启动$DEFAULT_CONTAINER_NAME" \
+  2 "️🔧容器选项" \
+  3 "📦选择容器打开" \
+  4 "导入容器" \
+  5 "调试设置" \
+  6 "turnip驱动设置" \
+  7 "关于" \
+  8 "支持NumBox开发" \
+  9 "查看命令帮助" 2>&1 >/dev/tty)
+case $MAIN_MENU in
+  1) if [ -z "$DEFAULT_CONTAINER_NAME" ]; then
+    dialog --title "错误" --msgbox "未设置默认启动容器" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Numbox
+  else
+    clear
+    if [[ -d ~/NumBox/container/$DEFAULT_CONTAINER_NAME ]]; then
+      export CONTAINER_NAME=$DEFAULT_CONTAINER_NAME
+      export screen="$(cat /sdcard/NumBox/container/$CONTAINER_NAME/screen_res)"
+      bash ~/NumBox/startup-container.sh
+    else
+      dialog --title "错误" --msgbox "默认容器 $DEFAULT_CONTAINER_NAME 不存在,已清除配置" $L $W 2>&1 >/dev/tty && echo "" > ~/NumBox/default_startup_container && bash ~/NumBox/Numbox
+    fi
+  fi ;;
+  2) SUBMENU_A=$(dialog --no-shadow --title "容器设置" --menu "触控或方向键选择" $L $W $H \
+    1 "＋创建容器" \
+    2 "✖删除容器" \
+    3 "⚙编辑容器" \
+    4 "返回上级菜单" 2>&1 > /dev/tty)
+    case $SUBMENU_A in
+    1) bash ~/NumBox/Create-container.sh ;;
+    2) bash ~/NumBox/Del-container.sh ;;
+    3) bash ~/NumBox/Set-container.sh ;;
+    4) bash ~/NumBox/Numbox ;;
+  esac ;;
+  3) bash ~/NumBox/Open-container.sh ;;
+  4) bash ~/NumBox/Import-container.sh ;;
+  # 5) bash ~/NumBox/Drive-setup.sh ;;
+  # 6) TEST=$(dialog --title "图形渲染测试" --menu "选择一个图形渲染" $L $W $H \
+  #   back "🔙返回" \
+  #   Tips "!!!!测试前先看说明!!!!" \
+  #   Vulkan "vkcube && mangohud" \
+  #   GL "gears && GALLIUM_HUD" \
+  #   PS "FPS仅供参考" 2>&1 >/dev/tty)
+  # case $TEST in
+  #   back) bash ~/NumBox/Numbox ;;
+  #   Tips) clear
+  #   echo "1.某些情况下，vkcube和vkmark等vulkan测试程序在安装驱动之后出现了没有渲染任何图形的情况，这属于正常现象，因为这些测试程序貌似没办法很好的在termux中正常工作，即使可以运行数值上也会存在误差"
+  #   echo "2.测试前请确保已经安装了对应的驱动"
+  #   echo "3.Fps数值仅供参考，vkcube的fps数值应该和你设备锁定的帧率相关(例如锁定了60最高貌似就是60)"
+  #   echo "4.设备到达性能上限之后，在运行负载高的情况下，不同vulkan驱动的性能差异可能逐渐减小"
+  #   echo "5.竖屏和横屏可能会有帧数差异"
+  #   echo "!!!驱动能不能使用请在wine环境中测试，而不是termux上的测试软件，例如wrapper驱动下，vkcube可能无法正常工作，但实际上wine环境中可以正常使用dxvk游玩游戏和渲染测试!!!"
+  #   read -s -n1 -p "输入任意字符返回" && bash ~/NumBox/Numbox ;;
+  #   Vulkan) clear
+  # #  source ~/NumBox/drive/vulkan.conf
+  #   termux-x11 :0 &
+  #   echo "请打开x11以查看图形界面,Ctrl+C退出"
+  #   export DISPLAY=:0
+  #   echo "终端执行以下命令"
+  #   echo "MANGOHUD_CONFIGFILE=/sdcard/NumBox/mangohud.conf mangohud vkcube" ;;
+  #   GL) clear
+  # #  source ~/NumBox/drive/virgl.conf
+  #   termux-x11 :0 &
+  #   echo "请打开x11以查看图形界面,Ctrl+C退出"
+  #   export DISPLAY=:0
+  #   export GALLIUM_HUD=fps
+  #   echo "终端执行以下命令"
+  #   echo "gears" ;;
+  #   PS) bash ~/NumBox/Numbox ;;
+  # esac ;;
+  5) bash ~/NumBox/Debug-set.sh ;;
+  6) bash ~/NumBox/Drive-setup2.sh ;;
+  7) numbox_ver=$(cat ~/NumBox/.version) 
+  about_info () {
+    about_menu=$(dialog --title "关于" --menu "当前NumBox版本 $numbox_ver" $L $W $H \
+    back "🔙返回" \
+    NumBox仓库 "Waim908/numbox" \
+    wine-termux "Waim908/wine-termux" \
+    info "十分感谢以下项目" \
+    termux合体版 "jiaxinchen-max/termux-app" \
+    termux "termux/termux-app" \
+    termux-x11 "termux/termux-x11" \
+    glibc库 "mebabo1/menano" \
+    termux-glibc "termux-pacman/glibc-packages" \
+    box64 "ptitSeb/box64" \
+    dxvk "doitsujin/dxvk" \
+    dxvk-gplasync "Ph42oN/dxvk-gplasync" \
+    dxvk-async "Sporif/dxvk-async" \
+    cnc-ddraw "FunkyFr3sh/cnc-ddraw" \
+    vkd3d "HansKristian-Work/vkd3d-proton" \
+    wined3d "https://fdossena.com/?p=wined3d/index.frag" \
+    mesa3d "https://www.mesa3d.org/" \
+    wine "https://www.winehq.org/" 2>&1 >/dev/tty)
+    case $about_menu in
+      back) bash ~/NumBox/Numbox ;;
+      NumBox仓库)  termux-open-url https://github.com/Waim908/numbox && about_info;;
+      wine编译) termux-open-url https://github.com/Waim908/wine-termux && about_info ;;
+      info) about_info ;;
+      termux合体版) termux-open-url https://github.com/jiaxinchen-max/termux-app && about_info ;;
+      termux) termux-open-url https://github.com/termux/termux-app/ && about_info ;;
+      termux-x11) termux-open-url https://github.com/termux/termux-x11 && about_info ;;
+      glibc库) termux-open-url https://github.com/mebabo1/menano && about_info ;;
+      termux-glibc) termux-open-url https://github.com/termux-pacman/glibc-packages && about_info ;;
+#      驱动包) termux-open-url https://github.com/sabamdarif/termux-desktop && about_info ;;
+      box64) termux-open-url https://github.com/ptitSeb/box64 && about_info ;;
+      dxvk) termux-open-url https://github.com/doitsujin/dxvk && about_info ;;
+      dxvk-gplasync) termux-open-url https://gitlab.com/Ph42oN/dxvk-gplasync && about_info ;;
+      dxvk-async) termux-open-url https://github.com/Sporif/dxvk-async && about_info ;;
+      cnc-ddraw) termux-open-url https://github.com/FunkyFr3sh/cnc-ddraw && about_info ;;
+      vkd3d) termux-open-url https://github.com/HansKristian-Work/vkd3d-proton && about_info ;;
+      wined3d) termux-open-url https://fdossena.com/?p=wined3d/index.frag && about_info ;;
+      mesa3d) termux-open-url https://www.mesa3d.org/ && about_info ;;
+      wine) termux-open-url https://www.winehq.org/ && about_info ;;
+    esac
+  }
+  about_info ;;
+  8) support_menu=$(dialog --title "支持NumBox开发" --menu "选择一个选项" $L $W $H \
+    back "🔙返回" \
+    1 "📺关注作者(哔哩哔哩)" \
+    2 "🐟访问爱发电主页" 2>&1 >/dev/tty)
+  case $support_menu in
+    back) bash ~/NumBox/Numbox ;;
+    1) termux-open-url https://space.bilibili.com/483380143 & dialog --msgbox "谢啦!!☆⌒(*＾-゜)v" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Numbox ;;
+    2) termux-open-url https://afdian.com/a/NumBox_Project2025 & dialog --msgbox "谢啦!!☆⌒(*＾-゜)v" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Numbox ;;
+  esac ;;
+  9) clear
+  echo "NumBox"
+  echo "numbox"
+  echo "nb"
+  echo "以上都可以启动NumBox"
+  echo "stopwine"
+  echo "sw"
+  echo "如果你想直接输入命令停止容器，输入以上命令在termux即可"
+  echo "或者开始菜单意外结束返回终端了，还是输入停止容器的命令结束容器吧"
+  echo "顺带一提结束容器命令会导致没保存的东西丢失，因为这是结束wine进程"
+  read -s -n1 -p "输入任意字符返回" && bash ~/NumBox/Numbox ;;
+esac
