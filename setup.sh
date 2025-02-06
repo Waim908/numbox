@@ -68,10 +68,11 @@ case $SELECT in
     INPUT_CMD () { curl -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz >/dev/null 2>&1 ;} && load && echo "(4/4)" ;;
 esac
 echo 开始解压文件
-INPUT_CMD () { tar -xf ~/termux.tar.xz -C ~ ;} && mv ~/startup-wine.sh ~/.. && echo "(1/4)"
-INPUT_CMD () { tar -xf ~/home.tar.xz -C ~ ;} && load && echo "(2/4)"
-INPUT_CMD () { tar -xf ~/sdcard.tar.xz -C /sdcard ;} && load && echo "(3/4)"
-INPUT_CMD () { tar -xf ~/glibc.tar.xz -C $PREFIX ;} && load && echo "(4/4)"
+cd ~
+INPUT_CMD () { tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. ;} && echo "(1/4)"
+INPUT_CMD () { tar xf home.tar.xz && ;} && load && echo "(2/4)"
+INPUT_CMD () { tar -xf sdcard.tar.xz -C /sdcard && ;} && load && echo "(3/4)"
+INPUT_CMD () { tar -xf glibc.tar.xz -C $PREFIX && ;} && load && echo "(4/4)"
 echo "开始清理文件"
 rm -rf ~/home.tar.xz && rm -rf ~/sdcard.tar.xz && rm -rf ~/glibc.tar.xz
 mv ~/startup-wine.sh $PREFIX/../
