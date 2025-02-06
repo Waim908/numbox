@@ -15,7 +15,6 @@ while [ "$pid" ]; do
 done
 echo -e "\n"
 }
-cp /sdcrad/setup.sh ~
 echo "注意,NumBox无法与mobox共存,这会导致mobox的glibc库被覆盖,如果已经安装mobox请先卸载mobox或者清理termux数据。"
 echo "安装Tips:"
 echo "1.NumBox为x11合体版设计,请先下载x11合体版termux"
