@@ -45,7 +45,7 @@ SELECT=$(dialog --no-cancel --title "选择一个站点" --menu "不要选延迟
        3 "ghproxy.net ($ghp ms)" \
        4 "github.moeyy.xyz ($moeyy ms)" 2>&1 >/dev/tty)
 case $SELECT in
-    *) echo "无效的选项" && exit 0 ;;
+#    *) echo "无效的选项" && exit 0 ;;
     1) echo "开始下载文件(github.com)"
     INPUT_CMD () { curl -O https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz >/dev/null 2>&1 ;} && load && echo "(1/4)"
     INPUT_CMD () { curl -O https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz >/dev/null 2>&1 ;} && load && echo "(2/4)"
