@@ -12,20 +12,21 @@
 ###### 1.1 使用termux合体版前请关闭系统深色模式，要不然字体看不到
 ###### 1.2 其次合体版安装时，如果你已经安装了termux , termux x11..... 等软件，需要先卸载否则会有包名冲突
 ###### 1.3 需要给予termux所有权限，电池设置允许termux后台高耗电
-2. 下载[数据包](https://space.bilibili.com/483380143)
-###### 由于包体过大只能这样了
+###### 1.4 点启动》设置》 在里面打开悬浮窗，通过悬浮窗启动命令行
+###### 1.5 任意方法进入adb shell 按照网上的教程解除安卓24线程限制
 
-3. 移动 “NumBox数据包.tar.xz” 到 /sdcard
+2. 执行
+```curl -O https://github.com/Waim908/numbox/releases/download/latest/setup.sh && bash ~/setup.sh```
 
-4. 运行
+使用任意加速站点解决国内github有时无法访问问题，[参照](https://github.akams.cn/)
 
-``termux-setup-storage && curl -o setup.sh https://github.com/Waim908/numbox/releases/download/latest/setup.sh && bash setup.sh``
+```curl -O https://加速站/https://github.com/Waim908/numbox/releases/download/latest/setup.sh && bash ~/setup.sh```
 
-5. 脚本运行完成后重启termux
+3.重启termux
 
 # 其他
 
-如果设置壁纸导致渲染错误，进入容器后点击左下角起点菜单，选择 0.开头的 运行bat脚本，黑窗口执行完后重启你的容器
+如果设置壁纸导致渲染错误(如画面非驱动原因导致的严重撕裂，比如在桌面左下角菜单选择时画面产生的撕裂)，进入容器后点击左下角起点菜单，选择 0.开头的 运行bat脚本，黑窗口执行完后重启你的容器
 
 1.容器导入后需要重启一次
 
