@@ -32,7 +32,9 @@
 
 2.首次创建容器默认是wined3d，你可以在容器设置里换成dxvk
 
-3.首次安装是wrapper驱动而不是turnip驱动，如果你想，也可以换成turnip驱动（必须是骁龙处理器）
+~~3.首次安装是wrapper驱动而不是turnip驱动，如果你想，也可以换成turnip驱动~~ 
+
+3.wrapper无法在glibc环境正常工作，因为依赖项来自安卓bionic(即/system/lib64)，故仅能在termux原装环境正常工作
 
 # 更新日志
 
