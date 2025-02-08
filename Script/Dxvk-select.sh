@@ -28,8 +28,18 @@ rm -rf $TMPDIR/temp_xf/*
 dialog --title "( ˘▽˘)っ♨" --msgbox "安装完成" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Set-container2.sh
 bash ~/NumBox/Set-container.sh
 }
+X86_64_UNPACKAGE_DXVK () {
+clear
+tar xf $dxvk_path/$FILE_NAME -C $TMPDIR/temp_xf/ && cd $TMPDIR/temp_xf/*/ && cp x32/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/syswow64 && cp x64/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/system32
+echo "64:$FILE_NAME" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
+echo "32:$FILE_NAME" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
+rm -rf $TMPDIR/temp_xf/*
+dialog --title "( ˘▽˘)っ♨" --msgbox "安装完成" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Set-container2.sh
+bash ~/NumBox/Set-container.sh
+}
 DXVK=$(dialog --backtitle "$CONTAINER_NAME" --title "选择一个dxvk版本" --menu "支持DX8~11" $L $W 8 \
   0 "🔙返回" \
+  import "导入/sdcard/NumBox/resource/" \
   latest "2.5.3" \
   latest-g "gplasync2.5.3-1" \
   1 "2.5.2" \
@@ -50,6 +60,25 @@ DXVK=$(dialog --backtitle "$CONTAINER_NAME" --title "选择一个dxvk版本" --m
   16 "0.72" 2>&1 >/dev/tty)
 case $DXVK in
   0) bash ~/NumBox/Container-setting.sh ;;
+  import) clear
+  IMPORT_MENU=$(dialog --title "选择一个要导入的类型" --menu "" $L $W $H \
+  dxvk "/sdcard/NumBox/resource/dxvk" \
+  dxvk-gplasync "/sdcard/NumBox/resource/dxvk-gplasync" 2>&1 >/dev/tty)
+  case $IMPORT_MENU in
+    dxvk) dxvk_path=/sdcard/NumBox/resource/dxvk ;;
+    dxvk-gplasync) dxvk_path=/sdcard/NumBox/resource/dxvk-gplasync ;;
+  esac
+  ls -1a $dxvk_path
+  read -p "复制一个文件名,然后粘贴到此处,为空则返回: " FILE_NAME
+  if [[ -z $FILE_NAME ]]; then
+    bash ~/NumBox/Dxvk-select.sh
+  else
+    if [[ -f $dxvk_path/$FILE_NAME ]]; then
+      X86_64_UNPACKAGE_DXVK
+    else
+      dialog --title "w(ﾟДﾟ)w" --msgbox "$dxvk_path/$FILE_NAME文件不存在！" $L $W && bash ~/NumBox/Dxvk-select.sh
+    fi
+  fi ;;
   latest) VERSION=dxvk-2.5.3
   X86_64_UNPACKAGE_1 ;;
   latest-g) VERSION=dxvk-gplasync-v2.5.3-1
