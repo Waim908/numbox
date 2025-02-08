@@ -14,6 +14,7 @@ CNC_DDRAW=$(dialog --backtitle "$CONTAINER_NAME" --title "选择一个cnc-ddraw�
   2 "cnc-ddraw 7.1(仅32位)" 2>&1 >/dev/tty)
 case $CNC_DDRAW in
   import) clear
+  ls -1a /sdcard/NumBox/resource/cnc-ddraw
   read -p "复制一个文件名,然后粘贴到此处,为空则返回: " FILE_NAME
   if [[ -z $FILE_NAME ]]; then
     bash ~/NumBox/Cnc-select.sh
