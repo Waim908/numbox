@@ -8,7 +8,7 @@ sed_json () {
 }
 MAIN_MENU=$(dialog --title "驱动安装" --no-shadow --backtitle "NumBox版本更新后请重新选择" --menu "选择一个驱动类型" $L $W $H \
     0 "🔙返回" \
-    import) "从/sdcard/NumBox/resource/turnip导入wcp" \
+    import "从/sdcard/NumBox/resource/turnip导入wcp" \
     1 "Glibc-Turnip(默认)" \
     2 "Winlator-Glibc-Turnip(v25 r8)" \
 #    3 "自定义WCP文件" \
