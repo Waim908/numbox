@@ -18,7 +18,9 @@ MAIN_MENU=$(dialog --title "主菜单" --no-shadow --backtitle "NumBox 版本：
   6 "turnip驱动设置" \
   7 "关于" \
   8 "支持NumBox开发" \
-  9 "查看命令帮助" 2>&1 >/dev/tty)
+  9 "查看命令帮助" \
+  10 "在线下载资源" \
+  11 "退出"  2>&1 >/dev/tty)
 case $MAIN_MENU in
   1) if [ -z "$DEFAULT_CONTAINER_NAME" ]; then
     dialog --title "错误" --msgbox "未设置默认启动容器" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Numbox
@@ -145,4 +147,6 @@ case $MAIN_MENU in
   echo "或者开始菜单意外结束返回终端了，还是输入停止容器的命令结束容器吧"
   echo "顺带一提结束容器命令会导致没保存的东西丢失，因为这是结束wine进程"
   read -s -n1 -p "输入任意字符返回" && bash ~/NumBox/Numbox ;;
+  10) bash ~/NumBox/Download-resource.sh ;;
+  11) exit 0 ;;
 esac
