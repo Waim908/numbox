@@ -28,6 +28,17 @@ if [[ ! $select == y ]]; then
 fi
 clear
 termux-wake-lock
+echo 软件源阶段
+termux-change-repo
+yes | apt upgrade
+echo 安装x11-repo
+yes | pkg install x11-repo
+echo 开始安装必要软件包
+yes | apt install xkeyboard-config xwayland htop openssl wget imagemagick virglrenderer vulkan-tools mangohud mesa-demos pigz tmux virglrenderer-android vulkan-loader vulkan-loader-generic pulseaudio angle-android
+echo 开始安装x11
+cd ~/NumBox/npt_install/ && apt install ./*.deb
+echo 开始修复依赖
+apt install -f -y
 echo 开始测试网络延迟
 github=$(ping -c 2 github.com | awk -F'/' 'END {print $5}') ; llkk=$(ping -c 2 gh.llkk.cc | awk -F'/' 'END {print $5}') ; ghp=$(ping -c 2 ghproxy.net | awk -F'/' 'END {print $5}') ; moeyy=$(ping -c 2 github.moeyy.xyz | awk -F'/' 'END {print $5}') &&
 # echo "PING测试结果如下:"
@@ -45,25 +56,25 @@ SELECT=$(dialog --no-cancel --title "选择一个站点" --menu "不要选延迟
 case $SELECT in
 #    *) echo "无效的选项" && exit 0 ;;
     1) echo "开始下载文件(github.com)"
-    curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    wget https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    wget https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    wget https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    wget https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     2) echo "开始下载文件(gh.llkk.cc)"
-    curl --progress-bar -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    curl --progress-bar -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    curl --progress-bar -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    curl --progress-bar -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    wget https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    wget https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    wget https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    wget https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     3) echo "开始下载文件(ghproxy.net)"
-    curl --progress-bar -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    curl --progress-bar -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    curl --progress-bar -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    curl --progress-bar -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    wget https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    wget https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    wget https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    wget https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     4) echo "开始下载文件(github.moeyy.xyz)"
-    curl --progress-bar -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    curl --progress-bar -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    curl --progress-bar -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    curl --progress-bar -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    wget https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    wget https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    wget https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    wget https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
 esac
 echo 开始解压文件
 INPUT_CMD () { tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. ;} && echo "(1/4)"
@@ -73,17 +84,6 @@ INPUT_CMD () { tar -xf glibc.tar.xz -C $PREFIX ;} && load && echo "(4/4)"
 echo "开始清理文件"
 rm -rf ~/home.tar.xz && rm -rf ~/sdcard.tar.xz && rm -rf ~/glibc.tar.xz && rm -rf termux.tar.xz
 mv ~/startup-wine.sh $PREFIX/../
-echo 软件源阶段
-termux-change-repo
-yes | apt upgrade
-echo 安装x11-repo
-yes | pkg install x11-repo
-echo 开始安装必要软件包
-yes | apt install xkeyboard-config xwayland htop openssl wget imagemagick virglrenderer vulkan-tools mangohud mesa-demos pigz tmux virglrenderer-android vulkan-loader vulkan-loader-generic pulseaudio angle-android
-echo 开始安装x11
-cd ~/NumBox/npt_install/ && apt install ./*.deb
-echo 开始修复依赖
-apt install -f -y
 echo "安装完成！"
 echo "下次启动可以输入以下命令启动NumBox"
 echo NumBox
