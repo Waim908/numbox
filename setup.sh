@@ -56,25 +56,25 @@ SELECT=$(dialog --no-cancel --title "选择一个站点" --menu "不要选延迟
 case $SELECT in
 #    *) echo "无效的选项" && exit 0 ;;
     1) echo "开始下载文件(github.com)"
-    wget https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    wget https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    wget https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    wget https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    wget -O termux.tar.xz https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    wget -O glibc.tar.xz https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    wget -O home.tar.xz https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    wget -O sdcard.tar.xz https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     2) echo "开始下载文件(gh.llkk.cc)"
-    wget https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    wget https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    wget https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    wget https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    wget -O termux.tar.xz https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    wget -O glibc.tar.xz https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    wget -O home.tar.xz https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    wget -O sdcard.tar.xz https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     3) echo "开始下载文件(ghproxy.net)"
-    wget https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    wget https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    wget https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    wget https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    wget -O termux.tar.xz https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    wget -O glibc.tar.xz https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    wget -O home.tar.xz https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    wget -O sdcard.tar.xz https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     4) echo "开始下载文件(github.moeyy.xyz)"
-    wget https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    wget https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    wget https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    wget https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    wget -O termux.tar.xz https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    wget -O glibc.tar.xz https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    wget -O home.tar.xz https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    wget -O sdcard.tar.xz https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
 esac
 echo 开始解压文件
 INPUT_CMD () { tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. ;} && echo "(1/4)"
