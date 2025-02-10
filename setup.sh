@@ -16,6 +16,18 @@ while [ "$pid" ]; do
 done
 echo -e "\n"
 }
+file_is_full () {
+  aaa=$(file $file_name | grep gzip)
+  if [[ -z $aaa ]]; then
+    echo "$file_name 下载失败,开始重新下载,如果依旧下载失败,请退出后运行 bash ~/setup.sh"
+    if [[ $site == https://github.com ]]; then
+      echo "当前使用的下载站为 https://github.com 请确保当前网络环境可以正常链接"
+      wget -O https://github.com/Waim908/numbox/releases/download/latest/$file_name
+    else
+      echo "当前使用的加速站为 $site"
+      wget -O $site/https://github.com/Waim908/numbox/releases/download/latest/$file_name
+  fi
+}
 echo "注意,NumBox无法与mobox共存,这会导致mobox的glibc库被覆盖,如果已经安装mobox请先卸载mobox或者清理termux数据。"
 echo "安装Tips:"
 echo "1.NumBox为x11合体版设计,请先下载x11合体版termux"
@@ -34,7 +46,7 @@ yes | apt upgrade
 echo 安装x11-repo
 yes | pkg install x11-repo
 echo 开始安装必要软件包
-yes | apt install xkeyboard-config xwayland htop openssl wget imagemagick virglrenderer vulkan-tools mangohud mesa-demos pigz tmux virglrenderer-android vulkan-loader vulkan-loader-generic pulseaudio angle-android
+yes | apt install xkeyboard-config xwayland htop openssl wget imagemagick virglrenderer vulkan-tools mangohud mesa-demos pigz tmux virglrenderer-android vulkan-loader vulkan-loader-generic pulseaudio angle-android file
 echo 开始安装x11
 cd ~/NumBox/npt_install/ && apt install ./*.deb
 echo 开始修复依赖
@@ -56,31 +68,35 @@ SELECT=$(dialog --no-cancel --title "选择一个站点" --menu "不要选延迟
 case $SELECT in
 #    *) echo "无效的选项" && exit 0 ;;
     1) echo "开始下载文件(github.com)"
+    site=https://github.com
     wget -O termux.tar.xz https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
     wget -O glibc.tar.xz https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
     wget -O home.tar.xz https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
     wget -O sdcard.tar.xz https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     2) echo "开始下载文件(gh.llkk.cc)"
+    site=https://gh.llkk.cc
     wget -O termux.tar.xz https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
     wget -O glibc.tar.xz https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
     wget -O home.tar.xz https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
     wget -O sdcard.tar.xz https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     3) echo "开始下载文件(ghproxy.net)"
+    site=https://ghproxy.net
     wget -O termux.tar.xz https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
     wget -O glibc.tar.xz https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
     wget -O home.tar.xz https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
     wget -O sdcard.tar.xz https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     4) echo "开始下载文件(github.moeyy.xyz)"
+    site=https://github.moeyy.xyz
     wget -O termux.tar.xz https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
     wget -O glibc.tar.xz https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
     wget -O home.tar.xz https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
     wget -O sdcard.tar.xz https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
 esac
 echo 开始解压文件
-INPUT_CMD () { tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. ;} && echo "(1/4)"
-INPUT_CMD () { tar xf home.tar.xz ;} && load && echo "(2/4)"
-INPUT_CMD () { tar -xf sdcard.tar.xz -C /sdcard ;} && load && echo "(3/4)"
-INPUT_CMD () { tar -xf glibc.tar.xz -C $PREFIX ;} && load && echo "(4/4)"
+INPUT_CMD () { file_name=termux.tar.xz ; tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. ;} && echo "(1/4)" && file_is_full &&
+INPUT_CMD () { file_name=home.tar.xz ; tar xf home.tar.xz ;} && load && echo "(2/4)" && file_is_full &&
+INPUT_CMD () { file_name=sdcard.tar.xz ; tar -xf sdcard.tar.xz -C /sdcard ;} && load && echo "(3/4)" && file_is_full &&
+INPUT_CMD () { file_name=glibc.tar.xz ; tar -xf glibc.tar.xz -C $PREFIX ;} && load && echo "(4/4)" && file_is_full &&
 echo "开始清理文件"
 rm -rf ~/home.tar.xz && rm -rf ~/sdcard.tar.xz && rm -rf ~/glibc.tar.xz && rm -rf termux.tar.xz
 mv ~/startup-wine.sh $PREFIX/../
