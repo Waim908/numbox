@@ -102,7 +102,6 @@ INPUT_CMD () { file_name=sdcard.tar.xz ; tar -xf sdcard.tar.xz -C /sdcard ;} && 
 INPUT_CMD () { file_name=glibc.tar.xz ; tar -xf glibc.tar.xz -C $PREFIX ;} && load && echo "(4/4)" && file_is_full &&
 echo "开始清理文件"
 rm -rf ~/home.tar.xz && rm -rf ~/sdcard.tar.xz && rm -rf ~/glibc.tar.xz && rm -rf termux.tar.xz
-mv ~/startup-wine.sh $PREFIX/../
 echo "安装完成！"
 echo "下次启动可以输入以下命令启动NumBox"
 echo NumBox
