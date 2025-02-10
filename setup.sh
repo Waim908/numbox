@@ -22,10 +22,10 @@ file_is_full () {
     echo "$file_name 下载失败,开始重新下载,如果依旧下载失败,请退出后运行 bash ~/setup.sh"
     if [[ $site == https://github.com ]]; then
       echo "当前使用的下载站为 https://github.com 请确保当前网络环境可以正常链接"
-      curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/$file_name
+      curl --progress-bar --retry 5 -C - -O https://github.com/Waim908/numbox/releases/download/latest/$file_name
     else
       echo "当前使用的加速站为 $site"
-      curl --progress-bar -O $site/https://github.com/Waim908/numbox/releases/download/latest/$file_name
+      curl --progress-bar --retry 5 -C - -O $site/https://github.com/Waim908/numbox/releases/download/latest/$file_name
     fi
   fi
 }
@@ -70,28 +70,28 @@ case $SELECT in
 #    *) echo "无效的选项" && exit 0 ;;
     1) echo "开始下载文件(github.com)"
     site=https://github.com
-    curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    curl --progress-bar -O https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    curl --progress-bar --retry 5 -C - -O https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    curl --progress-bar --retry 5 -C - -O https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    curl --progress-bar --retry 5 -C - -O https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    curl --progress-bar --retry 5 -C - -O https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     2) echo "开始下载文件(gh.llkk.cc)"
     site=https://gh.llkk.cc
-    curl --progress-bar -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    curl --progress-bar -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    curl --progress-bar -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    curl --progress-bar -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    curl --progress-bar --retry 5 -C - -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    curl --progress-bar --retry 5 -C - -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    curl --progress-bar --retry 5 -C - -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    curl --progress-bar --retry 5 -C - -O https://gh.llkk.cc/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     3) echo "开始下载文件(ghproxy.net)"
     site=https://ghproxy.net
-    curl --progress-bar -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    curl --progress-bar -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    curl --progress-bar -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    curl --progress-bar -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    curl --progress-bar --retry 5 -C - -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    curl --progress-bar --retry 5 -C - -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    curl --progress-bar --retry 5 -C - -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    curl --progress-bar --retry 5 -C - -O https://ghproxy.net/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
     4) echo "开始下载文件(github.moeyy.xyz)"
     site=https://github.moeyy.xyz
-    curl --progress-bar -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
-    curl --progress-bar -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
-    curl --progress-bar -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
-    curl --progress-bar -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
+    curl --progress-bar --retry 5 -C - -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/termux.tar.xz && echo "(1/4)"
+    curl --progress-bar --retry 5 -C - -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/glibc.tar.xz && echo "(2/4)"
+    curl --progress-bar --retry 5 -C - -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/home.tar.xz && echo "(3/4)"
+    curl --progress-bar --retry 5 -C - -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
 esac
 echo 开始解压文件
 INPUT_CMD () { file_name=termux.tar.xz ; tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. ;} && echo "(1/4)" && file_is_full &&
