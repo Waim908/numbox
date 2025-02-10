@@ -26,6 +26,7 @@ file_is_full () {
     else
       echo "当前使用的加速站为 $site"
       wget -O $site/https://github.com/Waim908/numbox/releases/download/latest/$file_name
+    fi
   fi
 }
 echo "注意,NumBox无法与mobox共存,这会导致mobox的glibc库被覆盖,如果已经安装mobox请先卸载mobox或者清理termux数据。"
