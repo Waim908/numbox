@@ -19,8 +19,9 @@ MAIN_MENU=$(dialog --title "主菜单" --no-shadow --backtitle "NumBox 版本：
   7 "关于" \
   8 "支持NumBox开发" \
   9 "查看命令帮助" \
-  10 "在线下载资源" \
-  11 "退出"  2>&1 >/dev/tty)
+  10 "在线下载资源与更新" \
+  98 "卸载NumBox" \
+  99 "退出"  2>&1 >/dev/tty)
 case $MAIN_MENU in
   1) if [ -z "$DEFAULT_CONTAINER_NAME" ]; then
     dialog --title "错误" --msgbox "未设置默认启动容器" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Numbox
@@ -148,5 +149,20 @@ case $MAIN_MENU in
   echo "顺带一提结束容器命令会导致没保存的东西丢失，因为这是结束wine进程"
   read -s -n1 -p "输入任意字符返回" && bash ~/NumBox/Numbox ;;
   10) bash ~/NumBox/Download-resource.sh ;;
-  11) exit 0 ;;
+  98) clear
+  read -p "是否卸载NumBox？输入Remove开始卸载,输入任意字符退出:" remove_nb
+  if [[ $remove_nb == Remove ]]; then
+    echo "clear" > $TMPDIR/remove.sh
+    echo "echo 开始卸载NumBox" >> $TMPDIR/remove.sh
+    echo "rm -rf /sdcard/NumBox" >> $TMPDIR/remove.sh
+    echo "rm -rf $PREFIX/glibc" >> $TMPDIR/remove.sh
+    echo "rm -rf ~/NumBox/" >> $TMPDIR/remove.sh
+    echo "rm -rf ~/.profile" >> $TMPDIR/remove.sh
+    echo "echo 卸载完成" >> $TMPDIR/remove.sh
+    echo "sleep 5 && rm \$0" >> $TMPDIR/remove.sh
+    bash $TMPDIR/removenb.sh
+  else
+    bash ~/NumBox/Numbox
+  fi ;;
+  99) exit 0 ;;
 esac

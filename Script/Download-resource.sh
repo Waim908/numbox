@@ -1,6 +1,7 @@
 #!/bin/bash
 read L W H < ~/NumBox/custom-size
 now_site=$(cat ~/NumBox/github-site)
+now_ver=$(cat ~/NumBox/.version)
 sed_site () {
     if [[ $now_site == github.com ]]; then
         dl_url=$URL
@@ -24,7 +25,8 @@ MAIN_MENU=$(dialog --backtitle "存储路径 /sdcard/NumBox/resource" --title "�
     2 "下载最新dxvk ( $dxvk_ver )" \
     3 "下载最新cnc-ddraw ( $cncddraw_ver )" \
     4 "下载最新vkd3d ( $vkd3d_ver )" \
-    5 "手动下载dxvk-gplasync(gitlab)" 2>&1 >/dev/tty)
+    5 "手动下载dxvk-gplasync(gitlab)" \
+    6 "更新NumBox ( 当前$now_ver 最新$new_ver ) " 2>&1 >/dev/tty)
 case $MAIN_MENU in
     back) bash ~/NumBox/Numbox ;;
     site) site_menu () {
@@ -71,7 +73,7 @@ case $MAIN_MENU in
     当前下载站) goback ;;
     # curl https://api.github.com/repos/doitsujin/dxvk/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/'
     0) clear
-    export turnip_ver=$(curl https://api.github.com/repos/K11MCH1/WinlatorTurnipDrivers/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export dxvk_ver=$(curl https://api.github.com/repos/doitsujin/dxvk/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export cncddraw_ver=$(curl https://api.github.com/repos/FunkyFr3sh/cnc-ddraw/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export vkd3d_ver=$(curl https://api.github.com/repos/HansKristian-Work/vkd3d-proton/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') &&
+    export turnip_ver=$(curl https://api.github.com/repos/K11MCH1/WinlatorTurnipDrivers/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export dxvk_ver=$(curl https://api.github.com/repos/doitsujin/dxvk/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export cncddraw_ver=$(curl https://api.github.com/repos/FunkyFr3sh/cnc-ddraw/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export vkd3d_ver=$(curl https://api.github.com/repos/HansKristian-Work/vkd3d-proton/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export dxvk_ver=$(curl https://api.github.com/repos/doitsujin/dxvk/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export cncddraw_ver=$(curl https://api.github.com/repos/FunkyFr3sh/cnc-ddraw/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') ; export new_ver=$(curl https://api.github.com/repos/Waim908/NumBox/releases/latest | grep "tag_name" | sed 's/.*"tag_name": "\(.*\)",/\1/') &&
     goback ;;
     1) clear
     URL=$(curl https://api.github.com/repos/K11MCH1/WinlatorTurnipDrivers/releases/latest | grep "browser_download_url" | sed 's/.*"browser_download_url": "\(.*\)".*/\1/' | grep wcp)
@@ -98,4 +100,15 @@ case $MAIN_MENU in
     echo "关于gitlab这个确实没办法"
     echo "手动下载自己想要的版本后(.tar.gz格式的文件),把文件放到/sdcard/NumBox/resource/dxvk-gplasync"
     read -s -n1 -p "输入任意字符返回" && goback ;;
+    6) clear
+    YES_NO=$(dialog --title "是否更新？" --menu "此操作会重置部分配置,如果非容器文件损坏也可选择" $L $W $H \
+    back "🔙还是算了吧" \
+    update "更新NumBox" 2>&1 >/dev/tty)
+    case $YES_NO in
+        back) bash ~/NumBox/Download-resource.sh ;;
+        update) clear
+        URL=$(curl https://api.github.com/repos/Waim908/NumBox/releases/latest | grep "browser_download_url" | sed 's/.*"browser_download_url": "\(.*\)".*/\1/' | grep update.sh)
+        sed_site
+        wget -P ~ $dl_url && bash ~/update.sh ;;
+    esac ;;
 esac
