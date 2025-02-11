@@ -43,9 +43,11 @@ NEXT_STEP () {
 #  cp ~/NumBox/reg/desktop.reg ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/
   cp /sdcard/NumBox/container/$CONTAINER_NAME/dll.reg ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/
   cp ~/NumBox/wallpaper/wallpaper.bmp ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/
+  tar xf ~/NumBox/theme/themes.tar.xz -C ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/resources/
   echo "开始写入注册表"
   box64 wine cmd /c "C:\wine.bat" 2>&1 >/dev/null
   box64 wine reg import "C:\dll.reg" 2>&1 >/dev/null
+  box64 wine reg import "C:\windows\resources\themes\reg\apply_human_graphite_theme.reg" 2>&1 >/dev/null
 #  cp ~/reg/desktop.reg ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/
 #  box64 wine reg import "C:\desktop.reg" 2>&1 >/dev/null
 #  box64 wine reg add "HKEY_CURRENT_USER\Control Panel\Desktop" /v Wallpaper /t REG_SZ /d "C:\wallpaper.bmp" /f 2>&1 >/dev/null
@@ -105,8 +107,13 @@ if [ -z "$CONTAINER_NAME" ]; then
          FIRST_STEP
          CUSTOM_STEP_ONE
          CUSTOM_STEP_TWO
-         NEXT_STEP ;;
-         custom) FILE_NAME=$(dialog --backtitle "将要导入的文件移动到 /sdcard/NumBox/winetarxz" --title "在此处输入文件名，不要为空或者不存在" --inputbox "格式为：xxx.tar.xz" $L $W $H 2>&1 >/dev/tty)
+         NEXT_STEP ;;         
+         custom) clear
+         echo "目录/sdcard/NumBox/winetarxz"
+         ls -1a  /sdcard/NumBox/winetarxz
+         echo -e "\n"
+         read -p "复制要导入的文件名到此处：" FILE_NAME
+        # FILE_NAME=$(dialog --backtitle "将要导入的文件移动到 /sdcard/NumBox/winetarxz" --title "在此处输入文件名，不要为空或者不存在" --inputbox "格式为：xxx.tar.xz" $L $W $H 2>&1 >/dev/tty)
           if [ -z "$FILE_NAME" ]; then
             dialog --title "错误" --msgbox "文件名为空！" $L $W && bash ~/NumBox/Create-container.sh
           else
