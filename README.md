@@ -73,3 +73,5 @@
 [termux-x11](https://github.com/termux/termux-x11)
 
 [termux与x11合体版](https://github.com/jiaxinchen-max/termux-app)
+
+[wine主题](https://github.com/listumps/wine_themes)
