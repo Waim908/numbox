@@ -10,8 +10,7 @@ MAIN_MENU=$(dialog --title "驱动安装" --no-shadow --backtitle "NumBox版本�
     0 "🔙返回" \
     import "从/sdcard/NumBox/resource/turnip导入wcp" \
     1 "Glibc-Turnip(默认)" \
-    2 "Winlator-Glibc-Turnip(v25 r8)" \
-#    3 "自定义WCP文件" \
+    2 "Winlator-Glibc-Turnip(v25.0.0 r8)" \
     上次替换 "$SO_NAME" \
     PS "WCP文件是winlator glibc的同款文件" 2>&1 >/dev/tty)
 case $MAIN_MENU in
@@ -27,8 +26,9 @@ case $MAIN_MENU in
             mkdir -p $TMPDIR/temp_xf
             tar xvf /sdcard/NumBox/turnip/$FILE_NAME -C $TMPDIR/temp_xf
             cd $TMPDIR/temp_xf/turnip
-            cp *.so $PREFIX/glibc/lib && sed_json && cp *.json $PREFIX/glibc/share/vulkan/icd.d
-            cd $TMPDIR/temp_xf/zink && cp * $PREFIX/glibc/lib
+#            cp *.so $PREFIX/glibc/lib && sed_json && cp *.json $PREFIX/glibc/share/vulkan/icd.d
+#            cd $TMPDIR/temp_xf/zink && cp * $PREFIX/glibc/lib
+            sed_json && cp * ~/NumBox/resource/drive/replace/
             echo "$FILE_NAME" > ~/NumBox/vk_name
             dialog --msgbox "$FILE_NAME 安装完成！" $L $W && bash ~/NumBox/Drive-setup2.sh
         else
@@ -36,34 +36,15 @@ case $MAIN_MENU in
         fi
     fi ;;
     1) clear
-    cp ~/NumBox/resource/drive/default/* $PREFIX/glibc/lib
-    cp ~/NumBox/resource/drive/json/* $PREFIX/glibc/share/vulkan/icd.d/
+    cp ~/NumBox/resource/drive/default/* ~/NumBox/resource/drive/replace/
+    cp ~/NumBox/resource/drive/json/* ~/NumBox/resource/drive/replace/
     echo "Glibc-Turnip" > ~/NumBox/vk_name
     dialog --msgbox "已替换为Glibc-Turnip" $L $W && bash ~/NumBox/Drive-setup2.sh ;;
     2) clear
     mkdir -p $TMPDIR/temp_xf
     tar xvf ~/NumBox/resource/drive/turnip-v25.0.0-R8.wcp -C $TMPDIR/temp_xf
     cd $TMPDIR/temp_xf/turnip
-    cp *.so $PREFIX/glibc/lib && sed_json && cp *.json $PREFIX/glibc/share/vulkan/icd.d
-    cd $TMPDIR/temp_xf/zink && cp * $PREFIX/glibc/lib
+    sed_json && cp * ~/NumBox/resource/drive/replace/ 
     echo "Winlator-Glibc-Turnip(v25 r8)" > ~/NumBox/vk_name
     dialog --msgbox "已替换为Winlator-Glibc-Turnip(v25 r8)" $L $W && bash ~/NumBox/Drive-setup2.sh ;;
-    # 3) clear
-    # INPUT_WCP=$(dialog --title "输入WCP文件名" --inputbox "存放在/sdcard/NumBox/wcp下的文件,格式: xxx.wcp" $L $W $H 2>&1 >/dev/tty)
-    # if [[ -z $INPUT_WCP ]]; then
-    #     dialog --title "错误" --msgbox "文件名为空！" $L $W && bash ~/NumBox/Drive-setup2.sh
-    # else
-    #     if [[ ! -f /sdcard/NumBox/wcp/$INPUT_WCP ]]; then
-    #         dialog --title "错误" --msgbox "文件不存在！" $L $W && bash ~/NumBox/Drive-setup2.sh
-    #     else
-    #         clear
-    #         mkdir -p $TMPDIR/temp_xf
-    #         tar xvf /sdcard/NumBox/wcp/$INPUT_WCP -C $TMPDIR/temp_xf
-    #         cd $TMPDIR/temp_xf/turnip
-    #         cp *.so $PREFIX/glibc/lib && sed_json && cp *.json $PREFIX/glibc/share/vulkan/icd.d
-    #         cd $TMPDIR/temp_xf/zink && cp * $PREFIX/glibc/lib
-    #         echo "$INPUT_WCP" > ~/NumBox/vk_name
-    #         dialog --msgbox "$INPUT_WCP 安装完成！" $L $W && bash ~/NumBox/Drive-setup2.sh
-    #     fi
-    # fi ;;
 esac
