@@ -52,6 +52,7 @@ DEBUG_SET=$(dialog --title "调试设置" --menu "选择一个选项" $L $W $H \
       3 "info" \
       4 "debug" 2>&1 >/dev/tty)
     case $dxvk_set in
+      back) bash ~/NumBox/Numbox ;;
       0) sed -i "s%DXVK_LOG_LEVEL=.*%DXVK_LOG_LEVEL=none%g" /sdcard/NumBox/debug.conf && bash ~/NumBox/Debug-set.sh ;;
       1) sed -i "s%DXVK_LOG_LEVEL=.*%DXVK_LOG_LEVEL=error%g" /sdcard/NumBox/debug.conf && bash ~/NumBox/Debug-set.sh ;;
       2) sed -i "s%DXVK_LOG_LEVEL=.*%DXVK_LOG_LEVEL=warn%g" /sdcard/NumBox/debug.conf && bash ~/NumBox/Debug-set.sh ;;
