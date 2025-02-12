@@ -23,7 +23,7 @@ if [[ $drive_type == vulkan ]]; then
 elif [[ $drive_type == gl ]]; then
     source ~/NumBox/drive/virgl.conf
 fi
-export Exec="box64 wine explorer /desktop=shell,$screen Wine_Activity.exe"
+export Exec="nice -n -99 box64 wine explorer /desktop=shell,$screen Wine_Activity.exe"
 pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null
 export PIPEWIRE_LATENCY=128/48000
 export PULSE_SERVER=127.0.0.1
@@ -31,14 +31,21 @@ export BOX64_MAXCPU=$CPU_CORE
 # pgrep -x pulseaudio | xargs -I {} taskset -pc $USE_CORE {}
 tmux new -d -s 0
 if [[ $USE_CPU_CORE_CONF ==  true ]]; then
-    tmux send -t 0 "echo 启用taskset核心锁定，日志记录功能已禁用 && taskset -c $USE_CORE nice -n -99 $Exec" Enter
+    export Exec="taskset -c $USE_CORE $Exec"
+    if [[ $write_logfile == on ]]; then
+        tmux send -t 0 "script -a \"/sdcard/NumBox/log/debug.log\" -c \"$Exec\"" Enter
+    elif [[ $write_logfile == off ]]; then
+        tmux send -t 0 "$Exec /dev/null 2>&1 &" Enter
+    else
+        tmux send -t 0 "$Exec /dev/null 2>&1 &" Enter
+    fi
 elif [[ $USE_CPU_CORE_CONF == false ]]; then
     if [[ $write_logfile == on ]]; then
-        tmux send -t 0 "script -a \"/sdcard/log/debug.log\" -c \"$Exec\"" Enter
+        tmux send -t 0 "script -a \"/sdcard/NumBox/log/debug.log\" -c \"$Exec\"" Enter
     elif [[ $write_logfile == off ]]; then
-        tmux send -t 0 "nice -n -99 $Exec /dev/null 2>&1 &" Enter
+        tmux send -t 0 "$Exec /dev/null 2>&1 &" Enter
     else
-        tmux send -t 0 "nice -n -99 $Exec /dev/null 2>&1 &" Enter
+        tmux send -t 0 "$Exec /dev/null 2>&1 &" Enter
     fi
 else
     tmux send -t 0 "nice -n -99 $Exec &>/dev/null" Enter
