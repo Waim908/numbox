@@ -1,21 +1,7 @@
 #!/bin/bash
 cd ~
 clear
-load () {
-# INPUT_CMD () { bash $TMPDIR/cmd;}
-frames=('-' '\' '|' '/')
-!(INPUT_CMD) & pid=$!
-while [ "$pid" ]; do
-  printf "\r"
-  printf "${frames[$((i%4))]}"
-  sleep 0.1
-  if ! kill -0 "$pid" 2>/dev/null; then
-    pid= 
-  fi
-  : $((i = (i + 1) % 4))
-done
-echo -e "\n"
-}
+yes | termux-setup-storage
 file_is_full () {
   aaa=$(file $file_name | grep gzip)
   if [[ -z $aaa ]]; then
@@ -96,10 +82,10 @@ case $SELECT in
     curl --progress-bar --retry 5 -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
 esac
 echo 开始解压文件
-INPUT_CMD () { file_name=termux.tar.xz ; tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. ;} && echo "(1/4)" && file_is_full &&
-INPUT_CMD () { file_name=home.tar.xz ; tar xf home.tar.xz ;} && load && echo "(2/4)" && file_is_full &&
-INPUT_CMD () { file_name=sdcard.tar.xz ; tar -xf sdcard.tar.xz -C /sdcard ;} && load && echo "(3/4)" && file_is_full &&
-INPUT_CMD () { file_name=glibc.tar.xz ; tar -xf glibc.tar.xz -C $PREFIX ;} && load && echo "(4/4)" && file_is_full &&
+export file_name="termux.tar.xz" && file_is_full && tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. &&
+export file_name="home.tar.xz" && file_is_full && tar xf home.tar.xz && echo "(2/4)" &&
+export file_name="sdcard.tar.xz" && file_is_full && tar -xf sdcard.tar.xz -C /sdcard && echo "(3/4)" &&
+export file_name="glibc.tar.xz" && file_is_full && tar -xf glibc.tar.xz -C $PREFIX && echo "(4/4)" &&
 echo "开始清理文件"
 rm -rf ~/home.tar.xz && rm -rf ~/sdcard.tar.xz && rm -rf ~/glibc.tar.xz && rm -rf termux.tar.xz
 echo "安装完成！"
