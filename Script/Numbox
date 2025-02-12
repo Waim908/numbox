@@ -10,8 +10,8 @@ pkill -f com.termux.x11 >/dev/null 2>&1
 read L W H < ~/NumBox/custom-size
 numbox_ver=$(cat ~/NumBox/.version) 
 MAIN_MENU=$(dialog --title "主菜单" --no-shadow --backtitle "NumBox 版本：$numbox_ver" --menu "触控或方向键选择" $L $W $H \
-  1 "️🍷启动$DEFAULT_CONTAINER_NAME" \
-  2 "️🔧容器选项" \
+  1 "️🍷启动 $DEFAULT_CONTAINER_NAME" \
+  2 "️🔧容器选项(此处创建容器)" \
   3 "📦选择容器打开" \
   4 "导入容器" \
   5 "调试设置" \
