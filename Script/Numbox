@@ -104,7 +104,8 @@ case $MAIN_MENU in
     vkd3d "HansKristian-Work/vkd3d-proton" \
     wined3d "https://fdossena.com/?p=wined3d/index.frag" \
     mesa3d "https://www.mesa3d.org/" \
-    wine "https://www.winehq.org/" 2>&1 >/dev/tty)
+    wine "https://www.winehq.org/" \
+    wine主题 "listumps/wine_themes" 2>&1 >/dev/tty)
     case $about_menu in
       back) bash ~/NumBox/Numbox ;;
       NumBox仓库)  termux-open-url https://github.com/Waim908/numbox && about_info;;
@@ -125,6 +126,7 @@ case $MAIN_MENU in
       wined3d) termux-open-url https://fdossena.com/?p=wined3d/index.frag && about_info ;;
       mesa3d) termux-open-url https://www.mesa3d.org/ && about_info ;;
       wine) termux-open-url https://www.winehq.org/ && about_info ;;
+      wine主题) termux-open-url https://github.com/listumps/wine_themes && about_info ;;
     esac
   }
   about_info ;;
