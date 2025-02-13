@@ -17,7 +17,7 @@ WINED3D=$(dialog --backtitle "$CONTAINER_NAME" --title "选择一个wined3d版�
     6 "🔙返回" 2>&1 >/dev/tty)
 case $WINED3D in
       0) clear
-      cd ~/NumBox/container/$CONTAINER_NAME/wine/lib/wine/i386-windows/ && cp d3d11.dll dxgi.dll d3d10.dll d3d8.dll wined3d.dll d3d10_1.dll d3d9.dll d3d10core.dll ddraw.dll ~/NumBox/container/$CONTAINER_NAME/disk/wine/ddraw/windows/syswow64/ && cd ~/NumBox/container/$CONTAINER_NAME/wine/lib/wine/x86_64-windows/ && cp d3d11.dll dxgi.dll d3d10.dll d3d8.dll wined3d.dll d3d10_1.dll d3d9.dll d3d10core.dll ddraw.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/system32/
+      cd ~/NumBox/container/$CONTAINER_NAME/wine/lib/wine/i386-windows/ && cp d3d11.dll dxgi.dll d3d10.dll d3d8.dll wined3d.dll d3d10_1.dll d3d9.dll d3d10core.dll ddraw.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/syswow64/ && cd ~/NumBox/container/$CONTAINER_NAME/wine/lib/wine/x86_64-windows/ && cp d3d11.dll dxgi.dll d3d10.dll d3d8.dll wined3d.dll d3d10_1.dll d3d9.dll d3d10core.dll ddraw.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/system32/
       echo "64:wined3d" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
       echo "32:wined3d" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
       X86_64_UNPACKAGE ;;
