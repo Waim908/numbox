@@ -101,7 +101,7 @@ case $MAIN_MENU in
     echo "手动下载自己想要的版本后(.tar.gz格式的文件),把文件放到/sdcard/NumBox/resource/dxvk-gplasync"
     read -s -n1 -p "输入任意字符返回" && goback ;;
     6) clear
-    YES_NO=$(dialog --title "是否更新？" --menu "此操作会重置部分配置,如果非容器文件损坏也可选择" $L $W $H \
+    YES_NO=$(dialog --title "是否更新？" --menu "等待作者更新" $L $W $H \
     back "🔙还是算了吧" \
     update "更新NumBox" 2>&1 >/dev/tty)
     case $YES_NO in
