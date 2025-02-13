@@ -37,6 +37,7 @@ SET_CONTAINER=$(dialog --no-shadow --backtitle "$CONTAINER_NAME" --title "容器
     5 "设置字体显示DPI" \
     6 "设置容器桌面壁纸" \
     7 "SmartBox64功能(实验性)" \
+    8 "service管理(可能解决程序卡死问题)" \
     back "🔙返回" 2>&1 >/dev/tty)
     case $SET_CONTAINER in
       back) bash ~/NumBox/Set-container2.sh ;;
@@ -168,4 +169,30 @@ SET_CONTAINER=$(dialog --no-shadow --backtitle "$CONTAINER_NAME" --title "容器
     6) rm -rf /sdcard/NumBox/container/$CONTAINER_NAME/enable_dxvk.conf
     bash ~/NumBox/Container-setting.sh ;;
     esac ;;
+  8) service_cmd () {
+  o_value=$(cat /sdcard/NumBox/container/$CONTAINER_NAME/service)
+  if [[ $o_value == 1 ]]; then
+    service_value=启动全部服务
+  elif [[ $o_value == 2 ]]; then
+    service_value=启动基本服务
+  elif [[ $o_value == 3 ]]; then
+    service_value=结束全部服务
+  else
+    service_value=未设置或文件不存在
+  fi
+  SERVICE_SET=$(dialog --title "service系统服务管理" --menu "方案来自winlator" $L $W $H \
+    back "🔙返回" \
+    当前 "$service_value" \
+    1 "启动全部服务" \
+    2 "启动基本服务" \
+    3 "结束全部服务(推荐)" 2>&1 >/dev/tty)
+  case $SERVICE_SET in
+    back) bash ~/NumBox/Container-setting.sh ;;
+    当前) service_cmd ;;
+    1) echo "1" > /sdcard/NumBox/container/$CONTAINER_NAME/service && service_cmd ;;
+    2) echo "2" > /sdcard/NumBox/container/$CONTAINER_NAME/service && service_cmd ;;
+    3) echo "3" > /sdcard/NumBox/container/$CONTAINER_NAME/service && service_cmd ;;
+  esac
+  }
+  service_cmd
 esac
