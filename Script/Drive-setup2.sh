@@ -40,15 +40,17 @@ case $MAIN_MENU in
         fi
     fi ;;
     1) clear
-    cp ~/NumBox/resource/drive/default/* ~/NumBox/resource/drive/replace/
-    cp ~/NumBox/resource/drive/json/* ~/NumBox/resource/drive/replace/
+    cp ~/NumBox/resource/drive/default/* ~/NumBox/resource/drive/replace/lib/
+    cp ~/NumBox/resource/drive/json/* ~/NumBox/resource/drive/replace/share/vulkan/icd.d/
     echo "Glibc-Turnip" > ~/NumBox/vk_name
     dialog --msgbox "已替换为Glibc-Turnip" $L $W && bash ~/NumBox/Drive-setup2.sh ;;
     2) clear
     mkdir -p $TMPDIR/temp_xf
     tar xvf ~/NumBox/resource/drive/turnip-v25.0.0-R8.wcp -C $TMPDIR/temp_xf
-    cd $TMPDIR/temp_xf/turnip
-    sed_json && cp * ~/NumBox/resource/drive/replace/ 
+#    cd $TMPDIR/temp_xf/turnip
+    cp $TMPDIR/temp_xf/turnip/libvulkan_freedreno.so ~/NumBox/resource/drive/replace/lib/
+    cp $TMPDIR/temp_xf/zink/* ~/NumBox/resource/drive/replace/lib/
+    sed_json && $TMPDIR/temp_xf/turnip/freedreno_icd.aarch64.json ~/NumBox/resource/drive/replace/share/vulkan/icd.d/
     echo "Winlator-Glibc-Turnip(v25 r8)" > ~/NumBox/vk_name
     dialog --msgbox "已替换为Winlator-Glibc-Turnip(v25 r8)" $L $W && bash ~/NumBox/Drive-setup2.sh ;;
     3) sed -i "s%virgl_server_type=.*%virgl_server_type=virgl%g" ~/NumBox/drive/virgl.conf && bash ~/NumBox/Drive-setup2.sh ;;
