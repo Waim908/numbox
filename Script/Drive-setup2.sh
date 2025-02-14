@@ -7,6 +7,7 @@ sed_json () {
     sed -i "s%/data/data/com.winlator/files/imagefs/usr/lib/libvulkan_freedreno.so%/data/data/com.termux/files/usr/glibc/lib/libvulkan_freedreno.so%g" $TMPDIR/temp_xf/turnip/freedreno_icd.aarch64.json
 }
 source ~/NumBox/drive/virgl.conf
+IS_VIRGL=$(cat ~/NumBox/virgl_so)
 MAIN_MENU=$(dialog --title "驱动安装" --no-shadow --backtitle "NumBox版本更新后请重新选择" --menu "选择一个驱动类型" $L $W $H \
     0 "🔙返回" \
     import "从/sdcard/NumBox/resource/turnip导入wcp" \
@@ -15,6 +16,9 @@ MAIN_MENU=$(dialog --title "驱动安装" --no-shadow --backtitle "NumBox版本�
     3 "设置为virgl服务器" \
     4 "设置为virgl-android服务器" \
     virgl服务器类型 "$virgl_server_type" \
+    5 "使用来自glibc的virgl-zink动态链接库" \
+    6 "使用来自winlator的virgl动态链接库" \
+    virgl动态链接库类型 "$IS_VIRGL" \
     PS "WCP文件是winlator glibc的同款文件" 2>&1 >/dev/tty)
 case $MAIN_MENU in
     PS) bash ~/NumBox/Drive-setup2.sh ;;
@@ -55,4 +59,8 @@ case $MAIN_MENU in
     dialog --msgbox "已替换为Winlator-Glibc-Turnip(v25 r8)" $L $W && bash ~/NumBox/Drive-setup2.sh ;;
     3) sed -i "s%virgl_server_type=.*%virgl_server_type=virgl%g" ~/NumBox/drive/virgl.conf && bash ~/NumBox/Drive-setup2.sh ;;
     4) sed -i "s%virgl_server_type=.*%virgl_server_type=android%g" ~/NumBox/drive/virgl.conf && bash ~/NumBox/Drive-setup2.sh ;;
+    5) echo "glibc-zink" > ~/NumBox/virgl_so
+    bash ~/NumBox/Drive-setup2.sh ;;
+    6) echo "winlator-virgl" > ~/NumBox/virgl_so
+    bash ~/NumBox/Drive-setup2.sh ;;
 esac
