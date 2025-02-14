@@ -75,3 +75,7 @@
 [termux与x11合体版](https://github.com/jiaxinchen-max/termux-app)
 
 [wine主题](https://github.com/listumps/wine_themes)
+
+[turnip驱动](https://github.com/K11MCH1/WinlatorTurnipDrivers)
+
+[参考与部分文件](https://github.com/K11MCH1/WinlatorTurnipDrivers)
