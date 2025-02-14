@@ -4,7 +4,7 @@ stopserver
 export DEFAULT_CONTAINER_NAME=$(cat ~/NumBox/default_startup_container)
 rm -rf $TMPDIR/cmd 2>&1 >/dev/null
 rm -rf $TMPDIR/container_name.txt 2>&1 >/dev/null
-rm -rf ~/.config/pulse/
+rm -rf ~/.config/pulse/*
 pulseaudio -k >/dev/null 2>&1 
 pkill -f com.termux.x11 >/dev/null 2>&1
 read L W H < ~/NumBox/custom-size
@@ -15,7 +15,7 @@ MAIN_MENU=$(dialog --title "主菜单" --no-shadow --backtitle "NumBox 版本：
   3 "📦选择容器打开" \
   4 "导入容器" \
   5 "调试设置" \
-  6 "turnip驱动设置" \
+  6 "驱动设置" \
   7 "关于" \
   8 "支持NumBox开发" \
   9 "查看命令帮助" \
@@ -105,7 +105,9 @@ case $MAIN_MENU in
     wined3d "https://fdossena.com/?p=wined3d/index.frag" \
     mesa3d "https://www.mesa3d.org/" \
     wine "https://www.winehq.org/" \
-    wine主题 "listumps/wine_themes" 2>&1 >/dev/tty)
+    wine主题 "listumps/wine_themes" \
+    tuenip "K11MCH1/WinlatorTurnipDrivers" \
+    参考与部分文件 "longjunyu2/winlator" 2>&1 >/dev/tty)
     case $about_menu in
       back) bash ~/NumBox/Numbox ;;
       NumBox仓库)  termux-open-url https://github.com/Waim908/numbox && about_info;;
@@ -127,6 +129,8 @@ case $MAIN_MENU in
       mesa3d) termux-open-url https://www.mesa3d.org/ && about_info ;;
       wine) termux-open-url https://www.winehq.org/ && about_info ;;
       wine主题) termux-open-url https://github.com/listumps/wine_themes && about_info ;;
+      turnip) termux-open-url https://github.com/K11MCH1/WinlatorTurnipDrivers && about_info ;;
+      参考与部分文件) termux-open-url https://github.com/longjunyu2/winlator && about_info ;;
     esac
   }
   about_info ;;
