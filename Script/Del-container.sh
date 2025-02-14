@@ -4,7 +4,7 @@ mkdir /sdcard/NumBox/container/ 2>/dev/null
 mkdir ~/NumBox/container/ 2>/dev/null
 read L W H < ~/NumBox/custom-size
 read -n1 -p "输入1返回主菜单，输入其他字符回车继续：" INPUT_ONE
-if [ $INPUT_ONE -eq 1 ]; then
+if [[ $INPUT_ONE == 1 ]]; then
   bash ~/NumBox/Numbox 
 else
   echo 配置文件路径
@@ -12,7 +12,7 @@ else
   echo 容器路径（无视.和..目录）
   ls -1a ~/NumBox/container
   read -p "输入需要删除的容器名（输入*号删除全部容器）： " CONTAINER_NAME
-  if [ -z "$CONTAINER_NAME" ]; then
+  if [[ -z $CONTAINER_NAME ]]; then
     dialog --title "错误" --msgbox "名称不能为空！" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Del-container.sh
    else
     # check_container=$(ls /sdcard/NumBox/container/$CONTAINER_NAME)
