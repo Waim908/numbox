@@ -5,6 +5,7 @@ CONTAINER_NAME=$(cat $TMPDIR/container_name.txt)
 X86_64_UNPACKAGE_1 () {
 clear
 tar xf ~/NumBox/resource/dxvk/dxvk/$VERSION.tar.gz -C $TMPDIR/temp_xf/ && cd $TMPDIR/temp_xf/*/ && cp x32/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/syswow64 && cp x64/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/system32
+cd ~
 echo "64:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
 echo "32:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
 rm -rf $TMPDIR/temp_xf/*
@@ -13,6 +14,7 @@ dialog --title "( ˘▽˘)っ♨" --msgbox "安装完成" $L $W 2>&1 >/dev/tty &
 X86_64_UNPACKAGE_2 () {
 clear
 tar xf ~/NumBox/resource/dxvk/gplasync/$VERSION.tar.gz -C $TMPDIR/temp_xf/ && cd $TMPDIR/temp_xf/*/ && cp x32/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/syswow64 && cp x64/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/system32
+cd ~
 echo "64:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
 echo "32:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
 rm -rf $TMPDIR/temp_xf/*
@@ -22,6 +24,7 @@ bash ~/NumBox/Set-container.sh
 X86_64_UNPACKAGE_3 () {
 clear
 tar xf ~/NumBox/resource/dxvk/async/$VERSION.tar.gz -C $TMPDIR/temp_xf/ && cd $TMPDIR/temp_xf/*/ && cp x32/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/syswow64 && cp x64/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/system32
+cd ~
 echo "64:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
 echo "32:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
 rm -rf $TMPDIR/temp_xf/*
@@ -31,6 +34,7 @@ bash ~/NumBox/Set-container.sh
 X86_64_UNPACKAGE_DXVK () {
 clear
 tar xf $dxvk_path/$FILE_NAME -C $TMPDIR/temp_xf/ && cd $TMPDIR/temp_xf/*/ && cp x32/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/syswow64 && cp x64/*.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/system32
+cd ~
 echo "64:$FILE_NAME" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
 echo "32:$FILE_NAME" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
 rm -rf $TMPDIR/temp_xf/*

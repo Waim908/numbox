@@ -5,6 +5,7 @@ CONTAINER_NAME=$(cat $TMPDIR/container_name.txt)
 X86_UNPACKAGE () {
 clear
 UNPACKAGE_CMD
+cd ~
 dialog --title "( ˘▽˘)っ♨" --msgbox "安装完成" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Set-container2.sh
 }
 CNC_DDRAW=$(dialog --backtitle "$CONTAINER_NAME" --title "选择一个cnc-ddraw版本" --menu "仅支持DX9,2D" $L $W $H \
@@ -21,6 +22,7 @@ case $CNC_DDRAW in
   else
     if [[ -f /sdcard/NumBox/resource/cnc-ddraw/$FILE_NAME ]]; then
       unzip /sdcard/NumBox/resource/cnc-ddraw/$FILE_NAME -d $TMPDIR/temp_xf/ && cd $TMPDIR/temp_xf/ && cp *.dll ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/windows/syswow64/ && mkdir -p ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/ProgramData/cnc-ddraw && cp -r Shaders/ ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/ProgramData/cnc-ddraw/ && cp ddraw.ini ~/NumBox/container/$CONTAINER_NAME/disk/drive_c/ProgramData/cnc-ddraw/
+      cd ~
       echo "32:$FILE_NAME" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
       dialog --title "( ˘▽˘)っ♨" --msgbox "安装完成" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Set-container2.sh
     else
