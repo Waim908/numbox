@@ -21,7 +21,8 @@ DISK_SET=$(dialog --title "挂载盘设置" --inputbox "输入挂载盘路径，
         5 "I" 2>&1 >/dev/tty)
       case $DISK_PATH in
         0) bash ~/NumBox/Set-container2.sh ;;
-        1) ln -s $DISK_SET d:
+        1) rm -rf ~/NumBox/container/$CONTAINER_NAME/disk/dosdevices/d:
+        ln -s $DISK_SET d:
         bash ~/NumBox/Set-container2.sh ;;
         2) ln -s $DISK_SET e:
         bash ~/NumBox/Set-container2.sh ;;
