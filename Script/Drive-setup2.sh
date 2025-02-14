@@ -1,6 +1,7 @@
 #!/bin/bash
 clear
 read L W H < ~/NumBox/custom-size
+cd ~
 rm -rf $TMPDIR/temp_xf
 SO_NAME=$(cat ~/NumBox/vk_name)
 sed_json () {

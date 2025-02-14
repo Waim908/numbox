@@ -1,5 +1,6 @@
 #!/bin/bash
 read L W H < ~/NumBox/custom-size
+cd ~
 mkdir -p $TMPDIR/temp_xf
 CONTAINER_NAME=$(cat $TMPDIR/container_name.txt)
 X86_64_UNPACKAGE () {
