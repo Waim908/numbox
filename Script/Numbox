@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ~
 clear
 stopserver
 export DEFAULT_CONTAINER_NAME=$(cat ~/NumBox/default_startup_container)
