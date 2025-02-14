@@ -28,6 +28,7 @@ DXVK_FPS_1="$DXVK_FRAME_RATE"
 VKD3D_FPS_1="$VKD3D_FRAME_RATE"
 VKD3D_LV="$VKD3D_FEATURE_LEVEL"
 TZ_1="$TZ"
+VSYNC_1="$vblank_mode"
 ENV_SELECT=$(dialog --no-shadow --title "$CONTAINER_NAME 的变量"  --menu "删除此菜单变量可能会导致报错" $L $W $H \
   0 "🔙返回" \
   1 "语言与编码(LC_ALL)" \
@@ -48,7 +49,8 @@ ENV_SELECT=$(dialog --no-shadow --title "$CONTAINER_NAME 的变量"  --menu "删
   值 "$VKD3D_LV" \
   9 "时区设置(TZ)" \
   值 "$TZ_1" \
-  debug "调试变量配置信息" \
+  10 "V-Sync垂直同步" \
+  值 "$VSYNC_1" \
   edit "使用外部编辑器编辑变量配置" 2>&1 >/dev/tty)
 case $ENV_SELECT in
   0) bash ~/NumBox/Set-container2.sh ;;
@@ -297,6 +299,7 @@ case $ENV_SELECT in
     6 "非洲/开罗(埃及)" \
     7 "自定义时区" 2>&1 >/dev/tty)
   case $TZ_SET in
+    0) bash ~/NumBox/Env-config.sh ;;
     1) env_value="Asia/Shanghai"
     auto_sed ;;
     2) env_value="Asia/Tokyo"
@@ -312,15 +315,20 @@ case $ENV_SELECT in
     7) env_value=$(dialog --title "自定义时区" --inputbox "请输入TZ变量支持的分区格式")
     auto_sed ;;
   esac ;;
-  debug)
-    clear
-    source /sdcard/NumBox/container/$CONTAINER_NAME/default.conf 2> /sdcard/NumBox/log/Env_debug.log
-    echo "日志路径/sdcard/NumBox/log/Env_debug.log"
-    echo "————————————————"
-    cat "/sdcard/NumBox/log/Env_debug.log"
-    echo -e "\n"
-    echo "————————————————"
-    echo "仅供参考，如果为空说明变量无语法错误"
-    read -s -n1 -p "输入任意字符返回" && bash ~/NumBox/Env-config.sh ;;
+  10) env_name=vblank_mode
+  VSYNC_SET=$(dialog --title "V-Sync垂直同步" --menu "选择一个值，会影响性能" $L $W $H \
+      0 "🔙返回" \
+      1 "0禁用" \
+      2 "1启用" \
+      3 "2自适应" 2>&1 >/dev/tty)
+  case $VSYNC_SET in
+    0) bash ~/NumBox/Env-config.sh ;;
+    1) env_value="0"
+    auto_sed ;;
+    2) env_value="1"
+    auto_sed ;;
+    3) env_value="2"
+    auto_sed ;;
+  esac ;;
   edit) termux-open --content-type text /sdcard/NumBox/container/$CONTAINER_NAME/default.conf && dialog --msgbox "保存后返回菜单" $L $W && bash ~/NumBox/Env-config.sh ;;
 esac
