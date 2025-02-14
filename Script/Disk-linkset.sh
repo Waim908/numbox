@@ -24,13 +24,17 @@ DISK_SET=$(dialog --title "挂载盘设置" --inputbox "输入挂载盘路径，
         1) rm -rf ~/NumBox/container/$CONTAINER_NAME/disk/dosdevices/d:
         ln -s $DISK_SET d:
         bash ~/NumBox/Set-container2.sh ;;
-        2) ln -s $DISK_SET e:
+        2) rm -rf ~/NumBox/container/$CONTAINER_NAME/disk/dosdevices/e:
+        ln -s $DISK_SET e:
         bash ~/NumBox/Set-container2.sh ;;
-        3) ln -s $DISK_SET f:
+        3) rm -rf ~/NumBox/container/$CONTAINER_NAME/disk/dosdevices/f:
+        ln -s $DISK_SET f:
         bash ~/NumBox/Set-container2.sh ;;
-        4) ln -s $DISK_SET g:
+        4) rm -rf ~/NumBox/container/$CONTAINER_NAME/disk/dosdevices/g:
+        ln -s $DISK_SET g:
         bash ~/NumBox/Set-container2.sh ;;
-        5) ln -s $DISK_SET i:
+        5) rm -rf ~/NumBox/container/$CONTAINER_NAME/disk/dosdevices/i:
+        ln -s $DISK_SET i:
         bash ~/NumBox/Set-container2.sh ;;
       esac
     else
