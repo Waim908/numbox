@@ -4,7 +4,7 @@ read L W H < ~/NumBox/custom-size
 goback () {
   bash ~/NumBox/startup-menu.sh
 }
-START_MENU=$(dialog --no-cancel --no-shadow --backtitle "NumBox" --title "$CONTAINER_NAME" --menu "如果卡顿,小窗termux" $L $W $H \
+START_MENU=$(dialog --no-cancel --no-shadow --backtitle "NumBox GPU_drive: $drive_type" --title "$CONTAINER_NAME" --menu "如果卡顿,小窗termux" $L $W $H \
   taskmgr "wine任务管理器" \
   killtaskmgr "杀死wine任务管理器进程" \
   run "运行" \
