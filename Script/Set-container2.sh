@@ -3,7 +3,7 @@ read L W H < ~/NumBox/custom-size
 CONTAINER_NAME=$(cat $TMPDIR/container_name.txt)
 SET_MAIN_MENU=$(dialog --no-shadow --title "$CONTAINER_NAME" --menu "选择一个选项" $L $W $H \
   back "🔙返回主菜单" \
-  0 "容器详情" \
+  0 "容器详情(此处查看选择的Dx图形环境)" \
   1 "DrectX图形环境" \
   2 "GPU图形驱动选择" \
   3 "容器设置" \
@@ -15,17 +15,17 @@ SET_MAIN_MENU=$(dialog --no-shadow --title "$CONTAINER_NAME" --menu "选择一�
 case $SET_MAIN_MENU in
   back) bash ~/NumBox/Numbox ;;
   0) clear
-  Winever=$(cat /sdcard/NumBox/container/$CONTAINER_NAME/version 2>/dev/null)
-  Gpu=$(cat /sdcard/NumBox/container/$CONTAINER_NAME/device 2>/dev/null)
+  Winever=$(cat /sdcard/NumBox/container/$CONTAINER_NAME/version)
+  Gpu=$(cat /sdcard/NumBox/container/$CONTAINER_NAME/drive)
   D3D32=$(cat /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION)
   D3D64=$(cat /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION)
   STORAGE=$(du -sh ~/NumBox/container/$CONTAINER_NAME)
-  echo 容器名：$CONTAINER_NAME
-  echo 容器占用空间：$STORAGE
-  echo 当前wine版本包：$Winever
-  echo 当前图形驱动：$Gpu
-  echo 当前32位DX图形渲染环境：$D3D32
-  echo 当前64位DX图形渲染环境：$D3D64
+  echo "容器名：$CONTAINER_NAME"
+  echo "容器占用空间：$STORAGE"
+  echo "当前wine版本包：$Winever"
+  echo "当前图形驱动：$Gpu"
+  echo "当前32位DX图形渲染环境：$D3D32"
+  echo "当前64位DX图形渲染环境：$D3D64"
   read -s -n1 -p "输入任意字符返回" && bash ~/NumBox/Set-container2.sh
   ;;
   1) DRECTX=$(dialog --no-shadow --backtitle "$CONTAINER_NAME" --title "选择一个DrectX图形环境" --menu "选择cnc后或者vkd3d，其余的dx版本由上一次的选择的版本补全" $L $W $H \
