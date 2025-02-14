@@ -1,10 +1,11 @@
 #!/bin/bash
 termux-wake-lock ; stopserver
+rm -rf ~/.config/pulse
 # pkill -f com.termux.x11
-pkill -f virgl ; pulseaudio -k 2>&1 >/dev/null
+pkill -f virgl 
+pulseaudio -k 2>&1 >/dev/null
 pulseaudio --start --load="module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1" --exit-idle-time=-1 &>/dev/null &
 termux-x11 :0 &
-rm -rf ~/.config/pulse
 # source ~/NumBox/container/$CONTAINER_NAME/device 2>&1 >/dev/null
 source ~/NumBox/boot.conf
 source /sdcard/NumBox/debug.conf 
