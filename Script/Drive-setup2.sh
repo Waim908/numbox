@@ -36,7 +36,9 @@ case $MAIN_MENU in
             cd $TMPDIR/temp_xf/turnip
 #            cp *.so $PREFIX/glibc/lib && sed_json && cp *.json $PREFIX/glibc/share/vulkan/icd.d
 #            cd $TMPDIR/temp_xf/zink && cp * $PREFIX/glibc/lib
-            sed_json && cp * ~/NumBox/resource/drive/replace/
+            cp $TMPDIR/temp_xf/turnip/libvulkan_freedreno.so ~/NumBox/resource/drive/replace/lib/
+            cp $TMPDIR/temp_xf/zink/* ~/NumBox/resource/drive/replace/lib/
+            sed_json && $TMPDIR/temp_xf/turnip/freedreno_icd.aarch64.json ~/NumBox/resource/drive/replace/share/vulkan/icd.d/
             echo "$FILE_NAME" > ~/NumBox/vk_name
             dialog --msgbox "$FILE_NAME 安装完成！" $L $W && bash ~/NumBox/Drive-setup2.sh
         else
