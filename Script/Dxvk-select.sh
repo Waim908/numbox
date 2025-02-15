@@ -19,7 +19,6 @@ echo "64:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
 echo "32:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
 rm -rf $TMPDIR/temp_xf/*
 dialog --title "( ˘▽˘)っ♨" --msgbox "安装完成" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Set-container2.sh
-bash ~/NumBox/Set-container.sh
 }
 X86_64_UNPACKAGE_3 () {
 clear
@@ -29,7 +28,6 @@ echo "64:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
 echo "32:$VERSION" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
 rm -rf $TMPDIR/temp_xf/*
 dialog --title "( ˘▽˘)っ♨" --msgbox "安装完成" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Set-container2.sh
-bash ~/NumBox/Set-container.sh
 }
 X86_64_UNPACKAGE_DXVK () {
 clear
@@ -39,7 +37,6 @@ echo "64:$FILE_NAME" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D64_VERSION
 echo "32:$FILE_NAME" > /sdcard/NumBox/container/$CONTAINER_NAME/D3D32_VERSION
 rm -rf $TMPDIR/temp_xf/*
 dialog --title "( ˘▽˘)っ♨" --msgbox "安装完成" $L $W 2>&1 >/dev/tty && bash ~/NumBox/Set-container2.sh
-bash ~/NumBox/Set-container.sh
 }
 DXVK=$(dialog --backtitle "$CONTAINER_NAME" --title "选择一个dxvk版本" --menu "支持DX8~11" $L $W 8 \
   0 "🔙返回" \
