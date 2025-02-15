@@ -38,7 +38,7 @@ case $MAIN_MENU in
 #            cp *.so $PREFIX/glibc/lib && sed_json && cp *.json $PREFIX/glibc/share/vulkan/icd.d
 #            cd $TMPDIR/temp_xf/zink && cp * $PREFIX/glibc/lib
             rm -rf ~/NumBox/resource/drive/replace/lib/*
-            cp ~/NumBox/resource/drive/vk/* ~/NumBox/resource/drive/replace/lib/
+            tar xf ~/NumBox/resource/drive/winlator.tar -C ~/NumBox/resource/drive/
             cp $TMPDIR/temp_xf/turnip/libvulkan_freedreno.so ~/NumBox/resource/drive/replace/lib/
             cp $TMPDIR/temp_xf/zink/* ~/NumBox/resource/drive/replace/lib/
             sed_json && cp $TMPDIR/temp_xf/turnip/freedreno_icd.aarch64.json ~/NumBox/resource/drive/replace/share/vulkan/icd.d/
@@ -50,6 +50,7 @@ case $MAIN_MENU in
     fi ;;
     1) clear
     rm -rf ~/NumBox/resource/drive/replace/lib/*
+    tar xf ~/NumBox/resource/drive/termux.tar -C ~/NumBox/resource/drive/
     cp ~/NumBox/resource/drive/default/* ~/NumBox/resource/drive/replace/lib/
     cp ~/NumBox/resource/drive/json/* ~/NumBox/resource/drive/replace/share/vulkan/icd.d/
     echo "Glibc-Turnip" > ~/NumBox/vk_name
@@ -59,7 +60,7 @@ case $MAIN_MENU in
     tar xvf ~/NumBox/resource/drive/turnip-v25.0.0-R8.wcp -C $TMPDIR/temp_xf
 #    cd $TMPDIR/temp_xf/turnip
     rm -rf ~/NumBox/resource/drive/replace/lib/*
-    cp ~/NumBox/resource/drive/vk/* ~/NumBox/resource/drive/replace/lib/
+    tar xf ~/NumBox/resource/drive/winlator.tar -C ~/NumBox/resource/drive/
     cp $TMPDIR/temp_xf/turnip/libvulkan_freedreno.so ~/NumBox/resource/drive/replace/lib/
     cp $TMPDIR/temp_xf/zink/* ~/NumBox/resource/drive/replace/lib/
     sed_json && cp $TMPDIR/temp_xf/turnip/freedreno_icd.aarch64.json ~/NumBox/resource/drive/replace/share/vulkan/icd.d/
