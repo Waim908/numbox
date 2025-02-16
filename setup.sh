@@ -36,8 +36,6 @@ echo 安装x11-repo
 yes | pkg install x11-repo
 echo 开始安装必要软件包
 yes | apt install xkeyboard-config xwayland htop openssl wget imagemagick virglrenderer vulkan-tools mangohud mesa-demos pigz tmux virglrenderer-android vulkan-loader vulkan-loader-generic pulseaudio angle-android file
-echo 开始安装x11
-cd ~/NumBox/npt_install/ && apt install ./*.deb
 echo 开始修复依赖
 apt install -f -y
 echo 开始测试网络延迟
@@ -86,6 +84,9 @@ export file_name="termux.tar.xz" && file_is_full && tar xf termux.tar.xz && mv ~
 export file_name="home.tar.xz" && file_is_full && tar xf home.tar.xz && echo "(2/4)" &&
 export file_name="sdcard.tar.xz" && file_is_full && tar -xf sdcard.tar.xz -C /sdcard && echo "(3/4)" &&
 export file_name="glibc.tar.xz" && file_is_full && tar -xf glibc.tar.xz -C $PREFIX && echo "(4/4)" &&
+echo 开始安装x11
+cd ~/NumBox/npt_install/ && apt install ./*.deb
+cd ~
 echo "开始清理文件"
 rm -rf ~/home.tar.xz && rm -rf ~/sdcard.tar.xz && rm -rf ~/glibc.tar.xz && rm -rf termux.tar.xz
 echo "安装完成！"
