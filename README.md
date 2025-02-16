@@ -1,4 +1,4 @@
-# NumBox （最新版v1.0）
+8# NumBox （最新版v1.0）
 
 ## 关于
 
@@ -38,7 +38,7 @@
 
 ~~肝不动了，草~~
 
-~~创建容器的工作目录使用termux-wine这个仓库的包后会有工作目录报错，是因为代码z盘的挂载路径设置为了/data/data/com.termux/files/usr/glibc/而不是$HOME，不过也可以不用管了，因为没有任何影响，就当特性吧[doge]~~
+创建容器的工作目录使用termux-wine这个仓库的包后会有工作目录报错，是因为代码z盘的挂载路径设置为了/data/data/com.termux/files/usr/glibc/而不是$HOME，不过也可以不用管了，因为没有任何影响，就当~~特性~~吧[doge]
 
 # 更新日志
 
