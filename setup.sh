@@ -80,7 +80,7 @@ case $SELECT in
     curl --progress-bar --retry 5 -O https://github.moeyy.xyz/https://github.com/Waim908/numbox/releases/download/latest/sdcard.tar.xz && echo "(4/4)" ;;
 esac
 echo 开始解压文件
-export file_name="termux.tar.xz" && file_is_full && tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. &&
+export file_name="termux.tar.xz" && file_is_full && tar xf termux.tar.xz && mv ~/startup-wine.sh ~/.. && echo "(1/4)" &&
 export file_name="home.tar.xz" && file_is_full && tar xf home.tar.xz && echo "(2/4)" &&
 export file_name="sdcard.tar.xz" && file_is_full && tar -xf sdcard.tar.xz -C /sdcard && echo "(3/4)" &&
 export file_name="glibc.tar.xz" && file_is_full && tar -xf glibc.tar.xz -C $PREFIX && echo "(4/4)" &&
