@@ -1,5 +1,4 @@
 #!/bin/bash
-source ~/NumBox/utils/path.conf
 source ~/NumBox/utils/file_list.sh ~/NumBox/container/ 容器 选择一个容器打开 "~/NumBox/container/"
 if [[ $lsterr == 2 ]]; then
   dialog --title "╮(￣⊿￣)╭" --msgbox "容器不存在！请创建容器" $L $W && bash ~/NumBox/Numbox
