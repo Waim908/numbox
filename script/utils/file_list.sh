@@ -14,7 +14,7 @@ done < <(ls -$list_type $1)
 if [ ${#MENU_OPTIONS[@]} -eq 0 ]; then
     lsterr=2
 fi
-selection=$(dialog --cancel-label "返回" --title "$2" --backtitle "$4" --menu "$3" $L $W $H \
+selection=$(dialog --no-shadow --cancel-label "返回" --title "$2" --backtitle "$4" --menu "$3" $L $W $H \
        "${MENU_OPTIONS[@]}" 2>&1 >/dev/tty)
 if [ -z "$selection" ]; then
     lsterr=1
