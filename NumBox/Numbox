@@ -1,0 +1,15 @@
+#!/bin/bash
+source ~/NumBox/utils/dialog.sh
+nb_ver=$(cat ~/NumBox/.version)
+menu=$(dialog ${arg[@]} --backtitle "版本：$nb_ver"  --title "NumBox主菜单" --menu "选择一个选项" $box_sz \
+  1 "启动默认容器" \
+  2 "选择容器打开" \
+  3 "进入容器管理" \
+  4 "联网下载更新" \
+  5 "进入调试选项" \
+  6 "进入glibc终端" \
+  7 "关于NumBox" \
+  8 "支持NumBox开发" 2>&1 >/dev/tty)
+case $menu in
+  1) $ctr_name ;;
+esac

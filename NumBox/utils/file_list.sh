@@ -1,5 +1,5 @@
 # 声明路径>$1 ; 指定说明 标题$2 副标题$3 背景标题$4 ; 错误赋值$lsterr=1 取消选择 2 路径下无文件 ; 排序类型 $list_type
-read L W H < ~/NumBox/custom-size
+# 需要utils/dialog.sh生效
 if [[ -z $list_type ]]; then
   list_type=A
 fi
@@ -14,7 +14,7 @@ done < <(ls -$list_type $1)
 if [ ${#MENU_OPTIONS[@]} -eq 0 ]; then
     lsterr=2
 fi
-selection=$(dialog --no-shadow --cancel-label "返回" --title "$2" --backtitle "$4" --menu "$3" $L $W $H \
+selection=$(dialog "${dialog_arg[@]}" --title "$2" --backtitle "$4" --menu "$3" 0 -1 0 \
        "${MENU_OPTIONS[@]}" 2>&1 >/dev/tty)
 if [ -z "$selection" ]; then
     lsterr=1
