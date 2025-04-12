@@ -1,5 +1,16 @@
 # 重写几乎所有代码，开始2.0部分编写
 
+# Tasklist
+
+1.实现自定义导入PREFIX前缀包
+
+2.不使用任何第三方桌面环境实现自动读取termux-x11客户端设置的分辨率启动
+
+3.通过markdown实现帮助文档
+
+4.加入更多可选驱动（swrast virtio panfrost）
+
+
 ## 关于
 
 在termux上的glibc环境运行wine，支持容器管理和容器的导入导出
@@ -32,8 +43,6 @@
 
 2.首次创建容器默认是wined3d，你可以在容器设置里换成dxvk
 
-~~3.首次安装是wrapper驱动而不是turnip驱动，如果你想，也可以换成turnip驱动~~ （后面考虑加入wine arm64 bionic环境支持）
-
 3.wrapper无法在glibc环境正常工作，因为依赖项来自安卓bionic(即/system/lib64)，故仅能在termux原装环境正常工作
 
 ~~肝不动了，草~~
@@ -47,6 +56,9 @@
 支持容器功能，支持容器打包和导入，可更换d3d环境，可选vulkan驱动，
 ~~支持自定义壁纸自动转换bmp格式~~（此功能会导致渲染错误，目前暂时无法解决），支持注册表功能，创建容器集成了很多软件（如播放器和运行库），支持调试日志功能，加入在线下载资源，可更换下载站适应大陆网络环境
 
+## 2.0
+
+开发中
 
 # 使用的开源项目
 [glibc包](https://github.com/mebabo1/menano)
@@ -84,3 +96,4 @@
 [turnip驱动](https://github.com/K11MCH1/WinlatorTurnipDrivers)
 
 [参考与部分文件](https://github.com/K11MCH1/WinlatorTurnipDrivers)
+
