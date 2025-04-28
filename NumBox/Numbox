@@ -1,9 +1,9 @@
 #!/bin/bash
-source ~/NumBox/utils/dialog.conf
+. ~/NumBox/utils/dialog.conf
 nb_ver=$(cat ~/NumBox/.version)
-back () { source ~/NumBox/Numbox;}
+back () { . ~/NumBox/Numbox;}
 rmdir ~/NumBox/container/*/ &>/dev/null
-menu=$(dialog ${dialog_arg[@]} --backtitle "版本：$nb_ver"  --title "NumBox主菜单" --menu "选择一个选项" $box_sz \
+menu=$(dialog ${dialog_arg[@]} --backtitle "版本：$nb_ver 默认容器：$(cat ~/NumBox/default_ctr)"  --title "NumBox主菜单" --menu "选择一个选项" $box_sz \
   1 "启动默认容器" \
   2 "选择容器打开" \
   3 "进入容器管理" \
@@ -13,31 +13,8 @@ menu=$(dialog ${dialog_arg[@]} --backtitle "版本：$nb_ver"  --title "NumBox�
   7 "关于NumBox" \
   8 "支持NumBox开发" 2>&1 >/dev/tty)
 case $menu in
-  1) sub_menu () {
-  ctr_name=$(cat ~/NumBox/default_ctr)
-    if [[ -z $ctr_name ]]; then
-      menu=$(dialog ${dialog_arg[@]} --title "未设定默认启动容器" --menu "" $box_sz \
-      1 "选择容器打开" \
-      2 "设定默认启动容器" 2>&1 >/dev/tty)
-      case $menu in
-        0) back ;;
-        1) bash ~/NumBox/Open-container.sh ;;
-        2) source ~/NumBox/utils/file_list.sh "$HOME/NumBox/container" "设置默认启动容器" "选择一个容器" "~/NumBox/container"
-        case $lsterr in
-          1) dialog ${dialog_arg[@]} --title "未找到任何容器" --msgbox "在主菜单容器管理>创建容器 创建一个新容器吧！" ;;
-          2) back ;;
-        esac ;;
-      esac
-    elif [[ -d "~/NumBox/container/$ctr_name" ]]; then
-      bash ~/NumBox/Start-container.sh
-    else
-      echo > ~/NumBox/default_ctr
-      dialog ${dialog_arg[@]} --title "未找到默认启动容器" --msgbox "在主菜单容器管理>创建容器 创建一个新容器吧！" $box_sz2
-      back
-    fi 
-    }
-    sub_menu ;;
-  2) bash ~/NumBox/Open-container.sh ;;
+  1) ;;
+  2) . ~/NumBox/Open-container.sh ;;
   3) menu=$(dialog ${dialog_arg[@]} --title "容器管理" --menu "选择一个选项" $box_sz \
     1 "创建容器" \
     2 "容器设置" \
@@ -45,25 +22,6 @@ case $menu in
     4 "导入容器(.nbp)" \
     5 "导入前缀包(.prefix)" 2>&1 >/dev/tty)
   case $menu in
-    1) create_ctrname () {
-    count=$(ls ~/NumBox/container | wc -l)
-    ctr_name="新建容器$(($count+1))"
-    input=$(dialog ${dialog_arg[@]} --title "输入新建容器名" --inputbox "点击取消可返回" $box_sz2 "$ctr_name" 2>&1 >/dev/tty)
-    if [[ $input == 255 ]]; then
-      bash ~/NumBox/Numbox
-    elif [[ $input == 1 ]]; then
-      bash ~/NumBox/Numbox
-    else
-      source ~/NumBox/utils/illegal_str.sh "$input"
-      if [[ $str_is == good ]]; then
-        echo "$input" > $TMPDIR/ctr_name
-        bash ~/NumBox/Create-container.sh
-      elif [[ $str_is == bad ]]; then
-        dialog ${dialog_arg[@]} --title "非法的字符串" --msgbox "重新命名" $box_sz2
-        create_ctrname
-      fi
-    fi
-    }
-    create_ctrname ;;
+    1) bash ~/NumBox/Create-container.sh ;;
   esac ;;
 esac

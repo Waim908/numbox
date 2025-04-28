@@ -15,10 +15,14 @@ done < <(ls -$list_type $1)
 if [ ${#MENU_OPTIONS[@]} -eq 0 ]; then
     lsterr=2
 fi
-selection=$(dialog $arg --no-cancel --title "$2" --backtitle "$4" --menu "$3" $box_sz \
+selection=$(dialog $arg --title "$2" --backtitle "$4" --menu "$3" $box_sz \
        "${MENU_OPTIONS[@]}" 2>&1 >/dev/tty)
-let index=($selection-1)*2+1
-BACK_NAME=${MENU_OPTIONS[$index]}
+if [[ $? == 0 ]]; then
+  let index=($selection-1)*2+1
+  export BACK_NAME=${MENU_OPTIONS[$index]}
+else
+  exit_exec
+fi
 else
   ls $1 2>/dev/null
   if [[ $? == 0 ]]; then
