@@ -19,6 +19,8 @@
 
 ###### 注意，无法与mobox共存
 
+# termux和x11合体版（因为都在前台跑所以不会锁CPU核心为小核更加流畅）
+
 1. 下载[termux合体版](https://github.com/jiaxinchen-max/termux-app/releases/tag/1.0.5)
 ###### 1.1 使用termux合体版前请关闭系统深色模式，要不然字体看不到
 ###### 1.2 其次合体版安装时，如果你已经安装了termux , termux x11..... 等软件，需要先卸载否则会有包名冲突
@@ -26,28 +28,6 @@
 ###### 1.4 点启动》设置》 在里面打开悬浮窗，通过悬浮窗启动命令行
 ###### 1.5 任意方法进入adb shell 按照网上的教程解除安卓24线程限制
 
-2. 执行
-```curl -O https://github.com/Waim908/numbox/releases/download/latest/setup.sh && bash ~/setup.sh```
-
-使用任意加速站点解决国内github有时无法访问问题，[参照](https://github.akams.cn/)
-
-```curl -O https://加速站/https://github.com/Waim908/numbox/releases/download/latest/setup.sh && bash ~/setup.sh```
-
-3.重启termux
-
-# 其他
-
-如果设置壁纸导致渲染错误(如画面非驱动原因导致的严重撕裂，比如在桌面左下角菜单选择时画面产生的撕裂)，进入容器后点击左下角起点菜单，选择 0.开头的 运行bat脚本，黑窗口执行完后重启你的容器
-
-1.容器导入后需要重启一次
-
-2.首次创建容器默认是wined3d，你可以在容器设置里换成dxvk
-
-3.wrapper无法在glibc环境正常工作，因为依赖项来自安卓bionic(即/system/lib64)，故仅能在termux原装环境正常工作
-
-~~肝不动了，草~~
-
-创建容器的工作目录使用termux-wine这个仓库的包后会有工作目录报错，是因为代码z盘的挂载路径设置为了/data/data/com.termux/files/usr/glibc/而不是$HOME，不过也可以不用管了，因为没有任何影响，就当~~特性~~吧[doge]
 
 # 更新日志
 
