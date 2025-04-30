@@ -7,7 +7,7 @@ if [[ -n "$1" ]] &&
    [[ "$1" != *~* ]] &&          # 新增：检查不包含 ~
    [[ "$1" != *\$* ]]           # 新增：检查不包含 $
 then
-    str_is=good
+    export str_is=good
 else
-    str_is=bad
+    export str_is=bad
 fi
