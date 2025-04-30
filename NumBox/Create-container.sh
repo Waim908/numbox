@@ -3,11 +3,12 @@
 count=$(ls ~/NumBox/container | wc -l)
 ctr_name="新建容器$(($count+1))"
 create_ctr () {
+  export CONTAINER_NAME="${input}"
   . ~/NumBox/utils/boot
   . ~/NumBox/utils/load
   
 }
-input=$(dialog ${dialog_arg[@]} --title "输入新建容器名" --inputbox "点击取消可返回" $box_sz2 "$ctr_name" 2>&1 >/dev/tty)
+input=$(dialog ${dialog_arg[@]} --title "输入新建容器名(不能包含空格)" --inputbox "点击取消可返回" $box_sz2 "$ctr_name" 2>&1 >/dev/tty)
 if [[ -z $input ]]; then
   bash ~/NumBox/Numbox 
 else

@@ -1,7 +1,7 @@
 unset LD_PRELOAD
 # export PATH=/data/data/com.termux/files/usr/glibc/bin:$PATH
-export PATH=$PATH:/data/data/com.termux/files/usr/glibc/bin
-export PATH=$HOME/NumBox/container/$CONTAINER_NAME/wine/bin:$PATH
+export PATH=$(echo $PATH | tr ':' '\n' | sort -u | tr '\n' ':')
+export PATH=$PATH:/data/data/com.termux/files/usr/glibc/bin:$HOME/NumBox/container/${CONTAINER_NAME}/wine/bin
 export BOX64_LD_LIBRARY_PATH="$HOME/NumBox/container/$CONTAINER_NAME/wine/lib/wine/x86_64-unix:$PREFIX/glibc/lib/box64-x86_64-linux-gnu"
 export DISPLAY=:0
 export WINEPREFIX="/data/data/com.termux/files/home/NumBox/container/${CONTAINER_NAME}/disk"
