@@ -1,16 +1,30 @@
 #!/bin/bash
 . ~/NumBox/utils/dialog.conf
+. ~/NumBox/utils/path.conf
+. ~/NumBox/data/config/
 count=$(ls ~/NumBox/container | wc -l)
 ctr_name="新建容器$(($count+1))"
+select_winever() {
+  select=$(dialog ${dialog_arg[@]} --title "选择一个wine版本" --menu "" $box_sz \
+    1 "(Glibc)wine-9.1-staging-wow64.tar.xz" \
+    2 "(Glibc)wine-9.1-wow64-esync.tar.xz" \
+    3 "从内部存储/NumBox/winepack导入" 2>&1 >/dev/tty)
+  if [[ -z $select ]]; then
+    dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && exec ~/NumBox/Numbox
+  fi
+  case $select in
+    1) tar 
+}
 create_ctr () {
   export CONTAINER_NAME="${input}"
-  . ~/NumBox/utils/boot
-  . ~/NumBox/utils/load
-  
+  . ~/NumBox/utils/boot.sh
+  . ~/NumBox/utils/load.sh
+  load "box64 wineboot 2>&1 >/dev/null" "构建容器..."
+  load ""
 }
 input=$(dialog ${dialog_arg[@]} --title "输入新建容器名(不能包含空格)" --inputbox "点击取消可返回" $box_sz2 "$ctr_name" 2>&1 >/dev/tty)
 if [[ -z $input ]]; then
-  bash ~/NumBox/Numbox 
+  exec ~/NumBox/Numbox 
 else
   . ~/NumBox/utils/illegal_str.sh "${input}"
   if [[ ! $str_is == good ]]; then
@@ -24,7 +38,7 @@ else
     if [[ ! -z $create_dir ]]; then
       dialog ${dialog_arg[@]} --title "创建${input}失败" --msgbox "原因：$create_dir"
     else
-
+      create_ctr
     fi
   fi
 fi

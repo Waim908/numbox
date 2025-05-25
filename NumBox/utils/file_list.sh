@@ -1,5 +1,5 @@
 # 声明路径>$1 ; 指定说明 标题$2 副标题$3 背景标题$4 ; 错误赋值$?=1 排序类型 $list_type
-# 需要utils/dialog.conf生效
+. ~/NumBox/utils/dialog.conf
 if [ "$(ls -A $1)" ]; then
 if [[ -z $list_type ]]; then
   list_type=A
