@@ -1,6 +1,7 @@
 pigz
-pixz
 7z
 xwayland
 termux-x11-nightly
 pulseaudio
+tmux
+
