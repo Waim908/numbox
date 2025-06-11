@@ -4,4 +4,5 @@ xwayland
 termux-x11-nightly
 pulseaudio
 tmux
-
+xrandr
+parallel
