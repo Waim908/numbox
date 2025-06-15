@@ -62,7 +62,7 @@ sed_var_dialog () {
 sed_var_preset_single () {
   varName="${BACK_VAR%%=*}"
   varValue="${BACK_VAR#*=}"
-  single_select=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除变量" --backtitle "变量名开头添加#号可保留变量且不生效" --title "$varName" --menu "预设变量" $box_sz \
+  single_select=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除变量" --backtitle "变量名开头添加#号可保留变量且不生效" --title "$varName" --menu "关于预设变量:\n$aboutVar" $box_sz \
     ${SINGLE_SELECT[@]} 2>&1 >/dev/tty)
   single_status=$?
 }
@@ -102,10 +102,12 @@ case $select in
         set_ctr_var
       else
         echo "${newVarName}=${newVarValue}" >> $var_file
+        set_ctr_var
       fi
     else
       case $BACK_VAR in
-        LC_ALL=*) genrate () {
+        LC_ALL=*) aboutVar="修改区域语音编码格式，注意可能不是对所有游戏有效，你可能还需要设置时区"
+        genrate () {
           cp ~/NumBox/default/glibc/locale-gen $glibc_prefix/etc/
           unset LD_PRELOAD
           $PREFIX/glibc/bin/locale-gen
@@ -133,9 +135,16 @@ case $select in
                 set_ctr_var
               else
                 edit_var sed "LC_ALL" "${lcall}" $var_file
+                set_ctr_var
               fi ;;
           esac
         fi
+        ;;
+        ZINK_DESCRIPTOR=*) aboutVar="ZINK描述符切换"
+        SINGLE_SELECT=(
+          "auto" "自动检测"
+          ""
+        ) 
         ;;
         *) sed_var_dialog ;;
       esac
