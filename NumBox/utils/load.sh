@@ -1,5 +1,4 @@
 #!/bin/bash
-
 load() {
     local frames=("⣾" "⣽" "⣻" "⢿" "⡿" "⣟" "⣯" "⣷")
     local i=0
@@ -21,13 +20,13 @@ load() {
     local status=$?
     if [[ "$load_strict" == "1" ]]; then
         if [[ $status -eq 0 ]]; then
-            load_tip="✔"
+            load_tip="\e[32m✔\e[37m"
             return_code=$status
         else
-            load_tip="✘=>返回:$status;执行失败=>"
+            load_tip="\e[31m✘\e[37m=>返回值:\e[33m$status\e[37m;执行失败:"
             return_code=$status
         fi
     fi
-    echo -e "\r\033[K${load_tip} $2:"
+    echo -e "\r\033[K${load_tip} $2"
     return $return_code
 }

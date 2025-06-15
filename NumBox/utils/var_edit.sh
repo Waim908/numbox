@@ -14,7 +14,7 @@ edit_var () {
   elif [[ $1 == unAnn ]]; then
     sed -i "s%^#${2}=.*%${2}=.*%g" $3
   elif [[ $1 == del ]]; then
-    sed -i "%^${2}=.*%d" $3
+    sed -i "/^${2}[=]/d" $3
   else
     echo 未声明'$1'
   fi
@@ -43,7 +43,8 @@ else
         "${FINAL_OPTIONS[@]}" 2>&1 >/dev/tty)
   if [[ ! -z $selection ]]; then
     let index=($selection-1)*2+1
-    export BACK_NAME=${MENU_OPTIONS[$index]}
+    export BACK_VAR=${MENU_OPTIONS[$index]}
+    export BACK_VAR_NUM=$selection
   else
     exit_exec
   fi

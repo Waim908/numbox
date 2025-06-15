@@ -4,5 +4,8 @@ xwayland
 termux-x11-nightly
 pulseaudio
 tmux
-xrandr
+xorg-xrandr
 parallel
+
+.termux/
+# allow-external-apps = true

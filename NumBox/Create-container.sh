@@ -66,7 +66,7 @@ select_winever() {
   . ~/NumBox/utils/path.conf
   mkdir $ctr_path/disk
   mkdir $ctr_path/wine
-  mkdir $ctr_path/conf
+  mkdir $ctr_path/config
   cp ~/NumBox/default/ctr/* $ctr_conf_path/
   . ~/NumBox/utils/package.sh
   tar_arg=("--strip-components=1")
@@ -86,7 +86,7 @@ select_winever() {
     fi
   elif [[ $BACK_NUM == E ]]; then
     CUSTOM_FILE_LIST_OPTIONS=("B" "\Z2从\Z3内置\Z2导入?\Zn") 
-    file_list "/sdcard/NumBox/winepack" "内部存储/NumBox/winepack" "选择一个wine版本" "${INPUT}"
+    file_list "/sdcard/NumBox/winepack" "内部存储/NumBox/winepack" "选择一个wine版本" "${input}"
     if [[ -z $BACK_NAME ]]; then
       dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
     elif [[ -f /sdcard/NumBox/winepack/${BACK_NAME} ]]; then
@@ -102,7 +102,11 @@ select_winever() {
     echo 错误 && return 1
   fi
 }
-input=$(dialog ${dialog_arg[@]} --title "输入新建容器名(不能包含空格)" --inputbox "点击取消可返回" $box_sz2 "$ctr_name" 2>&1 >/dev/tty)
+if [[ -z $1 ]]; then
+  input=$(dialog ${dialog_arg[@]} --title "输入新建容器名(不能包含空格)" --inputbox "点击取消可返回" $box_sz2 "$ctr_name" 2>&1 >/dev/tty)
+else
+  input=$1
+fi
 if [[ -z $input ]]; then
   exec ~/NumBox/Numbox
 else
