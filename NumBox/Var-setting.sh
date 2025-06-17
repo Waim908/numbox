@@ -22,54 +22,7 @@ if [[ ! -v CONTAINER_NAME ]]; then
     fi
   fi
 fi
-sed_var_dialog () {
-  if [[ "$BACK_VAR" =~ ^[[:alnum:]_]+=.*$ ]]; then
-    varName="${BACK_VAR%%=*}"
-    varValue="${BACK_VAR#*=}"
-    form_var=$(dialog ${dialog_arg[@]} --backtitle "变量名开头添加#号可保留变量且不生效" --title "编辑" --extra-button --extra-label "删除变量" --form "" $box_sz \
-      "变量名" 1 1 "$varName" 1 10 1000 0 \
-      "变量值" 2 1 "$varValue" 2 10 1000 0 2>&1 >/dev/tty)
-    temp_status=$?
-    if [[ -z $form_var ]]; then
-      go_back
-    elif [[ $temp_status == 3 ]]; then
-      dialog --erase-on-exit --no-kill --title "是否删除此变量？"  --yes-label "取消" --no-label "确定" --yesno "$BACK_VAR" $box_sz2
-      yesno=$?
-      case $yesno in
-        0) go_back ;;
-        1) edit_var del "$varName" $var_file && sed_var_dialog ;;
-      esac
-    elif [[ ! -z $BACK_VAR ]]; then
-      array_var=($form_var)
-      newVarName=${array_var[0]}
-      newVarValue=${array_var[1]}
-      edit_var sed2 "$varName" "$newVarName" "$newVarValue" $var_file
-      go_back
-    else
-      dialog ${dialog_arg[@]} --title "\Z1未知错误\Zn" --msgbox "\$BACK_NAME=${BACK_NAME}"
-    fi
-  else
-    form_var=$(dialog ${dialog_arg[@]} --title "编辑" --form "不是有效的变量值" $box_sz \
-      "字符串" 1 1 "$BACK_VAR" 1 10 1000 0 2>&1 >/dev/tty)
-    if [[ -z $form_var ]]; then
-      go_back
-    else
-      sed -i "s%${BACK_VAR}%${form_var}%g" $var_file
-      go_back
-    fi
-  fi
-}
-sed_var_preset_single () {
-  varName="${BACK_VAR%%=*}"
-  varValue="${BACK_VAR#*=}"
-  single_select=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除变量" --backtitle "变量名开头添加#号可保留变量且不生效" --title "$varName" --menu "关于预设变量:\n$aboutVar" $box_sz \
-    ${SINGLE_SELECT[@]} 2>&1 >/dev/tty)
-  single_status=$?
-}
-sed_var_preset_multiple () {
-  echo
-}
-select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${BACK_NAME}" --menu "" $box_sz \
+select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${BACK_NAME}" --menu "\Z3对于变量的解释不一定100%准确，仅供参考\Zn" $box_sz \
   1 "设置容器变量" \
   2 "设置Box64变量" \
   3 "重置为默认容器变量" 2>&1 >/dev/tty)
@@ -91,6 +44,7 @@ case $select in
       if [[ ! $? == 1 ]]; then
         cp $sd_temp/default.conf $var_file
       fi
+      set_ctr_var
     elif [[ $BACK_VAR_NUM == A ]]; then
       customForm=$(dialog ${dialog_arg[@]} --title "自定义变量" --form "输入变量值" $box_sz \
         "变量名" 1 1 "" 1 10 1000 0 \
@@ -106,7 +60,7 @@ case $select in
       fi
     else
       case $BACK_VAR in
-        LC_ALL=*) aboutVar="修改区域语音编码格式，注意可能不是对所有游戏有效，你可能还需要设置时区"
+        LC_ALL=*) aboutVar="修改区域语言编码格式，注意可能不是对所有游戏有效，你可能还需要设置时区"
         genrate () {
           cp ~/NumBox/default/glibc/locale-gen $glibc_prefix/etc/
           unset LD_PRELOAD
@@ -120,32 +74,68 @@ case $select in
         "自定义" "语言_区域.编码"
         )
         sed_var_preset_single
-        if [[ -z $single_select ]]; then
-          set_ctr_var
-        elif [[ $single_select = 3 ]]; then
-          edit_var del "LC_ALL" $var_file
-        else
-          case $single_select in
-            简体中文) edit_var sed "LC_ALL" "zh_CN.UTF-8" $var_file ;;
-            繁体中文) edit_var sed "LC_ALL" "zh_TW.UTF-8" $var_file ;;
-            日语) edit_var sed "LC_ALL" "ja_JP.UTF-8" $var_file ;;
-            英文) edit_var sed "LC_ALL" "en_US.UTF-8" $var_file ;;
-            自定义) lcall=$(dialog ${dialog_arg[@]} --title "自定义语言编码(LC_ALL)" --inputbox "格式：语言_区域.编码" $box_sz1 2>&1 >/dev/tty)
-              if [[ -z $lcall ]]; then
-                set_ctr_var
-              else
-                edit_var sed "LC_ALL" "${lcall}" $var_file
-                set_ctr_var
-              fi ;;
-          esac
-        fi
-        ;;
-        ZINK_DESCRIPTOR=*) aboutVar="ZINK描述符切换"
+        case $single_select in
+          简体中文) sed_var "LC_ALL" "zh_CN.UTF-8" ;;
+          繁体中文) sed_var "LC_ALL" "zh_TW.UTF-8" ;;
+          日语) sed_var "LC_ALL" "ja_JP.UTF-8" ;;
+          英文) sed_var "LC_ALL" "en_US.UTF-8" ;;
+          自定义) lcall=$(dialog ${dialog_arg[@]} --title "自定义语言编码(LC_ALL)" --inputbox "格式：语言_区域.编码" $box_sz 2>&1 >/dev/tty)
+            if [[ -z $lcall ]]; then
+              set_ctr_var
+            else
+              edit_var sed "LC_ALL" "${lcall}" $var_file
+              set_ctr_var
+            fi ;;
+        esac ;;
+        ZINK_DESCRIPTOR=*) aboutVar="ZINK描述符"
         SINGLE_SELECT=(
           "auto" "自动检测"
-          ""
-        ) 
-        ;;
+          "lazy" "尝试通过机会性地绑定描述符来使用最少量的CPU"
+          "db" "如果可能,请使用EXT_descriptor_buffer"
+        )
+        sed_var_preset_multiple
+        case $single_select in
+          auto) sed_var "ZINK_DESCRIPTOR" "auto" ;;
+          lazy) sed_var "ZINK_DESCRIPTOR" "lazy" ;;
+          db) sed_var "ZINK_DESCRIPTOR" "db" ;;
+        esac ;;
+        TZ=*) aboutVar="设置时区"
+        SINGLE_SELECT=(
+          "Asia/Shanghai" "中国上海"
+          "Asia/Tokyo" "日本东京"
+          "America/Los_Angeles" "美国洛杉矶"
+          "Europe/London" "英国伦敦"
+          "custom" "自定义时区"
+        )
+        sed_var_preset_single
+        case $single_select in
+          Asia/Shanghai) sed_var "TZ" "Asia/Shanghai" ;;
+          Asia/Tokyo) sed_var "TZ" "Asia/Tokyo" ;;
+          America/Los_Angeles) sed_var "TZ" "America/Los_Angeles" ;;
+          Europe/London) sed_var "TZ" "Europe/London" ;;
+          custom) tzset=$(dialog ${dialog_arg[@]} --title "自定义时区" --inputbox "" $box_sz 2>&1 >/dev/tty)
+          if [[ -z $tzset ]]; then
+            set_ctr_var
+          elif [[ ! -d /data/data/com.termux/files/usr/glibc/share/zoneinfo/ ]]; then
+            dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "当前glibc目录没有内置tzdata，修改时区无效" $box_sz2
+            set_ctr_var
+          elif [[ ! -d /data/data/com.termux/files/usr/glibc/share/zoneinfo/${tzset} ]]; then
+            dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "\Z2${tzset}\Zn 似乎不是一个有效的时区值" $box_sz2
+            set_ctr_var
+          else
+            sed_var "TZ" "${tzset}"
+          fi
+        esac ;;
+        ZINK_DEBUG=*) aboutVar="ZINK调试"
+        ALL_SELECT=(
+          "1"
+          "2"
+          "3"
+          "4"
+          "5"
+          "6"
+        )
+        sed_var_preset_multiple ;;
         *) sed_var_dialog ;;
       esac
     fi
