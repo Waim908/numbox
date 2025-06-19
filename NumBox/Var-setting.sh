@@ -35,7 +35,7 @@ case $select in
   set_ctr_var () {
     var_file=$ctr_conf_path/default.conf
     CUSTOM_VAR_EDIT_OPTIONS=("E" "\Z2使用文本编辑器软件打开\Zn" "A" "\Z2添加一个自定义变量\Zn")
-    var_list $var_file "${BACK_NAME}" "$HOME/NumBox/data/container/${BACK_NAME}/config/default.conf"
+    var_list $var_file "${BACK_NAME}" "$HOME/NumBox/data/container/${BACK_NAME}/config/default.conf" "部分变量在更新的驱动可能已经失效或者发生改变，不保证一定有效"
     if [[ $BACK_VAR_NUM == E ]]; then
       . ~/NumBox/utils/empty.sh sd
       cp $var_file $sd_temp/default.conf
@@ -93,7 +93,7 @@ case $select in
           "lazy" "尝试通过机会性地绑定描述符来使用最少量的CPU"
           "db" "如果可能,请使用EXT_descriptor_buffer"
         )
-        sed_var_preset_multiple
+        sed_var_preset_single
         case $single_select in
           auto) sed_var "ZINK_DESCRIPTOR" "auto" ;;
           lazy) sed_var "ZINK_DESCRIPTOR" "lazy" ;;
@@ -128,14 +128,68 @@ case $select in
         esac ;;
         ZINK_DEBUG=*) aboutVar="ZINK调试"
         ALL_SELECT=(
-          "1"
-          "2"
-          "3"
-          "4"
-          "5"
-          "6"
+        "nir|将所有着色器的NIR形式打印到stderr"
+        "spirv|将所有已编译着色器的二进制SPIR-V格式写入当前目录中的文件中，并将带有文件名的消息打印到stderr"
+        "tgsi|将TGSI着色器的TGSI形式打印到stderr"
+        "validation|Dump_Validation_layer输出"
+        "sync|在每次绘制和调度之前发出完全同步屏障"
+        "compact|最多使用4个描述符集"
+        "noreorder|不重新排序或优化GL命令流"
+        "gpl|强制对所有着色器使用Graphics_Pipeline_Library"
+        "rp|启用渲染过程优化（用于平铺GPU）"
+        "norp|禁用渲染过程优化（用于平铺GPU）"
+        "map|打印有关映射的VRAM的信息"
+        "flushsync|强制同步刷新/呈现"
+        "noshobj|禁用EXT_shader_object"
+        "optimal_keys|调试/使用optimal_keys"
+        "noopt|禁用异步优化管道编译"
+        "nobgc|禁用所有异步管道编译"
+        "mem|启用内存分配调试"
+        "quiet|禁止显示可能无害的警告"
         )
         sed_var_preset_multiple ;;
+        ZINK_CONTEXT_MODE=*) aboutVar="通常设置为base"
+        SINGLE_SELECT=(base base auto auto)
+        sed_var_preset_single
+        case $single_select in
+          base) sed_var ZINK_CONTEXT_MODE base ;;
+          auto) sed_var ZINK_CONTEXT_MODE auto ;;
+        esac ;;
+        ZINK_CONTEXT_THREADED=*) aboutVar="可能解决游戏卡死问题"
+        SINGLE_SELECT=(true 启用 false 禁用)
+        sed_var_preset_single
+        case $single_select in
+          true) sed_var ZINK_CONTEXT_THREADED true ;;
+          false) sed_var ZINK_CONTEXT_THREADED false ;;
+        esac ;;
+        MESA_SHADER_CACHE_DISABLE=*) aboutVar="禁用着色器缓存"
+        SINGLE_SELECT=(true 启用 false 禁用)
+        sed_var_preset_single
+        case $single_select in
+          true) sed_var ZINK_CONTEXT_THREADED true ;;
+          false) sed_var ZINK_CONTEXT_THREADED false ;;
+        esac ;;
+        MESA_SHADER_CACHE_MAX_SIZE=*) aboutVar="着色器缓存最大大小，单位必须为K,M,G"
+        SINGLE_SELECT=(256M 小 512M 中 1G 最大上限)
+        sed_var_preset_single
+        case $single_select in
+          256M) sed_var MESA_SHADER_CACHE_MAX_SIZE 256M ;;
+          512M) sed_var MESA_SHADER_CACHE_MAX_SIZE 512M ;;
+          1G) sed_var MESA_SHADER_CACHE_MAX_SIZE 1G ;;
+        esac ;;
+        MESA_VK_WSI_DEBUG=*) aboutVar="垂直同步(Vulkan)"
+        SINGLE_SELECT=(注释 "既默认sws" sw "启用（通常）" sws "可能导致渲染错误（默认）")
+        sed_var_preset_single
+        case $single_select in
+          注释) edit_var ann MESA_VK_WSI_DEBUG $var_file && go_back ;;
+          sw) sed_var MESA_VK_WSI_DEBUG sw ;;
+          sws) sed_var MESA_VK_WSI_DEBUG sws ;;
+        esac ;;
+        MESA_VK_WSI_PRESENT_MODE=*) aboutVar="overrides the WSI present mode clients specify in VkSwapchainCreateInfoKHR::presentMode. Values can be fifo, relaxed, mailbox or immediate."
+        SINGLE_SELECT=(fifo fifo relaxed relaxed mailbox "mailbox（预设）" immediate immediate)
+        sed_var_preset_single
+        case $single_select in
+          fifo
         *) sed_var_dialog ;;
       esac
     fi

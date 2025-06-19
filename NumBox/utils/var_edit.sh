@@ -9,21 +9,31 @@ edit_var () {
     sed -i "s%^${2}=.*%${3}=\"${4}\"%g" $5  
   # annotation
   elif [[ $1 == ann ]]; then
-    sed -i "s%^${2}=.*%#${2}=.*%g" $3
+    sed -i "s%^${2}=%#${2}=%g" $3
   # un annotation
   elif [[ $1 == unAnn ]]; then
-    sed -i "s%^#${2}=.*%${2}=.*%g" $3
+    sed -i "s%^#${2}=%${2}=%g" $3
   elif [[ $1 == del ]]; then
     sed -i "/^${2}[=]/d" $3
   else
     echo 未声明'$1'
   fi
 }
+search_var () {
+  case $1 in
+    var) echo -e "搜索到可用变量的变量值\n"
+    echo ${3} | grep --color ${2}
+    read -s -n1 -p "输入任意字符返回" && go_back ;;
+    file) echo -e "搜索到可用变量的变量值\n"
+    grep --color ${3} ${2} 
+    read -s -n1 -p "输入任意字符返回" && go_back ;;
+  esac
+}
 # need go_back () {}
 sed_var_dialog () {
   if [[ "$BACK_VAR" =~ ^[[:alnum:]_]+=.*$ ]]; then
     varName="${BACK_VAR%%=*}"
-    varValue="${BACK_VAR#*=}"
+    varValue=$(sed 's/.*="\(.*\)"/\1/' <<< "$BACK_VAR")
     form_var=$(dialog ${dialog_arg[@]} --backtitle "变量名开头添加#号可保留变量且不生效" --title "编辑" --extra-button --extra-label "删除变量" --form "" $box_sz \
       "变量名" 1 1 "$varName" 1 10 1000 0 \
       "变量值" 2 1 "$varValue" 2 10 1000 0 2>&1 >/dev/tty)
@@ -47,7 +57,7 @@ sed_var_dialog () {
       dialog ${dialog_arg[@]} --title "\Z1未知错误\Zn" --msgbox "\$BACK_NAME=${BACK_NAME}"
     fi
   else
-    form_var=$(dialog ${dialog_arg[@]} --title "编辑" --form "不是有效的变量值" $box_sz \
+    form_var=$(dialog ${dialog_arg[@]} --title "编辑" --form "不是有效的变量值，如果是请删除井号" $box_sz \
       "字符串" 1 1 "$BACK_VAR" 1 10 1000 0 2>&1 >/dev/tty)
     if [[ -z $form_var ]]; then
       go_back
@@ -63,7 +73,7 @@ sed_var () {
 }
 sed_var_preset_single () {
   varName="${BACK_VAR%%=*}"
-  varValue="${BACK_VAR#*=}"
+  varValue=$(sed 's/.*="\(.*\)"/\1/' <<< "$BACK_VAR")
   single_select=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除变量" --backtitle "变量名开头添加#号可保留变量且不生效" --title "$varName" --menu "关于预设变量：\n \Z3$aboutVar\Zn" $box_sz \
     ${SINGLE_SELECT[@]} 2>&1 >/dev/tty)
   single_status=$?
@@ -78,31 +88,65 @@ sed_var_preset_single () {
 }
 sed_var_preset_multiple () {
   varName="${BACK_VAR%%=*}"
-  varValue="${BACK_VAR#*=}"
+  varValue=$(sed 's/.*="\(.*\)"/\1/' <<< "$BACK_VAR")
   # need $ALL_SELECT
-  MULTIPLE_SELECT=()
-  for item in ${ALL_SELECT[@]}; do
-    if [[ ",$varValue," =~ ",$item," ]]; then
-      multiple_select_is=on
-    else
-      multiple_select_is=off
-    fi
-    MULTIPLE_SELECT+=("$item" "选项$item" "$multiple_select_is")
-  done
-  multiple_select_dialog=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除变量" --backtitle "变量名开头添加#号可保留变量且不生效" --title "$varName" --checklist "空格键或者鼠标点击或者触摸屏幕进行选择" $box_sz \
-     ${MULTIPLE_SELECT[@]} 2>&1 >/dev/tty)
-  multiple_status=$?
-  if [[ -z $multiple_status ]]; then
-    go_back
-  elif [[ $multiple_status == 3 ]]; then
-    dialog  --erase-on-exit --no-kill --title "是否删除\Z2${varName}=${varValue}\Zn" --yes-label "取消" --no-label "确定" --yesno "$aboutVar" $box_sz
-    if [[ $? == 1 ]]; then
+  if [[ $2 == nodesc ]]; then
+    MULTIPLE_SELECT=()
+    for item in ${ALL_SELECT[@]}; do
+      if [[ ",$varValue," =~ ",$item," ]]; then
+        multiple_select_is=on
+      else
+        multiple_select_is=off
+      fi
+      MULTIPLE_SELECT+=("$item" "选项$item" "$multiple_select_is")
+    done
+    multiple_select_dialog=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除变量" --backtitle "变量名开头添加#号可保留变量且不生效" --title "$varName" --checklist "空格键或者鼠标点击或者触摸屏幕进行选择" $box_sz \
+      ${MULTIPLE_SELECT[@]} 2>&1 >/dev/tty)
+    multiple_status=$?
+    if [[ -z $multiple_select_dialog ]] && [[ $multiple_status == 1 ]]; then
+      go_back
+    elif [[ -z $multiple_select_dialog ]]; then
       edit_var del "${varName}" $var_file
+    elif [[ $multiple_status == 3 ]]; then
+      dialog  --erase-on-exit --no-kill --title "是否删除\Z2${varName}=${varValue}\Zn" --yes-label "取消" --no-label "确定" --yesno "$aboutVar" $box_sz
+      if [[ $? == 1 ]]; then
+        edit_var del "${varName}" $var_file
+      fi
+    else
+      multiple_select=$(echo "${multiple_select_dialog}" | sed 's/"//g; s/ /,/g')
+      sed_var "${varName}" "${multiple_select}"
     fi
   else
-    multiple_select=$(echo "${multiple_select_dialog}" | sed 's/"//g; s/ /,/g')
-    echo $multiple_select
-  fi     
+    # ALL_SELECT=("变量|描述" ...)
+    # 注意不能有空格
+    varName="${BACK_VAR%%=*}"
+    varValue=$(sed 's/.*="\(.*\)"/\1/' <<< "$BACK_VAR")
+    MULTIPLE_SELECT=()
+    for item_desc in "${ALL_SELECT[@]}"; do
+        item=${item_desc%%|*}
+        desc=${item_desc#*|}
+        if [[ ",$varValue," =~ ",$item," ]]; then
+            multiple_select_is=on
+        else
+            multiple_select_is=off
+        fi
+        MULTIPLE_SELECT+=("$item" "$desc" "$multiple_select_is")
+    done
+    multiple_select_dialog=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除变量" --backtitle "变量名开头添加#号可保留变量且不生效" --title "$varName" --checklist "空格键或者鼠标点击或者触摸屏幕进行选择" $box_sz \
+      ${MULTIPLE_SELECT[@]} 2>&1 >/dev/tty)
+    multiple_status=$?
+    if [[ -z $multiple_status ]]; then
+      go_back
+    elif [[ $multiple_status == 3 ]]; then
+      dialog  --erase-on-exit --no-kill --title "是否删除\Z2${varName}=${varValue}\Zn" --yes-label "取消" --no-label "确定" --yesno "$aboutVar" $box_sz
+      if [[ $? == 1 ]]; then
+        edit_var del "${varName}" $var_file
+      fi
+    else
+      multiple_select=$(echo "${multiple_select_dialog}" | sed 's/"//g; s/ /,/g')
+      sed_var "${varName}" "${multiple_select}"
+    fi
+  fi
 }
 var_list () {
 if [[ ! -f $1 ]]; then
