@@ -1,5 +1,5 @@
 # 声明路径>$1 ; 指定说明 标题$2 副标题$3 背景标题$4 ; 排序类型 $list_type
-. ~/NumBox/utils/dialog.conf
+#. ~/NumBox/utils/dialog.conf
 file_list() {
     if [[ -d $1 ]]; then
         if [[ -z $list_type ]]; then

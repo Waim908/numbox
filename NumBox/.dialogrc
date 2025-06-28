@@ -39,10 +39,10 @@ screen_color = (WHITE,BLACK,OFF)
 shadow_color = (BLACK,BLACK,OFF)
 
 # Dialog box color
-dialog_color = (BLUE,BLACK,OFF)
+dialog_color = (WHITE,BLACK,OFF)
 
 # Dialog box title color
-title_color = (BLUE,BLACK,ON)
+title_color = (CYAN,BLACK,ON)
 
 # Dialog box border color
 border_color = (BLUE,BLACK,OFF)
