@@ -27,7 +27,7 @@ select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${
   2 "设置Box64变量" 2>&1 >/dev/tty)
 if [[ -z $select ]]; then
   unset CONTAINER_NAME
-  . ~/NumBox/Var-setting.sh
+  . ~/NumBox/Numbox
 fi
 case $select in
   1) exit_exec () { . ~/NumBox/Var-setting.sh;}

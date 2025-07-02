@@ -15,6 +15,8 @@ edit_var () {
     sed -i "s%^#${2}=%${2}=%g" $3
   elif [[ $1 == del ]]; then
     sed -i "/^${2}[=]/d" $3
+  elif [[ $1 == del2 ]]; then
+    sed -i "/^${2}/d" $3
   else
     echo 未声明'$1'
   fi
@@ -30,9 +32,13 @@ search_var () {
   esac
 }
 del_var_dialog () {
-  dialog ${dialog_arg[@]} --title "是否删除\Z1$1\Zn?" --yesno --yeslabel "确定" --no-label "取消" $box_sz2
+  dialog ${dialog_arg[@]} --title "是否删除?" --yes-label "确定" --no-label "取消" --yesno "\Z1${1}\Zn" $box_sz2
   if [[ $? == 0 ]]; then
-    edit_var del "${1}" && go_back
+    if [[ $back_var_is_str == 1 ]]; then
+      edit_var del2 "${1}" "$var_file" && go_back
+    else
+      edit_var del "${1}" "$var_file" && go_back
+    fi
   else
     go_back
   fi
@@ -62,9 +68,11 @@ sed_var_dialog () {
   else
     form_var=$(dialog ${dialog_arg[@]} --title "编辑" --extra-button --extra-label "删除此行" --form "不是有效的变量值，如果是请删除#号" $box_sz \
       "字符串" 1 1 "$BACK_VAR" 1 10 1000 0 2>&1 >/dev/tty)
+    form_status=$?
     if [[ -z $form_var ]]; then
       go_back
-    elif [[ $? == 3 ]]; then
+    elif [[ $form_status == 3 ]]; then
+      back_var_is_str=1
       del_var_dialog "$BACK_VAR"
     else
       sed -i "s%${BACK_VAR}%${form_var}%g" $var_file

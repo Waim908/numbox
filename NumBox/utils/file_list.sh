@@ -37,6 +37,8 @@ file_list() {
         else
             exit_exec
         fi
+    elif [[ -z $selection ]]; then
+        exit_exec
     else
         # 错误处理（目录不存在或为空）
         ls "$1" 2>/dev/null

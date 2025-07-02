@@ -12,6 +12,9 @@ menu=$(dialog ${dialog_arg[@]} --backtitle "版本：$nb_ver 默认容器：$(ca
   6 "进入glibc终端" \
   7 "关于NumBox" \
   8 "支持NumBox开发" 2>&1 >/dev/tty)
+if [[ -z $menu ]]; then
+  exit 0
+fi
 case $menu in
   1) ;;
   2) . ~/NumBox/Open-container.sh ;;

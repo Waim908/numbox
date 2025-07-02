@@ -42,6 +42,8 @@ get_res () {
                     native) if ! screenRes=$(xrandr | grep -oP 'current \K\d+ x \d+' | tr -d ' '); then 
                         echo -e "不支持xrandr命令，无法获取分辨率，请通过 \e[32mpkg i xorg-xrandr\e[37m 命令安装"
                         return 1
+                    else
+                        export screenRes
                     fi ;;
                 esac
             else
