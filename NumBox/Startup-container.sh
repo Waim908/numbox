@@ -21,4 +21,9 @@ fi
 parallel "pkill -f com.termux.x11" "pulseaudio -k" "termux-x11:0"
 
 . ~/NumBox/data/contaienr/${CONTAINER_NAME}/config/default.conf
+if [[ $WINEESYNC == 1 ]]; then
+  export WINEESYNC_TERMUX=1
+else
+  unset $WINEESYNC_TERMUX
+fi
 . ~/NumBox/data/contaienr/${CONTAINER_NAME}/config/box64.conf

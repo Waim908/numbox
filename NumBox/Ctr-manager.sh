@@ -12,10 +12,15 @@ T) . ~/NumBox/Sandbox-container,sh ;;
   ctr_select=$(dialog ${dialog_arg[@]} --title "$CONTAINER_NAME" --menu "管理当前容器" $box_sz \
     1 "打开容器" \
     2 "设置默认启动容器" \
-    3 "设置当前容器" \
-    4 "应用程序快捷脚本生成" 2>&1 >/dev/tty)
+    3 "生成游戏启动脚本" \
+    4 "设置分辨率" \ 
+    5 "游戏控制器API" \ 
+    6 "变量设置" \
+    7 "box64设置" 2>&1 >/dev/tty)
   case $ctr_select in
     1) . ~/NumBox/Startup-container.sh ;;
-    2) 
+    2) echo "$CONTAINER_NAME" > ~/NumBox/default_ctr
+    Dmsgbox "$CONTAINER_NAME" "现在是默认启动容器"
+    
 
 esac
