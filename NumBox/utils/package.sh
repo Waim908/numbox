@@ -6,14 +6,19 @@ if [[ -v USE_THREAD ]]; then
     fi
 fi
 #-T${USE_THREAD}
+un_package () {
+    path_to_str=$1
+    pv ${path_to_str} | tar -I '$3' ${tar_arg[@]} -xf - -C $2 
+}
+
 un_txz () {
     path_to_str=$1
-    pv ${path_to_str} | xz -d | tar ${tar_arg[@]} -xf - -C $2 
+    pv ${path_to_str} | tar -I 'xz' ${tar_arg[@]} -xf - -C $2 
 }
 
 un_tzst () {
     path_to_str=$1
-    pv ${path_to_str} | zstd -d | tar ${tar_arg[@]} -xf - -C $2
+    pv ${path_to_str} | tar  -I 'zstd' ${tar_arg[@]} -xf - -C $2
 }
 
 un_gz () {

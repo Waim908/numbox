@@ -1,6 +1,6 @@
 # 声明路径>$1 ; 指定说明 标题$2 副标题$3 背景标题$4
 #. ~/NumBox/utils/dialog.conf
-# need 'var_file'
+# need 'var_file' and functions 'go_back' and 'Dmsgbox'
 edit_var () {
   if [[ $1 == sed ]]; then
   # varName,varValue

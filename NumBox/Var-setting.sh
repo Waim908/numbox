@@ -198,7 +198,7 @@ case $select in
         else
           sed_var PULSE_LATENCY_MSEC $single_select
         fi ;;
-        WINEESYNC=*) aboutVar="启用补丁构建或者proton版本才能使用\n文件描述符限制大于1048576,执行ulimit -Hn[或-Sn] 数字[如果无就是直接查看限制],非root设备(root可以修改，通过权限命令临时修改上限)也能使用esync，但是无法设置超过安卓文件描述符上限 \n 当前设备硬件限制$(ulimit -Hn) \n 软件限制$(ulimit -Sn)"
+        WINEESYNC=*) aboutVar="自动应用变量WINEESYNC_TERMUX，启用补丁构建或者proton版本才能WINEE使用\n文件描述符限制大于1048576,执行ulimit -Hn[或-Sn] 数字[如果无就是直接查看限制],非root设备(root可以修改，通过权限命令临时修改上限)也能使用esync，但是无法设置超过安卓文件描述符上限 \n 当前设备硬件限制$(ulimit -Hn) \n 软件限制$(ulimit -Sn)"
         SINGLE_SELECT=(0 禁用 1 启用)
         sed_var_preset_single
         sed_var WINEESYNC $single_select ;;
@@ -240,7 +240,7 @@ case $select in
         sed_var_preset_multiple ;;
         GALLIUM_HUD=*) aboutVar="使用OpenGL渲染时显示帧率和折线图\n 只显示fps:simple,fps \n显示fps和折线图:fps"
         ALL_SELECT=(
-        "simple|simple"
+        "simple|简单显示"
         "stdout|将计数器数值输出到标准输出stdout"
         "csv|将计数器数值以CSV格式输出至stdout，名称间用+号分隔"
         "fps|fps"
@@ -412,7 +412,7 @@ case $select in
       CUSTOM_FILE_LIST_OPTIONS=("U" "我定义的预设文件")
       file_list "$HOME/NumBox/default/box64rc/" "选择一个RCFILE预设"
       if [[ $BACK_NUM == U ]]; then
-        unset CUSTOM_FILE_LIST_OPTION
+        unset CUSTOM_FILE_LIST_OPTIONS
         file_list "$HOME/NumBox/data/box64rc/" "选择一个你定义的预设文件"
         if [[ -f $HOME/NumBox/data/box64rc/${BACK_NAME} ]]; then
           cp $HOME/NumBox/data/box64rc/${BACK_NAME} $ctr_conf_path/box64.conf
@@ -535,7 +535,21 @@ case $select in
         BOX64_NORCFILES=*) aboutVar="禁用所有配置文件\n\n0: 正常加载配置文件（默认）\n1: 禁用所有rc文件"
         SINGLE_SELECT=(0 0 1 1)
         sed_var_preset_single
-        sed_var BOX64_NORCFILES $single_select ;;     
+        sed_var BOX64_NORCFILES $single_select ;;
+        BOX64_MAXCPU=*) aboutVar="box64使用的CPU核心数量"
+        SINGLE_SELECT=(auto nproc自动识别 custom 自定义 "max" "使用$(nproc)个核心")
+        sed_var_preset_single
+        case $single_select in
+          auto) sed_var BOX64_MAXCPU \"\$(nproc)\" ;;
+          custom) custom_box64_max_cpu=$(dialog ${dialog_arg[@]} --title "自定义box64使用的CPU核心数量" --inputbox "最大可用：$(nproc)" $box_sz2 2>&1 >/dev/tty)
+          if [[ $custom_box64_max_cpu =~ ^[1-9][0-9]*$ ]]; then
+            sed_var BOX64_MAXCPU $custom_box64_max_cpu
+          else
+            Dmsgbox "\Z1错误的格式\n"
+            set_ctr_box64_var
+          fi ;;
+          max) sed_var $(nproc) ;;
+        esac ;;
         *) sed_var_dialog ;;
       esac
     fi

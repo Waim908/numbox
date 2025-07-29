@@ -24,7 +24,8 @@ else
   if [[ ! $str_is == good ]]; then
     dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "非法的字符串 ${input}" $box_sz2
     . ~/NumBox/Create-container.sh
-  elif [[ -d "~/NumBox/data/container/$input" ]]; then
+  fi
+  if [[ -d "$HOME/NumBox/data/container/$input" ]]; then
     dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "文件夹/容器 ${input} 已经存在" $box_sz2
     . ~/NumBox/Create-container.sh
   else
@@ -42,6 +43,7 @@ else
       mkdir $ctr_path/disk
       mkdir $ctr_path/wine
       mkdir $ctr_path/config
+      mkdir $ctr_path/temp
       cp ~/NumBox/default/ctr/* $ctr_conf_path/
       . ~/NumBox/utils/package.sh
       tar_arg=("--strip-components=1")
@@ -51,7 +53,7 @@ else
       export -f exit_exec
       . ~/NumBox/utils/file_list.sh 
       CUSTOM_FILE_LIST_OPTIONS=("E" "\Z2从/sdcard/NumBox/winepack/导入?\Zn") 
-      file_list "$HOME/NumBox/data/wine" "内置wine" "选择一个wine版本" "${INPUT}"
+      file_list "$HOME/NumBox/data/resources/wine" "内置wine" "选择一个wine版本" "${INPUT}"
       if [[ -z $BACK_NAME ]]; then
         dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
       elif [[ -f ~/NumBox/data/wine/${BACK_NAME} ]]; then
@@ -60,7 +62,7 @@ else
             echo 文件解压失败 && exit 1
         fi
       elif [[ $BACK_NUM == E ]]; then
-        CUSTOM_FILE_LIST_OPTIONS=("B" "\Z2从\Z3内置\Z2导入?\Zn") 
+        CUSTOM_FILE_LIST_OPTIONS=("B" "\Z2从\Z3内置\Z2导入?\Zn")
         file_list "/sdcard/NumBox/winepack" "内部存储/NumBox/winepack" "选择一个wine版本" "${input}"
         if [[ -z $BACK_NAME ]]; then
           dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
@@ -68,9 +70,6 @@ else
           if ! un_txz /sdcard/NumBox/winepack/${BACK_NAME} "$ctr_path/wine"; then
               echo 文件解压失败 && exit 1
           fi
-        elif [[ $BACK_NUM == B ]]; then
-          # This would have been the recursive call to select_winever
-          dialog ${dialog_arg[@]} --msgbox "不能直接递归调用" $box_sz2 && exit 1
         else
           echo 错误 && exit 1
         fi
@@ -83,30 +82,30 @@ else
       unset DISPLAY
       unset tar_arg
       export load_strict=1
-      if ! load "taskset -c ${USE_CORE} box64 wineboot -u >$TMPDIR/build_wineboot.log 2>&1" "构建容器..."; then
+      if ! load "box64 wineboot -u >$TMPDIR/build_wineboot.log 2>&1" "构建容器..."; then
         cat $TMPDIR/build_wineboot.log
         echo 致命错误,容器构建失败
         exit 1
       fi
       echo 安装PREFIX目录
       un_tzst ~/NumBox/data/prefix/disk.tar.zst $ctr_path &&
-      if ! load "nice -n ${USE_NICE} taskset -c ${USE_CORE} box64 wine regedit /C \"C:\windows\resources\themes\apply_human_graphite_theme.reg\" >$TMPDIR/build_wineboot_theme.log 2>&1"  "安装主题"; then
+      if ! load "box64 wine regedit /C \"C:\windows\resources\themes\apply_human_graphite_theme.reg\" >$TMPDIR/build_wineboot_theme.log 2>&1"  "安装主题"; then
         cat $TMPDIR/build_wineboot_theme.log
         echo 错误，主题安装失败
       fi
       mono_ver=$(cat ~/NumBox/data/resources/mono/version)
       gecko_ver=$(cat ~/NumBox/data/resources/gecko/version)
       echo "安装mono(.NET框架) 版本: $mono_ver"
-      if ! load "nice -n ${USE_NICE} taskset -c ${USE_CORE} box64 wine msiexec /i \"Z:\home\NumBox\data\resources\mono\x32\wine-mono-${mono_ver}-x86.msi\" >$TMPDIR/build_wineboot_mono32.log 2>&1" "mono x32"; then
+      if ! load "box64 wine msiexec /i \"Z:\home\NumBox\data\resources\mono\x32\wine-mono-${mono_ver}-x86.msi\" >$TMPDIR/build_wineboot_mono32.log 2>&1" "mono x32"; then
         cat $TMPDIR/build_wineboot_mono32.log
         echo 错误，32位mono安装失败
       fi
       echo "安装gecko(html框架) 版本：$gecko_ver"
-      if ! load "nice -n ${USE_NICE} taskset -c ${USE_CORE} box64 wine msiexec /i \"Z:\home\NumBox\data\resources\gecko\x32\wine-gecko-${gecko_ver}-x86.msi\" >$TMPDIR/build_wineboot_gecko32.log 2>&1" "gecko x32"; then
+      if ! load "box64 wine msiexec /i \"Z:\home\NumBox\data\resources\gecko\x32\wine-gecko-${gecko_ver}-x86.msi\" >$TMPDIR/build_wineboot_gecko32.log 2>&1" "gecko x32"; then
         cat $TMPDIR/build_wineboot_gecko32.log
         echo 错误，32位gecko安装失败
       fi
-      if ! load "nice -n ${USE_NICE} taskset -c ${USE_CORE} box64 wine msiexec /i \"Z:\home\NumBox\data\resources\gecko\x64\wine-gecko-${gecko_ver}-x86_64.msi\" >$TMPDIR/build_wineboot_gecko64.log 2>&1" "gecko x64"; then
+      if ! load "box64 wine msiexec /i \"Z:\home\NumBox\data\resources\gecko\x64\wine-gecko-${gecko_ver}-x86_64.msi\" >$TMPDIR/build_wineboot_gecko64.log 2>&1" "gecko x64"; then
         cat $TMPDIR/build_wineboot_gecko64.log
         echo 错误，64位gecko安装失败
       fi

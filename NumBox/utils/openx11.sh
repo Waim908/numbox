@@ -20,6 +20,10 @@ startx11 () {
         termux-x11 :$@ &
     fi
 }
+# "termux-x11-perference" only
+set_res () {
+    termux
+}
 get_res () {
     case $1 in
         Xscreen) if ! xrandr | grep -oP 'current \K\d+ x \d+' | tr -d ' '; then 

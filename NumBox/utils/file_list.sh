@@ -2,9 +2,13 @@
 #. ~/NumBox/utils/dialog.conf
 file_list() {
     if [[ -d $1 ]]; then
-        if [[ -z $list_type ]]; then
+        if [[ -z $2 ]]; then
             list_type=A  # 默认按字母排序
+        else
+            list_type=$2
         fi
+    fi
+    
 
         MENU_OPTIONS=()
         
