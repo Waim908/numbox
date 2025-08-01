@@ -166,13 +166,13 @@ else
       if [[ -z "$line" ]]; then
           continue
       fi
-      MENU_OPTIONS+=("$FILE_COUNT" "$line")
+      local MENU_OPTIONS+=("$FILE_COUNT" "$line")
       ((FILE_COUNT++))
   done < "$1"
   # if [ ${#MENU_OPTIONS[@]} -eq 0 ]; then
   #     lsterr=2
   # fi
-  FINAL_OPTIONS=("${CUSTOM_VAR_EDIT_OPTIONS[@]}" "${MENU_OPTIONS[@]}")
+  local FINAL_OPTIONS=("${CUSTOM_VAR_EDIT_OPTIONS[@]}" "${MENU_OPTIONS[@]}")
   selection=$(dialog ${dialog_arg[@]} --title "$2" --backtitle "$4" --menu "$3" $box_sz \
         "${FINAL_OPTIONS[@]}" 2>&1 >/dev/tty)
   if [[ ! -z $selection ]]; then

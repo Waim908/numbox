@@ -23,7 +23,7 @@ fi
 . ~/NumBox/utils/path.conf
 # regeistry
 # setname::value
-set_contaienr=$(Dmenu "$CONTAINER_NAME" "容器设置" \
+set_container=$(Dmenu "$CONTAINER_NAME" "容器设置" \
   1 "容器名称:$CONTAINER_NAME" \
   2 "环境与box64变量" \
   3 "分辨率设置" \
@@ -38,7 +38,7 @@ set_contaienr=$(Dmenu "$CONTAINER_NAME" "容器设置" \
 # "导出容器"
 # "删除容器"
 # "空间占用"
-case $set_contaienr in
+case $set_container in
   1) input=$(dialog ${dialog_arg[@]} --title "容器名称" --inputbox "输入新的容器名称" $box_sz2 2>&1 >/dev/tty)
     if [[ -z $input ]]; then
       exit_exec

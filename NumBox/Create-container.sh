@@ -4,6 +4,7 @@
 . ~/NumBox/data/config/numbox.cfg
 . ~/NumBox/utils/empty.sh sd
 . ~/NumBox/utils/reg_edit.sh
+. ~/NumBox/utils/file_list.sh
 stopx11
 # renice -n ${USER_NICE} -p $$
 # rmdir ~/NumBox/data/container/*/
@@ -12,9 +13,9 @@ count=$(ls ~/NumBox/data/container | wc -l)
 ctr_name="新建容器$(($count+1))"
 
 if [[ -z $1 ]]; then
-  input=$(dialog ${dialog_arg[@]} --title "输入新建容器名(不能包含空格)" --inputbox "点击取消可返回" $box_sz2 "$ctr_name" 2>&1 >/dev/tty)
+   input=$(dialog ${dialog_arg[@]} --title "输入新建容器名(不能包含空格)" --inputbox "点击取消可返回" $box_sz2 "$ctr_name" 2>&1 >/dev/tty)
 else
-  input=$1
+   input=$1
 fi
 
 if [[ -z $input ]]; then
@@ -40,38 +41,36 @@ else
       # Former select_winever function content
       export CONTAINER_NAME="_Temp"
       . ~/NumBox/utils/path.conf
-      mkdir $ctr_path/disk
-      mkdir $ctr_path/wine
-      mkdir $ctr_path/config
-      mkdir $ctr_path/temp
+      parallel ::: "mkdir $ctr_path/disk" "mkdir $ctr_path/wine" "mkdir $ctr_path/config" "mkdir $ctr_path/temp"
       cp ~/NumBox/default/ctr/* $ctr_conf_path/
+      cp ~/NumBox/default/box64/兼容 $ctr_conf_path/box64.conf
       . ~/NumBox/utils/package.sh
       tar_arg=("--strip-components=1")
       exit_exec () {
-        dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
+        dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2
+        . ~/NumBox/Numbox
       }
       export -f exit_exec
-      . ~/NumBox/utils/file_list.sh 
-      CUSTOM_FILE_LIST_OPTIONS=("E" "\Z2从/sdcard/NumBox/winepack/导入?\Zn") 
-      file_list "$HOME/NumBox/data/resources/wine" "内置wine" "选择一个wine版本" "${INPUT}"
+      CUSTOM_FILE_LIST_OPTIONS=("E" "\Z2从/sdcard/NumBox/winepack/导入?\Zn")
+      file_list "$HOME/NumBox/data/resources/wine" "内置wine" "选择一个wine版本" "${input}"
       if [[ -z $BACK_NAME ]]; then
         dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
-      elif [[ -f ~/NumBox/data/wine/${BACK_NAME} ]]; then
-        echo 开始解压文件
-        if ! un_txz ~/NumBox/data/wine/${BACK_NAME} "$ctr_path/wine"; then
-            echo 文件解压失败 && exit 1
-        fi
       elif [[ $BACK_NUM == E ]]; then
         CUSTOM_FILE_LIST_OPTIONS=("B" "\Z2从\Z3内置\Z2导入?\Zn")
         file_list "/sdcard/NumBox/winepack" "内部存储/NumBox/winepack" "选择一个wine版本" "${input}"
         if [[ -z $BACK_NAME ]]; then
           dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
-        elif [[ -f /sdcard/NumBox/winepack/${BACK_NAME} ]]; then
-          if ! un_txz /sdcard/NumBox/winepack/${BACK_NAME} "$ctr_path/wine"; then
+        elif [[ -f /sdcard/NumBox/winepack/"${BACK_NAME}" ]]; then
+          if ! un_txz /sdcard/NumBox/winepack/"${BACK_NAME}" "$ctr_path/wine"; then
               echo 文件解压失败 && exit 1
           fi
         else
           echo 错误 && exit 1
+        fi
+      elif [[ -f ~/NumBox/data/resources/wine/${BACK_NAME} ]]; then
+        echo 开始解压文件
+        if ! un_txz ~/NumBox/data/resources/wine/${BACK_NAME} "$ctr_path/wine"; then
+            echo 文件解压失败 && exit 1
         fi
       else
         echo 错误 && exit 1
@@ -85,10 +84,15 @@ else
       if ! load "box64 wineboot -u >$TMPDIR/build_wineboot.log 2>&1" "构建容器..."; then
         cat $TMPDIR/build_wineboot.log
         echo 致命错误,容器构建失败
+        echo "错误容器已保存在~/NumBox/data/conatiner/_Temp"
+        echo "如果需要调试请执行 \$ bash ~/NumBox/No-gui.sh _Temp"
+        echo 下次创建容器将自动删除
         exit 1
       fi
       echo 安装PREFIX目录
-      un_tzst ~/NumBox/data/prefix/disk.tar.zst $ctr_path &&
+      if ! un_txz ~/NumBox/data/prefix/disk.tar.xz $ctr_path; then
+        echo 错误，文件解压失败
+      fi
       if ! load "box64 wine regedit /C \"C:\windows\resources\themes\apply_human_graphite_theme.reg\" >$TMPDIR/build_wineboot_theme.log 2>&1"  "安装主题"; then
         cat $TMPDIR/build_wineboot_theme.log
         echo 错误，主题安装失败
@@ -96,16 +100,16 @@ else
       mono_ver=$(cat ~/NumBox/data/resources/mono/version)
       gecko_ver=$(cat ~/NumBox/data/resources/gecko/version)
       echo "安装mono(.NET框架) 版本: $mono_ver"
-      if ! load "box64 wine msiexec /i \"Z:\home\NumBox\data\resources\mono\x32\wine-mono-${mono_ver}-x86.msi\" >$TMPDIR/build_wineboot_mono32.log 2>&1" "mono x32"; then
+      if ! load "box64 wine cmd /c \"msiexec /i \"Z:\home\NumBox\data\resources\mono\x32\wine-mono-${mono_ver}-x86.msi\"\" >$TMPDIR/build_wineboot_mono32.log 2>&1" "mono x32"; then
         cat $TMPDIR/build_wineboot_mono32.log
         echo 错误，32位mono安装失败
       fi
       echo "安装gecko(html框架) 版本：$gecko_ver"
-      if ! load "box64 wine msiexec /i \"Z:\home\NumBox\data\resources\gecko\x32\wine-gecko-${gecko_ver}-x86.msi\" >$TMPDIR/build_wineboot_gecko32.log 2>&1" "gecko x32"; then
+      if ! load "box64 wine cmd /c \"msiexec /i \"Z:\home\NumBox\data\resources\gecko\x32\wine-gecko-${gecko_ver}-x86.msi\"\" >$TMPDIR/build_wineboot_gecko32.log 2>&1" "gecko x32"; then
         cat $TMPDIR/build_wineboot_gecko32.log
         echo 错误，32位gecko安装失败
       fi
-      if ! load "box64 wine msiexec /i \"Z:\home\NumBox\data\resources\gecko\x64\wine-gecko-${gecko_ver}-x86_64.msi\" >$TMPDIR/build_wineboot_gecko64.log 2>&1" "gecko x64"; then
+      if ! load "box64 wine cmd /c \"msiexec /i \"Z:\home\NumBox\data\resources\gecko\x64\wine-gecko-${gecko_ver}-x86_64.msi\"\" >$TMPDIR/build_wineboot_gecko64.log 2>&1" "gecko x64"; then
         cat $TMPDIR/build_wineboot_gecko64.log
         echo 错误，64位gecko安装失败
       fi

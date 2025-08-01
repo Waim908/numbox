@@ -17,6 +17,27 @@ set_reg_key() {
     local section_started=0
     local last_was_key=0
     local pending_empty=0
+    local section_exists=0
+    
+    # 检查文件是否存在，不存在则创建
+    if [[ ! -f "$file" ]]; then
+        touch "$file"
+    fi
+    
+    # 先检查目标节是否存在
+    while IFS= read -r line; do
+        if [[ "$line" =~ ^\[(.*)\][[:space:]]*[0-9a-fA-F]*$ ]]; then
+            current_section="${BASH_REMATCH[1]//\\\\/\\}"
+            if [[ "$current_section" == "$section" ]]; then
+                section_exists=1
+                break
+            fi
+        fi
+    done < "$file"
+    
+    # 重置变量准备处理文件
+    in_section=0
+    current_section=""
     
     while IFS= read -r line; do
         # 检测节头（支持带时间戳的格式）
@@ -133,6 +154,20 @@ set_reg_key() {
             echo "" >> "$temp_file"
         fi
     fi
+    
+    # 如果节不存在且需要添加键值，则在文件末尾添加新节和键值
+    if [[ $section_exists -eq 0 && -n "$value" ]]; then
+        # 确保文件末尾有空行
+        if [[ -s "$temp_file" ]]; then
+            local last_char=$(tail -c 1 "$temp_file")
+            if [[ "$last_char" != "" ]]; then
+                echo "" >> "$temp_file"
+            fi
+        fi
+        # 添加新节和键值
+        echo "[$section]" >> "$temp_file"
+        echo "\"$key\"=$value" >> "$temp_file"
+    fi
 
     # 替换原文件（保留权限）
     cat "$temp_file" > "$file"
@@ -142,8 +177,11 @@ set_reg_key() {
 # 修改键值（自动识别类型）
 # set_reg_key "user.reg" "Control Panel\\Desktop" "LogPixels" "dword:00000078"
 #
-# 新增键值到空节
-# set_reg_key "user.reg" "Empty\\Section" "NewKey" "\"value\""
+# 新增键值到现有节
+# set_reg_key "user.reg" "Existing\\Section" "NewKey" "\"value\""
 #
 # 删除键值
 # set_reg_key "user.reg" "Control Panel\\Desktop" "Wallpaper" ""
+#
+# 添加新节和键值
+# set_reg_key "user.reg" "New\\Section" "NewKey" "\"new value\""
