@@ -1,33 +1,34 @@
 #!/bin/bash
 . ~/NumBox/utils/dialog.conf
 . ~/NumBox/utils/var_edit.sh
+. ~/NumBox/utils/file_list.sh
 unset var_file
-if [[ ! -v CONTAINER_NAME ]]; then
-  if [[ ! -z $1 ]]; then
+if [[ ! -z $1 ]]; then
     export CONTAINER_NAME=$1
     if [[ ! -d ~/NumBox/data/container/${CONTAINER_NAME} ]]; then
       echo -e "容器 \e[33m ${CONTAINER_NAME} \e[0m 不存在"
       exit 1
     fi
-  else
+else
     exit_exec () { . ~/NumBox/Numbox;}
     . ~/NumBox/utils/file_list.sh
     file_list "$HOME/NumBox/data/container/" "选择一个容器"
     if [[ -z $BACK_NAME ]]; then
       . ~/NumBox/Numbox
     else
-      export CONTAINER_NAME=${BACK_NAME}
+      export CONTAINER_NAME="${BACK_NAME}"
     fi
-  fi
 fi
+
 . ~/NumBox/utils/path.conf
 # regeistry
 # setname::value
-set_container=$(Dmenu "$CONTAINER_NAME" "容器设置" \
-  1 "容器名称:$CONTAINER_NAME" \
-  2 "环境与box64变量" \
-  3 "分辨率设置" \
-  4 "挂载盘设置" 2>&1 >/dev/tty)
+Dmenu_select=(
+  1 "容器名称:\Z3$CONTAINER_NAME\Zn"
+  2 "环境与box64变量"
+  3 "分辨率设置"
+  4 "挂载盘设置"
+)
 # "驱动设置"
 # "Drectx图形环境"
 #  "游戏控制器API" \
@@ -38,10 +39,13 @@ set_container=$(Dmenu "$CONTAINER_NAME" "容器设置" \
 # "导出容器"
 # "删除容器"
 # "空间占用"
-case $set_container in
+
+Dmenu "\Z3${CONTAINER_NAME}\Zn 的设置" ""
+case $DMENU in
+  "") . ~/NumBox/Numbox ;;
   1) input=$(dialog ${dialog_arg[@]} --title "容器名称" --inputbox "输入新的容器名称" $box_sz2 2>&1 >/dev/tty)
     if [[ -z $input ]]; then
-      exit_exec
+      . ~/NumBox/Set-container.sh
     else
       . ~/NumBox/utils/illegal_str.sh "${input}"
       if [[ ! $str_is == good ]]; then
@@ -61,19 +65,21 @@ case $set_container in
         . ~/NumBox/Set-container.sh
       fi
     fi ;;
-  2) . ~/NumBox/Var-setting.sh ;;
+  2) . ~/NumBox/Var-setting.sh "${CONTAINER_NAME}" && . ~/NumBox/Set-container.sh ;;
   3) set_screenres_menu () {
-  var_file="$ctr_conf_path/ctr.conf"
-  go_back () { set_screenres_menu;} 
   . $ctr_conf_path/ctr.conf
-  if [[ -z $screenRes ]]; then
-    screenRes_is="客户端自动获取"
-  fi
-  set_screenres=$(Demnu "分辨率设置" "类型：\Z3${getScreenRes}\Zn 自定义分辨率：\Z3${screenRes_is}\Zn" \
-    1 "通过termux-x11-perference获取分辨率数据(txp)\Z2推荐,termux-x11设置一下就行了\Zn" \
-    2 "通过xrandr获取分辨率数据(xrandr)" \
-    3 "自定义分辨率(set-txp)(强制修改客户端为\Z2exact\Zn)" 2>&1 >/dev/tty)
-  case $set_screenres in
+    if [[ -z $screenRes ]]; then
+      screenRes_is="客户端自动获取"
+    else
+      screenRes_is="${screenRes}"
+    fi
+  Dmenu_select=(
+    1 "通过termux-x11-preference获取分辨率数据(txp)\Z2推荐,termux-x11设置一下就行了\Zn"
+    2 "通过xrandr获取分辨率数据(xrandr)" 
+    3 "自定义分辨率(set-txp)(强制修改客户端为\Z2custom\Zn)"
+  )
+  Dmenu "分辨率设置" "类型：\Z3${getScreenRes}\Zn 自定义分辨率：\Z3${screenRes_is}\Zn"
+  case $DMENU in
       "") . ~/NumBox/Set-container.sh ;;
       1) sed -i "s%getScreenRes=.*%getScreenRes=\"txp\"%g" $ctr_conf_path/ctr.conf
       sed -i "s%screenRes=.*%screenRes=%g" $ctr_conf_path/ctr.conf
@@ -81,42 +87,108 @@ case $set_container in
       2) sed -i "s%getScreenRes=.*%getScreenRes=\"xrandr\"%g" $ctr_conf_path/ctr.conf
       sed -i "s%screenRes=.*%screenRes=%g" $ctr_conf_path/ctr.conf
       set_screenres_menu ;;
-      3) SINGLE_SELECT=(C 自定义 640x480 640x480@4:3 800x600 800x600@4:3 854x480 854x480@16:9 960x544 960x544@16:9 1024x768 1024x768@4:3 1280x720 1280x720@16:9 1280x800 1280x800@16:10 1280x1024 1280x1024@5:4 1366x768 1366x768@16:9 1440x900 1440x900@16:10 1600x900 1600x900@16:9 1920x1080 1920x1080@16:9 640x1080 640x1080@9:18 800x1600 800x1600@9:18 1024x2080 1024x2080@9:18 1280x2560 1280x2560@9:18 2560x1440 2560x1440@2K 4096x2160 4096x2160@4K)
-      sed_var_preset_single
-      if [[ $single_select == C]]; then
+      3) Dmenu_select=(C "\Z2自定义\Zn" 640x480 640x480@4:3 800x600 800x600@4:3 854x480 854x480@16:9 960x544 960x544@16:9 1024x768 1024x768@4:3 1280x720 1280x720@16:9 1280x800 1280x800@16:10 1280x1024 1280x1024@5:4 1366x768 1366x768@16:9 1440x900 1440x900@16:10 1600x900 1600x900@16:9 1920x1080 1920x1080@16:9 640x1080 640x1080@9:18 800x1600 800x1600@9:18 1024x2080 1024x2080@9:18 1280x2560 1280x2560@9:18 2560x1440 2560x1440@2K 4096x2160 4096x2160@4K)
+      Dmenu "分辨率选择" ""
+      if [[ -z $DMENU ]]; then
+        set_screenres_menu
+      elif [[ $DMENU == C ]]; then
         form_res=$(dialog ${dialog_arg[@]} --title "自定义屏幕分辨率" --form "之前的设置：${screenRes}" $box_sz \
-          "宽" 1 1 "$varName" 1 10 1000 0 \
-          "高" 2 1 "$varValue" 2 10 1000 0 2>&1 >/dev/tty)
+          "宽" 1 1 "" 1 10 1000 0 \
+          "高" 2 1 "" 2 10 1000 0 2>&1 >/dev/tty)
         if [[ -z $form_res ]]; then
-          go_back
+          set_screenres_menu
         else
           width=${form_res[0]}
           height=${form_res[1]}
           if [[ $width =~ ^[1-9][0-9]*$ ]] && [[ $height =~ ^[1-9][0-9]*$ ]]; then
-            sed_var getScreenRes set-txp
+#            sed_var getScreenRes set-txp
+            sed -i "s%getScreenRes=.*%getScreenRes=\"set-txp\"%g" $ctr_conf_path/ctr.conf
             sed -i "s%screenRes=.*%screenRes=\"${width}x${height}\"%g" $ctr_conf_path/ctr.conf
-            go_back
+            set_screenres_menu
           else
-            Dmsgbox "\Z1错误\Zn" "请输入正确的分辨率格式（不能为0），如：1920x1080"
-            go_back
+            Dmsgbox "\Z1错误\Zn" "请输入正确的分辨率格式（不能为0），如：1920x1080"      
+            set_screenres_menu
           fi
         fi
       else
-        sed_var getScreenRes set-txp
-        sed_var screenRes $single_select
+        sed -i "s%getScreenRes=.*%getScreenRes=\"set-txp\"%g" $ctr_conf_path/ctr.conf
+#        sed_var screenRes $single_select
+        sed -i "s%screenRes=.*%screenRes=\"${DMENU}\"%g" $ctr_conf_path/ctr.conf
+        set_screenres_menu
       fi ;;
-    esac
+  esac
   }
   set_screenres_menu ;;
   4) mount_disk_menu () {
-    exit_exec () { mount_disk_menu;}
-    CUSTOM_FILE_LIST_OPTIONS=(V 查看挂载盘路径对应关系 A 添加挂载盘)
-    file_list $ctr_disk
-    if [[ $BACK_NUM == V ]]; then
-      Dmsgbox "路径对应关系" "$(ls -lA ${ctr_disk} | awk '{print $9,$10,$11}')" &&  mount_disk_menu
-    elif [[ $BACK_NAME == c: ]] && [[ $BACK_NAME == z: ]]; then
-      Dmsgbox "\Z1Sorry\Zn" "\Z1请勿修改 C盘 与 Z盘 挂载\Zn" && mount_disk_menu
-    fi
+  exit_exec () { Dmsgbox "错误" "目录为空" && mount_disk_menu ;}
+#    CUSTOM_FILE_LIST_OPTIONS=(V 查看挂载盘路径对应关系 A 添加挂载盘)
+  Dmenu_select=("A" "\Z2添加或修改挂载盘\Zn" "$(ls --ignore="c:" --ignore="h:" -lA $HOME/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/ | awk '{print $9,$11}')")
+  Dmenu "挂载盘设置"
+    # file_list "$HOME/NumBox/data/container/$CONTAINER_NAME/disk/dosdevices/" "挂载盘设置" 
+  case $DMENU in
+    "") . ~/NumBox/Set-container.sh ;;
+    A) Dmenu_select=(d: d: c: c: e: e: f: f: g: g: i: i: j: j: k: k: l: l: m: m: n: n: o: o: p: p: q: q: r: r: s: s: t: t: u: u: v: v: w: w: x: x: y: y:)
+    Dmenu "选择一个盘符"
+    case $DMENU in
+      "") mount_disk_menu ;;
+      *) sdcard=($(cat /proc/mounts | grep -E '/storage/' | grep -v 'emulated' |  awk '{print $2}' | xargs -n1 | awk '{print "外部存储"NR, $0}'| grep -E '/storage/' | grep -v 'emulated' |  awk '{print $2}' | xargs -n1 | awk '{print $0, "外部存储"NR}'))
+      disk_tag="$DMENU"
+      Dmenu_select=("/storage/emulated/0/" "内部存储" ${sdcard[@]} "custom" "手动输入路径")
+      Dmenu
+      case $DMENU in
+        "") mount_disk_menu ;;
+        custom) custom_mount_path=$(dialog ${dialog_arg[@]} --inputbox "手动输入自定义路径" $box_sz2 2>&1 >/dev/tty)
+        if [[ ! -d "$custom_mount_path" ]]; then
+          Dmsgbox "\Z1错误\Zn" "\'$custom_mount_path\' 无法找到"
+        else
+          if ! ln -sf "$custom_mount_path" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
+            Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除"
+            rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
+          fi
+          mount_disk_menu
+        fi ;;
+        *) CUSTOM_FILE_LIST_OPTIONS=("T" "\Z2直接使用这个路径\Zn")
+        file_list "$DMENU"
+        if [[ -z $BACK_NAME ]]; then
+          mount_disk_menu
+        elif [[ $BACK_NUM == T ]]; then
+          if ! ln -sf "${DMENU}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
+            Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除"
+            rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
+          fi
+          mount_disk_menu
+        else
+          if ! ln -sf "${DMENU}${BACK_NAME}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
+            Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除"
+            rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
+          fi
+          mount_disk_menu
+        fi ;;
+      esac ;;
+      z:) Dmenu_select=(1 "独立的Z盘" 2 "撤销独立Z盘")
+      Dmenu "关于Z盘" "独立的Z盘包含开始菜单软件占用更多空间,防止病毒感染其他文件\n \Z1并且你无法在wine虚拟桌面访问\Z2$PREFIX\Z1路径，驱动替换bat脚本失效\Zn"
+      case $DMENU in
+        "") mount_disk_menu ;;
+        1) Dyesno "是否创建独立Z盘？" "这需要一些时间"
+        if [[ $? == 0 ]]; then
+          mkdir $ctr_disk/drive_z
+          . ~/NumBox/utils/load.sh
+          load "cp -r ~/NumBox/opt $ctr_disk/drive_z/" "正在复制文件"
+          cd $ctr_disk/dosdevices
+          ln -sf ../drive_z z:
+          sleep 2 && mount_disk_menu
+        else
+          mount_disk_menu
+        fi ;;
+      esac ;;
+    esac ;;
+  *:) Dyesno "是否删除此挂载盘？" "$DMENU=>$(readlink ~/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/$DMENU)" 
+  if [[ $? == 0 ]]; then
+    rm -rf ~/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/$DMENU && mount_disk_menu
+  else
+    mount_disk_menu 
+  fi ;;
+  esac
   }
   mount_disk_menu ;;
 esac

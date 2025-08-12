@@ -10,13 +10,15 @@ file_list() {
     list_type=A
   fi
   if [[ -z $list_cmd ]]; then
-    list_cmd="ls -$list_type $1"
+    local list_cmd=(ls -"$list_type" -- "$1")
   fi
   local MENU_OPTIONS=()
   
   # 1. 添加自定义选项（保留原始序号）
-  if [[ ${#CUSTOM_FILE_LIST_OPTIONS[@]} -gt 0 ]]; then
-    MENU_OPTIONS+=("${CUSTOM_FILE_LIST_OPTIONS[@]}")
+  if [[ ! $select_bottom == 1 ]]; then
+    if [[ ${#CUSTOM_FILE_LIST_OPTIONS[@]} -gt 0 ]]; then
+      MENU_OPTIONS+=("${CUSTOM_FILE_LIST_OPTIONS[@]}")
+    fi
   fi
 
   # 2. 添加文件列表（从1开始编号）
@@ -25,7 +27,13 @@ file_list() {
     filename=$(basename "$file")
     MENU_OPTIONS+=("$FILE_COUNT" "$filename")  # 文件用数字编号
     ((FILE_COUNT++))
-  done < <(eval "$list_cmd" 2>/dev/null)
+  done < <("${list_cmd[@]}" 2>/dev/null)
+
+  if [[ $select_bottom == 1 ]]; then
+    if [[ ${#CUSTOM_FILE_LIST_OPTIONS[@]} -gt 0 ]]; then
+      MENU_OPTIONS+=("${CUSTOM_FILE_LIST_OPTIONS[@]}")
+    fi
+  fi
 
   if [[ ${#MENU_OPTIONS[@]} -eq 0 ]]; then
     dialog "${dialog_arg[@]}" --title "错误：空目录" --msgbox "$1" $box_sz2

@@ -20,13 +20,13 @@ startx11 () {
         termux-x11 :$@ &
     fi
 }
-# "termux-x11-perference" only
+# "termux-x11-preference" only
 # force termux-x11-preference  displayResolutionMode:custom
 set_res () {
     if ! termux-x11-preference displayResolutionMode:custom; then
         echo -e "\e[31m错误：分辨率模式切换失败\e[0m"
     else
-        if ! termux-x11-perference displayResolutionCustom:"$1"; then
+        if ! termux-x11-preference displayResolutionCustom:"$1"; then
             echo -e "\e[31m错误：分辨率切换失败\e[0m"
         fi
     fi

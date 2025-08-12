@@ -1,8 +1,8 @@
 if [[ -v USE_THREAD ]]; then
     if [[ -z $1 ]]; then
-        local USE_THREAD=$1
+        USE_THREAD=$1
     else
-        local USE_THREAD=$(nproc)
+        USE_THREAD=$(nproc)
     fi
 fi
 #-T${USE_THREAD}

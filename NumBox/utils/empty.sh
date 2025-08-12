@@ -19,7 +19,6 @@ printf "%s\0" "${sdcard_dir[@]}" | parallel -0 mkdir -p ;;
 data)
 data_dir=(
     "$HOME/NumBox/data/container"
-    "$HOME/NumBox/data/wine"
     "$HOME/NumBox/data/config"
     "$HOME/NumBox/data/resources/dxvk"
     "$HOME/NumBox/data/resources/cncddraw"

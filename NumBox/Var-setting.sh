@@ -1,8 +1,7 @@
 #!/bin/bash
 . ~/NumBox/utils/dialog.conf
-. ~/NumBox/utils/var_edit.sh
-if [[ ! -v CONTAINER_NAME ]]; then
-  if [[ ! -z $1 ]]; then
+. ~/NumBox/utils/export_var_edit.sh
+if [[ ! -z $1 ]]; then
     export CONTAINER_NAME=$1
     if [[ ! -d ~/NumBox/data/container/${CONTAINER_NAME} ]]; then
       echo -e "容器 \e[33m ${CONTAINER_NAME} \e[0m 不存在"
@@ -10,26 +9,22 @@ if [[ ! -v CONTAINER_NAME ]]; then
     else
       . ~/NumBox/utils/path.conf
     fi
-  else
+else
     exit_exec () { . ~/NumBox/Numbox;}
     . ~/NumBox/utils/file_list.sh
     file_list "$HOME/NumBox/data/container/" "选择一个容器"
     if [[ -z $BACK_NAME ]]; then
       . ~/NumBox/Numbox
     else
-      export CONTAINER_NAME=${BACK_NAME}
+      export CONTAINER_NAME="${BACK_NAME}"
       . ~/NumBox/utils/path.conf
     fi
-  fi
 fi
 select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${BACK_NAME}" --menu "\Z3对于变量的解释不一定100%准确，仅供参考\Zn" $box_sz \
   1 "设置容器变量" \
   2 "设置Box64变量" 2>&1 >/dev/tty)
-if [[ -z $select ]]; then
-  unset CONTAINER_NAME
-  . ~/NumBox/Numbox
-fi
 case $select in
+  "") . ~/NumBox/Set-container.sh "${CONTAINER_NAME}" ;;
   1) exit_exec () { . ~/NumBox/Var-setting.sh;}
   go_back () { set_ctr_var;}
   set_ctr_var () {
@@ -68,7 +63,7 @@ case $select in
     elif [[ -z $BACK_VAR ]]; then
       . ~/NumBox/Var-setting.sh
     else
-      case $BACK_VAR in
+      case $(echo "$BACK_VAR" | sed 's/^export //') in
         LC_ALL=*) aboutVar="修改区域语言编码格式，注意可能不是对所有游戏有效，你可能还需要设置时区"
         genrate () {
           cp ~/NumBox/default/glibc/locale-gen $glibc_prefix/etc/
@@ -347,15 +342,15 @@ case $select in
         DXVK_CONFIG_FILE=*) aboutVar="dxvk配置文件路径，优先级可能和dxvk相关变量产生影响，对应路径必须存放文件哦"
         SINGLE_SELECT=(
           "注释" "不使用配置文件"
-          "C盘，每个容器独立" "$PREFIX/NumBox/data/container/${CONTAINER_NAME}/disk/c:/dxvk.conf"
-          "D盘，挂载路径" "$PREFIX/NumBox/data/container/${CONTAINER_NAME}/disk/d:/dxvk.conf"
+          "C盘，每个容器独立" "$PREFIX/NumBox/data/container/${CONTAINER_NAME}/disk/dosdevices/c:/dxvk.conf"
+          "D盘，挂载路径" "$PREFIX/NumBox/data/container/${CONTAINER_NAME}/disk/dosdevices/d:/dxvk.conf"
           "自定义" "自定义文件路径，\Z7注意必须为Linux文件路径\Zn"
         )
         sed_var_preset_single
         case $single_select in
           注释) edit_var ann DXVK_CONFIG_FILE $var_file ;;
-          C盘，每个容器独立) sed_var DXVK_CONFIG_FILE "$PREFIX/NumBox/data/container/${CONTAINER_NAME}/disk/c:/dxvk.conf" ;;
-          D盘，挂载路径) sed_var DXVK_CONFIG_FILE "$PREFIX/NumBox/data/container/${CONTAINER_NAME}/disk/d:/dxvk.conf" ;;
+          C盘，每个容器独立) sed_var DXVK_CONFIG_FILE "$PREFIX/NumBox/data/container/${CONTAINER_NAME}/disk/dosdevices/c:/dxvk.conf" ;;
+          D盘，挂载路径) sed_var DXVK_CONFIG_FILE "$PREFIX/NumBox/data/container/${CONTAINER_NAME}/disk/dosdevices/d:/dxvk.conf" ;;
           自定义) input_dxvk_config_file=$(dialog --title "自定义Dxvk配置文件(DXVK_CONFIG_FILE)" --inputbox "请输入一个有效的Linux文件路径，例如/sdcard/Download/dxvk.conf")
           if [[ -z $input_dxvk_config_file ]]; then
             go_back
@@ -472,7 +467,7 @@ case $select in
     elif [[ -z $BACK_VAR ]]; then
       . ~/NumBox/Var-setting.sh
     else
-      case $BACK_VAR in
+      case $(echo "$BACK_VAR" | sed 's/^export //') in
         BOX64_DYNAREC_SAFEFLAGS=*) aboutVar="控制CALL/RET指令的标志位处理方式\n\n0: 完全忽略标志位（可能更快但兼容性差）\n1: RET需要标志位，CALL不需要（平衡速度与兼容性，默认）\n2: 所有CALL/RET都需要标志位（最精确但性能最低）"
         SINGLE_SELECT=(0 0 1 1 2 2)
         sed_var_preset_single
@@ -526,7 +521,8 @@ case $select in
         SINGLE_SELECT=(0 0 1 1)
         sed_var_preset_single
         sed_var BOX64_UNITYPLAYER $single_select ;;
-        box64presetName=*) input_box64presetName=$(dialog --title "自定义预设名称" --inputbox "" $box_sz2 "$varVaule")
+        box64presetName=*) 
+        input_box64presetName=$(dialog --title "自定义预设名称" --inputbox "$(awk -F'=' '{print $2}' <<< "$BACK_VAR" | sed 's/^"\|"$//g')" $box_sz2 "" 2>&1 >/dev/tty)
         if [[ -z $input_box64presetName ]] || [[ $input_box64presetName == $varVaule ]]; then
           set_ctr_box64_var
         else
@@ -540,12 +536,12 @@ case $select in
         SINGLE_SELECT=(auto nproc自动识别 custom 自定义 "max" "使用$(nproc)个核心")
         sed_var_preset_single
         case $single_select in
-          auto) sed_var BOX64_MAXCPU \"\$(nproc)\" ;;
+          auto) sed_var BOX64_MAXCPU "\"\$(nproc)\"" ;;
           custom) custom_box64_max_cpu=$(dialog ${dialog_arg[@]} --title "自定义box64使用的CPU核心数量" --inputbox "最大可用：$(nproc)" $box_sz2 2>&1 >/dev/tty)
           if [[ $custom_box64_max_cpu =~ ^[1-9][0-9]*$ ]]; then
             sed_var BOX64_MAXCPU $custom_box64_max_cpu
           else
-            Dmsgbox "\Z1错误的格式\n"
+            Dmsgbox "错误" "\Z1错误的格式\n"
             set_ctr_box64_var
           fi ;;
           max) sed_var $(nproc) ;;

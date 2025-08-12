@@ -4,19 +4,19 @@
 edit_var () {
   if [[ $1 == sed ]]; then
   # varName,varValue
-    sed -i "s%^${2}=.*%${2}=\"${3}\"%g" $4
+    sed -i "s%^export ${2}=.*%export ${2}=\"${3}\"%g" $4
   elif [[ $1 == sed2 ]]; then
-    sed -i "s%^${2}=.*%${3}=\"${4}\"%g" $5  
+    sed -i "s%^export ${2}=.*%export ${3}=\"${4}\"%g" $5  
   # annotation
   elif [[ $1 == ann ]]; then
-    sed -i "s%^${2}=%#${2}=%g" $3
+    sed -i "s%^export ${2}=%#export ${2}=%g" $3
   # un annotation
   elif [[ $1 == unAnn ]]; then
-    sed -i "s%^#${2}=%${2}=%g" $3
+    sed -i "s%^#export ${2}=%export ${2}=%g" $3
   elif [[ $1 == del ]]; then
-    sed -i "/^${2}[=]/d" $3
+    sed -i "/^export ${2}[=]/d" $3
   elif [[ $1 == del2 ]]; then
-    sed -i "/^${2}/d" $3
+    sed -i "/^export ${2}/d" $3
   else
     echo 未声明'$1'
   fi
@@ -45,8 +45,9 @@ del_var_dialog () {
 }
 # need go_back () {}
 sed_var_dialog () {
-  if [[ "$BACK_VAR" =~ ^[[:alnum:]_]+=.*$ ]]; then
-    varName="${BACK_VAR%%=*}"
+  if [[ "$BACK_VAR" =~ ^export[[:space:]][[:alnum:]_]+=.*$ ]]; then
+    varName="${BACK_VAR#export }"
+    varName="${varName%%=*}"
     varValue=$(awk -F'=' '{print $2}' <<< "$BACK_VAR" | sed 's/^"\|"$//g')
     form_var=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除此行" --backtitle "变量名开头添加#号可保留变量且不生效（如果没有默认内置变量值）" --title "编辑" --extra-button --extra-label "删除变量" --form "" $box_sz \
       "变量名" 1 1 "$varName" 1 10 1000 0 \
@@ -85,7 +86,8 @@ sed_var () {
   go_back
 }
 sed_var_preset_single () {
-  varName="${BACK_VAR%%=*}"
+  varName="${BACK_VAR#export }"
+  varName="${varName%%=*}"
   varValue=$(awk -F'=' '{print $2}' <<< "$BACK_VAR" | sed 's/^"\|"$//g')
   single_select=$(dialog ${dialog_arg[@]} --extra-button --extra-label "删除变量" --backtitle "变量名开头添加#号可保留变量且不生效" --title "$varName=$varValue" --menu "关于预设变量：\n \Z3$aboutVar\Zn" $box_sz \
     ${SINGLE_SELECT[@]} 2>&1 >/dev/tty)
@@ -97,7 +99,8 @@ sed_var_preset_single () {
   fi
 }
 sed_var_preset_multiple () {
-  varName="${BACK_VAR%%=*}"
+  varName="${BACK_VAR#export }"
+  varName="${varName%%=*}"
   varValue=$(awk -F'=' '{print $2}' <<< "$BACK_VAR" | sed 's/^"\|"$//g')
   # need $ALL_SELECT
   if [[ $2 == nodesc ]]; then
@@ -124,7 +127,8 @@ sed_var_preset_multiple () {
   else
     # ALL_SELECT=("变量|描述" ...)
     # 注意不能有空格
-    varName="${BACK_VAR%%=*}"
+    varName="${BACK_VAR#export }"
+    varName="${varName%%=*}"
     varValue=$(awk -F'=' '{print $2}' <<< "$BACK_VAR" | sed 's/^"\|"$//g')
     MULTIPLE_SELECT=()
     for item_desc in "${ALL_SELECT[@]}"; do
@@ -151,7 +155,8 @@ sed_var_preset_multiple () {
   fi
 }
 get_var () {
-    varName="${BACK_VAR%%=*}"
+    varName="${BACK_VAR#export }"
+    varName="${varName%%=*}"
     varValue=$(awk -F'=' '{print $2}' <<< "$BACK_VAR" | sed 's/^"\|"$//g')
 }
 var_list () {

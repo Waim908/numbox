@@ -21,8 +21,8 @@
 
 # termux和x11合体版（因为都在前台跑所以不会锁CPU核心为小核更加流畅）
 
-1. 下载[termux合体版修改](https://github.com/Waim908/termux-app/releases/tag/1.0.5.1) or [termux合体版](https://github.com/jiaxinchen-max/termux-app/releases/tag/1.0.5)
-###### 1.1 使用termux合体版前请关闭系统深色模式，要不然字体看不到
+1. 下载[~termux合体版修改~（停止更新，不要下载最新版）](https://github.com/Waim908/termux-app/releases/tag/1.0.5.1) or [termux合体版（推荐）](https://github.com/jiaxinchen-max/termux-app/releases/)
+###### ~1.1 使用termux合体版前请关闭系统深色模式，要不然字体看不到~ 已修复✔，请下载新版本
 ###### 1.2 其次合体版安装时，如果你已经安装了termux , termux x11..... 等软件，需要先卸载否则会有包名冲突
 ###### 1.3 需要给予termux所有权限，电池设置允许termux后台高耗电
 ###### 1.4 点启动》设置》 在里面打开悬浮窗，通过悬浮窗启动命令行
@@ -41,7 +41,6 @@
 开发中
 
 # 使用的开源项目
-[glibc包](https://github.com/mebabo1/menano)
 
 [glibc](https://github.com/termux-pacman/glibc-packages)
 
@@ -73,7 +72,4 @@
 
 [wine主题](https://github.com/listumps/wine_themes)
 
-[turnip驱动](https://github.com/K11MCH1/WinlatorTurnipDrivers)
-
-[参考与部分文件](https://github.com/K11MCH1/WinlatorTurnipDrivers)
 
