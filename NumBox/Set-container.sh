@@ -11,7 +11,6 @@ if [[ ! -z $1 ]]; then
     fi
 else
     exit_exec () { . ~/NumBox/Numbox;}
-    . ~/NumBox/utils/file_list.sh
     file_list "$HOME/NumBox/data/container/" "选择一个容器"
     if [[ -z $BACK_NAME ]]; then
       . ~/NumBox/Numbox
@@ -45,17 +44,17 @@ case $DMENU in
   "") . ~/NumBox/Numbox ;;
   1) input=$(dialog ${dialog_arg[@]} --title "容器名称" --inputbox "输入新的容器名称" $box_sz2 2>&1 >/dev/tty)
     if [[ -z $input ]]; then
-      . ~/NumBox/Set-container.sh
+      . ~/NumBox/Set-container.sh "${CONTAINER_NAME}"
     else
       . ~/NumBox/utils/illegal_str.sh "${input}"
       if [[ ! $str_is == good ]]; then
         # dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "非法的字符串 ${input}" $box_sz2
         Dmsgbox "\Z1错误\Zn" "非法的字符串 ${input}"
-        . ~/NumBox/Set-container.sh
+        . ~/NumBox/Set-container.sh "${CONTAINER_NAME}"
       elif [[ -d ~/NumBox/data/container/${input} ]]; then
         # dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "容器 ${input} 已经存在" $box_sz2
         Dmsgbox "\Z1错误\Zn" "容器 ${input} 已经存在"
-        . ~/NumBox/Set-container.sh
+        . ~/NumBox/Set-container.sh "${CONTAINER_NAME}"
       else
         mv ~/NumBox/data/container/${CONTAINER_NAME} ~/NumBox/data/container/${input}
         echo "${input}" > ~/NumBox/default_ctr
@@ -80,7 +79,7 @@ case $DMENU in
   )
   Dmenu "分辨率设置" "类型：\Z3${getScreenRes}\Zn 自定义分辨率：\Z3${screenRes_is}\Zn"
   case $DMENU in
-      "") . ~/NumBox/Set-container.sh ;;
+      "") . ~/NumBox/Set-container.sh "${CONTAINER_NAME}" ;;
       1) sed -i "s%getScreenRes=.*%getScreenRes=\"txp\"%g" $ctr_conf_path/ctr.conf
       sed -i "s%screenRes=.*%screenRes=%g" $ctr_conf_path/ctr.conf
       set_screenres_menu ;;
@@ -123,17 +122,17 @@ case $DMENU in
   exit_exec () { Dmsgbox "错误" "目录为空" && mount_disk_menu ;}
 #    CUSTOM_FILE_LIST_OPTIONS=(V 查看挂载盘路径对应关系 A 添加挂载盘)
   Dmenu_select=("A" "\Z2添加或修改挂载盘\Zn" "$(ls --ignore="c:" --ignore="h:" -lA $HOME/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/ | awk '{print $9,$11}')")
-  Dmenu "挂载盘设置"
+  Dmenu "挂载盘设置" "\Z3若进入容器后无法在对应盘符找到你的文件（路径有文件但是为空），请尝试修改路径\Zn"
     # file_list "$HOME/NumBox/data/container/$CONTAINER_NAME/disk/dosdevices/" "挂载盘设置" 
   case $DMENU in
-    "") . ~/NumBox/Set-container.sh ;;
+    "") . ~/NumBox/Set-container.sh "${CONTAINER_NAME}" ;;
     A) Dmenu_select=(d: d: c: c: e: e: f: f: g: g: i: i: j: j: k: k: l: l: m: m: n: n: o: o: p: p: q: q: r: r: s: s: t: t: u: u: v: v: w: w: x: x: y: y:)
     Dmenu "选择一个盘符"
     case $DMENU in
       "") mount_disk_menu ;;
       *) sdcard=($(cat /proc/mounts | grep -E '/storage/' | grep -v 'emulated' |  awk '{print $2}' | xargs -n1 | awk '{print "外部存储"NR, $0}'| grep -E '/storage/' | grep -v 'emulated' |  awk '{print $2}' | xargs -n1 | awk '{print $0, "外部存储"NR}'))
       disk_tag="$DMENU"
-      Dmenu_select=("/storage/emulated/0/" "内部存储" ${sdcard[@]} "custom" "手动输入路径")
+      Dmenu_select=("/storage/emulated/0" "内部存储" ${sdcard[@]} "custom" "手动输入路径")
       Dmenu
       case $DMENU in
         "") mount_disk_menu ;;
@@ -142,24 +141,25 @@ case $DMENU in
           Dmsgbox "\Z1错误\Zn" "\'$custom_mount_path\' 无法找到"
         else
           if ! ln -sf "$custom_mount_path" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
-            Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除"
+            Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除，或者不存在由于安卓权限限制，可能需要尽量选择子目录而非存储的根目录"
             rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
           fi
           mount_disk_menu
         fi ;;
         *) CUSTOM_FILE_LIST_OPTIONS=("T" "\Z2直接使用这个路径\Zn")
+        exit_exec { mount_disk_menu ;}
         file_list "$DMENU"
         if [[ -z $BACK_NAME ]]; then
           mount_disk_menu
         elif [[ $BACK_NUM == T ]]; then
-          if ! ln -sf "${DMENU}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
-            Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除"
-            rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
-          fi
+            if ! ln -sf "${DMENU}/" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
+              Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除，或者不存在由于安卓权限限制，可能需要尽量选择子目录而非存储的根目录"
+              rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
+            fi
           mount_disk_menu
         else
-          if ! ln -sf "${DMENU}${BACK_NAME}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
-            Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除"
+          if ! ln -sf "${DMENU}/${BACK_NAME}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
+            Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除，或者不存在由于安卓权限限制，可能需要尽量选择子目录而非存储的根目录"
             rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
           fi
           mount_disk_menu
@@ -173,7 +173,10 @@ case $DMENU in
         if [[ $? == 0 ]]; then
           mkdir $ctr_disk/drive_z
           . ~/NumBox/utils/load.sh
-          load "cp -r ~/NumBox/opt $ctr_disk/drive_z/" "正在复制文件"
+          if ! load "cp -r ~/NumBox/opt $ctr_disk/drive_z/" "正在复制文件"; then
+            echo 文件复制失败
+            exit 1
+          fi
           cd $ctr_disk/dosdevices
           ln -sf ../drive_z z:
           sleep 2 && mount_disk_menu
@@ -191,4 +194,10 @@ case $DMENU in
   esac
   }
   mount_disk_menu ;;
+  5) Dmenu_select=(1 "Turnip(Adreno)" 2 "Panfrost(Mali)" 3 "LLVMPIPE(CPU)" 4 "VirGL")
+  Dmenu "GPU驱动设置" "当前："
+  case $DMENU in
+    "") ~/NumBox/Set-container.sh "${CONTAINER_NAME}" ;;
+    1) 
+  esac
 esac

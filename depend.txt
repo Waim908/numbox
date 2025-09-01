@@ -6,6 +6,119 @@ pulseaudio
 tmux
 xorg-xrandr
 parallel
-
+glow
+# fluidsynth => faild midi support
 .termux/
-# allow-external-apps = true
+# allow-external-apps = false => allow-external-apps = true
+glibc wrapper
+ii  assimp-glibc                    5.4.3-1               aarch64      Library to import various well-known 3D model formats in an uniform manner
+ii  attr-glibc                      2.5.2                 aarch64      Utilities for manipulating filesystem extended attributes
+ii  bash-completion-glibc           2.16.0                all          Programmable completion for the bash shell
+ii  bash-glibc                      5.2.37                aarch64      A sh-compatible shell that incorporates useful features from the Korn shell (ksh) and C shell (csh)
+ii  binutils-glibc                  2.44                  aarch64      GNU Binutils (metapackage)
+ii  binutils-libs-glibc             2.44                  aarch64      GNU Binutils libraries
+ii  box64-glibc                     0.3.2                 aarch64      Linux Userspace x86_64 Emulator with a twist
+ii  brotli-glibc                    1.1.0                 aarch64      lossless compression algorithm and format (command line utility)
+ii  ca-certificates-glibc           2025.02.25            all          Common CA certificates
+ii  coreutils-glibc                 9.5                   aarch64      Basic file, shell and text manipulation utilities from the GNU project
+ii  dbus-glibc                      1.15.6-2              aarch64      Freedesktop.org message bus system
+ii  e2fsprogs-glibc                 1.47.2                aarch64      EXT 2/3/4 filesystem utilities
+ii  freeglut-glibc                  3.4.0                 aarch64      Provides functionality for small OpenGL programs
+ii  gcc-glibc                       14.2.1-1              aarch64      The GNU Compiler Collection - C and C++ frontends, with Fortran front-end for GCC
+ii  gcc-libs-glibc                  14.2.1-1              aarch64      Runtime libraries shipped by GCC
+ii  gdbm-glibc                      1.24                  aarch64      Library of database functions that use extensible hashing
+ii  glibc                           2.41-1                aarch64      GNU C Library
+ii  glibc-repo                      1.0                   all          A package repository containing glibc-based programs and libraries
+ii  glibc-runner                    2.0-3                 all          Tool for convenient use of Glibc
+ii  glmark2-glibc                   2023.01-1             aarch64      glmark2 is an OpenGL 2.0 and ES 2.0 benchmark
+ii  glu-glibc                       9.0.3                 aarch64      Mesa OpenGL Utility library
+ii  json-c-glibc                    0.18                  aarch64      A JSON implementation in C
+ii  krb5-glibc                      1.21.3                aarch64      The Kerberos network authentication system
+ii  libacl-glibc                    2.3.1                 aarch64      Access control list utilities, libraries and headers
+ii  libblkid-glibc                  2.40.2-1              aarch64      Block device identification library
+ii  libbz2-glibc                    1.0.8-3               aarch64      BZ2 format compression library
+ii  libcap-glibc                    2.69-1                aarch64      POSIX 1003.1e capabilities
+ii  libcap-ng-glibc                 0.8.5                 aarch64      Library making programming with POSIX capabilities easier than traditional libcap
+ii  libclc-glibc                    19.1.3                all          Library requirements of the OpenCL C programming language
+ii  libcurl-glibc                   8.12.1                aarch64      Easy-to-use client-side URL transfer library
+ii  libdb-glibc                     18.1.40               aarch64      The Berkeley DB embedded database system (library)
+ii  libdebuginfod-glibc             0.192-1               aarch64      Library for debuginfod
+ii  libdrm-glibc                    2.4.124               aarch64      Userspace interface to kernel DRM services
+ii  libedit-glibc                   20250104-3.1-0        aarch64      Library providing line editing, history, and tokenization functions
+ii  libelf-glibc                    0.192-1               aarch64      ELF object file access library
+ii  libepoxy-glibc                  1.5.10                aarch64      Library handling OpenGL function pointer management
+ii  libevent-glibc                  2.1.12                aarch64      Library that provides asynchronous event notification
+ii  libexpat-glibc                  2.6.4                 aarch64      An XML parser library
+ii  libffi-glibc                    3.4.7                 aarch64      Library providing a portable, high level programming interface to various calling conventions
+ii  libglvnd-glibc                  1.7.0-1               aarch64      The GL Vendor-Neutral Dispatch library
+ii  libgmp-glibc                    6.3.0-2               aarch64      Library for arbitrary precision arithmetic
+ii  libicu-glibc                    76.1                  aarch64      International Components for Unicode library
+ii  libidn2-glibc                   2.3.7                 aarch64      Free software implementation of IDNA2008, Punycode and TR46
+ii  libisl-glibc                    0.26                  aarch64      Library for manipulating sets and relations of integer points bounded by linear constraints
+ii  libjansson-glibc                2.14                  aarch64      C library for encoding, decoding and manipulating JSON data
+ii  libjpeg-turbo-glibc             3.1.0                 aarch64      Library for reading and writing JPEG image files
+ii  libllvm-glibc                   19.1.3                aarch64      LLVM runtime libraries
+ii  liblz4-glibc                    1.10.0                aarch64      Fast LZ compression algorithm library
+ii  liblzma-glibc                   5.6.4                 aarch64      XZ-format compression library
+ii  libmpc-glibc                    1.3.1                 aarch64      Library for the arithmetic of complex numbers with arbitrarily high precision
+ii  libmpfr-glibc                   4.2.1                 aarch64      C library for multiple-precision floating-point computations with correct rounding
+ii  libnghttp2-glibc                1.65.0                aarch64      nghttp HTTP 2.0 library
+ii  libnsl-glibc                    2.0.1                 aarch64      Public client interface library for NIS(YP)
+ii  libomxil-bellagio-glibc         0.9.3                 aarch64      An opensource implementation of the OpenMAX Integration Layer API
+ii  libpam-glibc                    1.7.0                 aarch64      PAM (Pluggable Authentication Modules) library
+ii  libpciaccess-glibc              0.17                  aarch64      X11 PCI access library
+ii  libpng-glibc                    1.6.47                aarch64      Official PNG reference library
+ii  libpsl-glibc                    0.21.5                aarch64      Public Suffix List library
+ii  libsmartcols-glibc              2.40.2-1              aarch64      Library for smart adaptive formatting of tabular data
+ii  libssh2-glibc                   1.11.1                aarch64      Client-side library implementing the SSH2 protocol
+ii  libtirpc-glibc                  1.3.6                 aarch64      Transport Independent RPC library
+ii  libunistring-glibc              1.3                   aarch64      Library for manipulating Unicode strings and C strings
+ii  libunwind-glibc                 1.8.1                 aarch64      Determine and manipulate the call-chain of a program
+ii  libuuid-glibc                   2.40.2-1              aarch64      Library for handling universally unique identifiers
+ii  libva-glibc                     2.22.0                aarch64      Video Acceleration (VA) API for Linux
+ii  libvdpau-glibc                  1.5                   aarch64      Nvidia VDPAU library
+ii  libverto-glibc                  0.3.2                 aarch64      Main event loop abstraction library
+ii  libwayland-glibc                1.23.1                aarch64      Wayland protocol library
+ii  libx11-glibc                    1.8.11                aarch64      X11 client-side library
+ii  libxau-glibc                    1.0.12                aarch64      X11 authorisation library
+ii  libxcb-glibc                    1.17.0-1              aarch64      X11 client-side library
+ii  libxcrypt-glibc                 4.4.38                aarch64      Modern library for one-way hashing of passwords
+ii  libxdmcp-glibc                  1.1.5                 aarch64      X11 Display Manager Control Protocol library
+ii  libxext-glibc                   1.3.6                 aarch64      X11 miscellaneous extensions library
+ii  libxfixes-glibc                 6.0.1                 aarch64      X11 miscellaneous 'fixes' extension library
+ii  libxi-glibc                     1.8.2                 aarch64      X11 Input extension library
+ii  libxkbcommon-glibc              1.8.0                 aarch64      Keymap handling library for toolkits and window systems
+ii  libxml2-glibc                   2.13.6                aarch64      Library for parsing XML documents
+ii  libxrandr-glibc                 1.5.4                 aarch64      X11 RandR extension library
+ii  libxrender-glibc                0.9.12                aarch64      X Rendering Extension client library
+ii  libxshmfence-glibc              1.3.3                 aarch64      A library that exposes a event API on top of Linux futexes
+ii  libxxf86vm-glibc                1.1.6                 aarch64      X11 XFree86 video mode extension library
+ii  linux-api-headers-glibc         6.14                  aarch64      Kernel headers sanitized for use in userspace
+ii  make-glibc                      4.4.1                 aarch64      Tool to control the generation of non-source files from source files
+ii  mangohud-glibc                  0.7.2                 aarch64      A Vulkan overlay layer for monitoring FPS, temperatures, CPU/GPU load and more
+ii  mesa-demos-glibc                9.0.0                 aarch64      OpenGL demonstration and test programs
+ii  mesa-glibc                      24.2.6                aarch64      An open-source implementation of the OpenGL specification
+ii  mesa-vulkan-icd-freedreno-glibc 24.2.6                aarch64      Mesa's Freedreno Vulkan ICD
+ii  mesa-vulkan-icd-swrast-glibc    24.2.6                aarch64      Mesa's Swrast Vulkan ICD
+ii  ncurses-glibc                   6.5.20241102          aarch64      System V Release 4.0 curses emulation library
+ii  opengl-glibc                    0.1-1                 all          A metapackage for OpenGL implementation
+ii  openssl-glibc                   3.4.1                 aarch64      Library implementing the SSL and TLS protocols as well as general purpose cryptography functions
+ii  patchelf-glibc                  0.18.0                aarch64      Utility to modify the dynamic linker and RPATH of ELF executables
+ii  perl-glibc                      5.38.2                aarch64      Capable, feature-rich programming language
+ii  pkgconf-glibc                   2.1.1                 aarch64      Package compiler and linker metadata toolkit
+ii  python-glibc                    3.12.9                aarch64      The Python programming language
+ii  python-pip-glibc                25.0.1                all          The PyPA recommended tool for installing Python packages
+ii  readline-glibc                  8.2.13                aarch64      Library that allow users to edit command lines as they are typed in
+ii  strace-glibc                    6.11                  aarch64      Debugging utility to monitor system calls and signals received
+ii  termux-exec-glibc               1:1.0                 aarch64      An execve() wrapper to make /bin and /usr/bin shebangs work
+ii  util-linux-glibc                2.40.2-1              aarch64      Miscellaneous system utilities
+ii  vkmark-glibc                    2023.04.12            aarch64      vkmark is an extensible Vulkan benchmarking suite with targeted, configurable scenes.
+ii  vulkan-icd-loader-glibc         1.3.301               aarch64      Vulkan Installable Client Driver (ICD) Loader
+ii  vulkan-tools-glibc              1.3.301               aarch64      Vulkan Tools and Utilities
+ii  xcb-proto-glibc                 1.17.0-1              all          XML-XCB protocol descriptions
+ii  xcb-util-wm-glibc               0.4.2                 aarch64      Utility libraries for XC Binding - client and window-manager helpers for ICCCM
+ii  xkeyboard-config-glibc          2.43                  all          X keyboard configuration files
+ii  xorg-util-macros-glibc          1.20.2                all          X.Org Autotools macros
+ii  xorgproto-glibc                 2024.1                all          X.Org X11 Protocol headers
+ii  zlib-glibc                      1.3.1                 aarch64      Compression library implementing the deflate compression method found in gzip and PKZIP
+ii  zstd-glibc                      1.5.7                 aarch64      Zstandard compression

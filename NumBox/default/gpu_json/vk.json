@@ -1,0 +1,7 @@
+{
+    "ICD": {
+        "api_version": "1.3.301",
+        "library_path": "/data/data/com.termux/files/home/NumBox/data/driver/so/libvulkan_freedreno.so"
+    },
+    "file_format_version": "1.0.0"
+}

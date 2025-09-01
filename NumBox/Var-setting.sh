@@ -25,6 +25,9 @@ select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${
   2 "设置Box64变量" 2>&1 >/dev/tty)
 case $select in
   "") . ~/NumBox/Set-container.sh "${CONTAINER_NAME}" ;;
+
+  # 通用环境变量，总是最后一个应用完成变量覆盖
+
   1) exit_exec () { . ~/NumBox/Var-setting.sh;}
   go_back () { set_ctr_var;}
   set_ctr_var () {
@@ -50,7 +53,7 @@ case $select in
       if [[ -z $customForm ]]; then
         set_ctr_var
       else
-        sed -i "\$a${newVarName}=\"${newVarValue}\"" $var_file
+        sed -i "\$aexport ${newVarName}=\"${newVarValue}\"" $var_file
         set_ctr_var
       fi
     elif [[ $BACK_VAR_NUM == D ]]; then
@@ -197,7 +200,7 @@ case $select in
         SINGLE_SELECT=(0 禁用 1 启用)
         sed_var_preset_single
         sed_var WINEESYNC $single_select ;;
-        WINEFSYNC=*) aboutVar="启用补丁构建或者proton版本才能使用，可以与WINEESYNC一起启用"
+        WINEFSYNC=*) aboutVar="启用补丁构建或者proton版本才能使用，不推荐与WINEESYNC一起启用"
         SINGLE_SELECT=(0 禁用 1 启用)
         sed_var_preset_single
         sed_var WINEFSYNC $single_select ;;
@@ -381,12 +384,31 @@ case $select in
         LIBGL_SHOW_FPS=*) aboutVar="显示OpenGL渲染的fps到stdout标准输出(无图形HUD)，不过还是推荐用GALLIUM_HUD变量"
         SINGLE_SELECT=(1 启用 0 禁用)
         sed_var_preset_single
-        sed_var DXVK_GPLASYNCCACHE $single_select ;;        
+        sed_var DXVK_GPLASYNCCACHE $single_select ;;
+        WINE_FULLSCREEN_INTEGER_SCALING=*) aboutVar="解决游戏分辨率缩放问题，只有proton版本或者应用补丁构建的wine才能使用"
+        SINGLE_SELECT=(1 启用 0 禁用)
+        sed_var_preset_single
+        sed_var WINE_FULLSCREEN_INTEGER_SCALING $single_select ;;
+        STAGING_SHARED_MEMORY=*) aboutVar="仅限应用了staging补丁的wine，使用共享内存来优化wineserver调用，性能提升可能不明显，\n对于使用特定API的应用可以启用"
+        SINGLE_SELECT=(1 启用 0 禁用)
+        sed_var_preset_single
+        sed_var STAGING_SHARED_MEMORY $single_select ;;
+        STAGING_RT_PRIORITY_SERVER=*) aboutVar="仅限应用了staging补丁的wine，设置实时进程优先级，不推荐设置为99\n 此设置你可以按数字键快速索引到想要的数"
+        SINGLE_SELECT=(0 0 1 1 2 2 3 3 4 4 5 5 6 6 7 7 8 8 9 9 10 10 11 11 12 12 13 13 14 14 15 15 16 16 17 17 18 18 19 19 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27 28 28 29 29 30 30 31 31 32 32 33 33 34 34 35 35 36 36 37 37 38 38 39 39 40 40 41 41 42 42 43 43 44 44 45 45 46 46 47 47 48 48 49 49 50 50 51 51 52 52 53 53 54 54 55 55 56 56 57 57 58 58 59 59 60 60 61 61 62 62 63 63 64 64 65 65 66 66 67 67 68 68 69 69 70 70 71 71 72 72 73 73 74 74 75 75 76 76 77 77 78 78 79 79 80 80 81 81 82 82 83 83 84 84 85 85 86 86 87 87 88 88 89 89 90 90 91 91 92 92 93 93 94 94 95 95 96 96 97 97 98 98 99 99)
+        sed_var_preset_single
+        sed_var STAGING_RT_PRIORITY_SERVER $single_select ;;
+        STAGING_WRITECOPY=*) aboutVar="仅限应用了staging补丁的wine，此变量可能导致大量错误发生，不推荐启用\n 模拟Windows的内存管理系统"
+        SINGLE_SELECT=(1 启用 0 禁用)
+        sed_var_preset_single
+        sed_var STAGING_SHARED_MEMORY $single_select ;;        
         *) sed_var_dialog ;;
       esac
     fi
   }
   set_ctr_var ;;
+
+  # BOX64
+
   2) exit_exec () { . ~/NumBox/Var-setting.sh;}
   go_back () { set_ctr_box64_var;}
   set_ctr_box64_var () {

@@ -17,7 +17,6 @@ if [[ ! -v CONTAINER_NAME ]]; then
     elif [[ $BACK_NUM == J ]]; then
       unset CONTAINER_NAME
     else
-      unset glibc_only
       export CONTAINER_NAME=${BACK_NAME}
     fi
   fi
@@ -33,5 +32,8 @@ if [[ ! -z $CONTAINER_NAME ]]; then
     echo "强行结束wine: \$ pkill -f -9 wine"
     echo "或者停止wineserver: \$ box64 wineserver -k"
     echo "执行方法：\$ box64 [可执行命令]"
-    $PREFIX/glibc/bin/bash
+else
+  unset WINEPREFIX
 fi
+#export PS1="(glibc)\u@\h \w $ "
+$PREFIX/glibc/bin/bash

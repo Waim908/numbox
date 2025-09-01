@@ -6,7 +6,7 @@ stopx11 () {
     fi
 }
 startx11 () {
-    if [[ $AM_JUMP == 1 ]]; then
+    if [[ $amJump == 1 ]]; then
         if [[ -f "/data/data/com.termux/usr/bin/stopserver" ]]; then
             echo 当前为termux合体版，不再跳转到x11客户端
             termux-x11 :$@ &

@@ -1,31 +1,11 @@
 #!/bin/bash
 . ~/NumBox/utils/dialog.conf
+# . ~/NumBox/utils/empty.sh 
 nb_ver=$(cat ~/NumBox/.version)
 back () { . ~/NumBox/Numbox;}
 rmdir ~/NumBox/container/*/ &>/dev/null
 rm -rf $TMPDIR/pulse-*
-menu=$(dialog ${dialog_arg[@]} --backtitle "版本：$nb_ver 默认容器：$(cat ~/NumBox/default_ctr)"  --title "NumBox主菜单" --menu "选择一个选项，触屏，鼠标或键盘都可操作" $box_sz \
-  1 "启动默认容器" \
-  2 "选择容器打开" \
-  3 "进入容器管理" \
-  4 "联网下载更新" \
-  5 "进入调试选项" \
-  6 "进入glibc终端" \
-  7 "关于NumBox" \
-  8 "支持NumBox开发" 2>&1 >/dev/tty)
-if [[ -z $menu ]]; then
-  exit 0
-fi
-case $menu in
-  1) ;;
-  2) . ~/NumBox/Open-container.sh ;;
-  3) menu=$(dialog ${dialog_arg[@]} --title "容器管理" --menu "选择一个选项" $box_sz \
-    1 "创建容器" \
-    2 "容器设置" \
-    3 "打包容器" \
-    4 "导入容器(.nbp)" \
-    5 "导入前缀包(.prefix)" 2>&1 >/dev/tty)
-  case $menu in
-    1) bash ~/NumBox/Create-container.sh ;;
-  esac ;;
-esac
+Dmenu_select=(1 "启动默认容器" 2 "启动快捷脚本" 3 "wine容器管理" 4 "NumBox插件" 5 "NumBox设置" 6 "关于NumBox" 7 "插件菜单")
+Dmenu "NumBox" "触屏，键盘，鼠标以进行对话框操作" "${nb_ver}"
+case $DMENU in
+  1) 
