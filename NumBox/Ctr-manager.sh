@@ -1,12 +1,11 @@
 #!/bin/bash
-. ~/NumBox/utils/dialog.conf
+. ~/NumBox/utils/dialog.sh
 CUSTOM_FILE_LIST_OPTIONS=("C" "\Z2创建容器\Zn" "I" "\Z2导入容器\Zn" "T" "\Z3启动一个临时的沙盒容器\Zn")
-exit_exec () { . ~/NumBox/Numbox;}
 . ~/NumBox/utils/file_list.sh
 file_list "$HOME/NumBox/data/container" "容器管理器"
 case $BACK_NUM 
 C) . ~/NumBox/Create-container.sh ;;
-I) . ~/NumBox/Import-container.sh ;;
+I) . ~/NumBox/import-container.sh ;;
 T) . ~/NumBox/Sandbox-container,sh ;;
   export CONTAINER_NAME=${BACK_NUM}
   ctr_select=$(dialog ${dialog_arg[@]} --title "$CONTAINER_NAME" --menu "管理当前容器" $box_sz \

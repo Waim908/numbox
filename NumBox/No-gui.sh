@@ -1,14 +1,13 @@
 #!/bin/bash
-. ~/NumBox/utils/dialog.conf
+. ~/NumBox/utils/dialog.sh
 if [[ ! -v CONTAINER_NAME ]]; then
   if [[ ! -z $1 ]]; then
-    export CONTAINER_NAME=$1
-    if [[ ! -d ~/NumBox/data/container/${CONTAINER_NAME} ]]; then
+    export CONTAINER_NAME="$1"
+    if [[ ! -d ~/NumBox/data/container/"${CONTAINER_NAME}" ]]; then
       echo -e "容器 \e[33m ${CONTAINER_NAME} \e[0m 不存在"
       exit 1
     fi
   else
-    exit_exec () { . ~/NumBox/Numbox;}
     . ~/NumBox/utils/file_list.sh
     CUSTOM_FILE_LIST_OPTIONS=(J "跳过容器选择，glibc Only")
     file_list "$HOME/NumBox/data/container/" "无图形界面启动(Debug Wrapper)" "glibc + wine"
@@ -22,9 +21,9 @@ if [[ ! -v CONTAINER_NAME ]]; then
   fi
 fi
 echo "使用exit命令退出环境"
-. ~/NumBox/utils/boot.conf
+. ~/NumBox/utils/boot.sh
 if [[ ! -z $CONTAINER_NAME ]]; then
-    . ~/NumBox/utils/path.conf
+    . ~/NumBox/utils/path.sh
     . ~/NumBox/data/container/"${CONTAINER_NAME}"/config/box64.conf
     . ~/NumBox/data/container/"${CONTAINER_NAME}"/config/default.conf
     echo 当前WINE环境所有可执行命令如下：

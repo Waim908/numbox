@@ -1,24 +1,39 @@
 #!/bin/bash
 load() {
-    local frames=("⣾" "⣽" "⣻" "⢿" "⡿" "⣟" "⣯" "⣷")
+    local colors=(
+        "$(tput setaf 21)"
+        "$(tput setaf 27)"
+        "$(tput setaf 31)"
+        "$(tput setaf 32)"
+        "$(tput setaf 33)"
+        "$(tput setaf 38)"
+        "$(tput setaf 39)"
+        "$(tput setaf 45)"
+    )
+    if [[ $loadNoColor == 1 ]]; then
+        local frames=("⣾" "⣽" "⣻" "⢿" "⡿" "⣟" "⣯" "⣷")
+        local reset_color=""
+    else
+        local frames=("$(tput setaf 39)⣾" "$(tput setaf 38)⣽" "$(tput setaf 33)⣻" "$(tput setaf 32)⢿" "$(tput setaf 31)⡿" "$(tput setaf 27)⣟" "$(tput setaf 26)⣯" "$(tput setaf 25)⣷")
+        local reset_color=$(tput sgr0)
+    fi
     local i=0
     local pid
     local load_tip="@"
-    if [[ "$load_strict" == "1" ]]; then
-        eval "$1" &
-        pid=$!
+    if [[ $loadDebugDisplay == 1 ]]; then
+        eval "$1"
     else
         eval "$1" &
-        pid=$!
     fi
+    pid=$!
     while kill -0 "$pid" 2>/dev/null; do
-        printf "\r%s %s" "${frames[$((i % 8))]}" "$2"
+        printf "\r%s%s %s" "${frames[$((i % 8))]}" "$reset_color" "$2"
         sleep 0.1
         ((i++))
-    done
+    done  
     wait "$pid"
     local status=$?
-    if [[ "$load_strict" == "1" ]]; then
+    if [[ "$loadStrict" == "1" ]]; then
         if [[ $status -eq 0 ]]; then
             load_tip="\e[32m✔\e[37m"
             return_code=$status
@@ -30,3 +45,7 @@ load() {
     echo -e "\r\033[K${load_tip} $2"
     return $return_code
 }
+utilsVar+=(
+  "loadStrict"
+  "loadDebugDisplay"
+)

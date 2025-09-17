@@ -1,5 +1,5 @@
 # 声明路径>$1 ; 指定说明 标题$2 副标题$3 背景标题$4
-#. ~/NumBox/utils/dialog.conf
+#. ~/NumBox/utils/dialog.sh
 # need 'var_file' and functions 'go_back' and 'Dmsgbox'
 edit_var () {
   if [[ $1 == sed ]]; then
@@ -186,7 +186,8 @@ else
     export BACK_VAR=${MENU_OPTIONS[$index]}
     export BACK_VAR_NUM=$selection
   else
-    exit_exec
+    echo "在 $1 目录下没有发现任何文件，且未定义拓展选项"
+    return 1
   fi
 fi
 }

@@ -6,7 +6,7 @@ info () {
 error () {
   echo -e "\e[33m\e[1mERROR: \e[33m${1}\e[0m"
 }
-# red加粗
+# red
 warn () {
   echo -e "\e[31m\e[1mWARN: \e[31m${1}\e[0m"
 }

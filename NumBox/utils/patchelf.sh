@@ -1,18 +1,24 @@
 patchelf_glibc () {
+
     GLIBC_PREFIX=/data/data/com.termux/files/usr/glibc
-    
+
     if [[ ! -d $GLIBC_PREFIX ]]; then
         echo "无法找到glibc目录"
+        return 1
     fi
 
-    if ! command -v patchelf; thenfi
+    if ! command -v patchelf; then
         ehco "patchelf命令没有安装"
+        return 1
+    fi
+
+    if ! command -v file; then
+        echo "file命令未安装"
+        return 1
     fi
     
     local LD_FILE=$(ls $GLIBC_PREFIX/lib/ld-* 2> /dev/null)
     local LD_RPATH="${GLIBC_PREFIX}/lib"
-    
-
 
     if [ "$GLIBC_RUNNER_RUN_FINDLIB" = "true" ] && [ -n "$LD_LIBRARY_PATH" ]; then
         LD_RPATH="$LD_LIBRARY_PATH"

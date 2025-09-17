@@ -1,10 +1,9 @@
 # 声明路径>$1 ; 指定说明 标题$2 副标题$3 背景标题$4 ; 排序类型 $list_type
-#. ~/NumBox/utils/dialog.conf
+#. ~/NumBox/utils/dialog.sh
 file_list() {
   if [[ ! -d $1 ]]; then
     dialog "${dialog_arg[@]}" --title "错误：路径无效" --msgbox "$1" $box_sz2
-    exit_exec
-    return
+    return 1
   fi
   if [[ -z $list_type ]]; then
     list_type=A
@@ -15,7 +14,7 @@ file_list() {
   local MENU_OPTIONS=()
   
   # 1. 添加自定义选项（保留原始序号）
-  if [[ ! $select_bottom == 1 ]]; then
+  if [[ ! $selectBottom == 1 ]]; then
     if [[ ${#CUSTOM_FILE_LIST_OPTIONS[@]} -gt 0 ]]; then
       MENU_OPTIONS+=("${CUSTOM_FILE_LIST_OPTIONS[@]}")
     fi
@@ -29,16 +28,15 @@ file_list() {
     ((FILE_COUNT++))
   done < <("${list_cmd[@]}" 2>/dev/null)
 
-  if [[ $select_bottom == 1 ]]; then
+  if [[ $selectBottom == 1 ]]; then
     if [[ ${#CUSTOM_FILE_LIST_OPTIONS[@]} -gt 0 ]]; then
       MENU_OPTIONS+=("${CUSTOM_FILE_LIST_OPTIONS[@]}")
     fi
   fi
 
   if [[ ${#MENU_OPTIONS[@]} -eq 0 ]]; then
-    dialog "${dialog_arg[@]}" --title "错误：空目录" --msgbox "$1" $box_sz2
-    exit_exec
-    return
+     dialog "${dialog_arg[@]}" --title "错误：空目录" --msgbox "$1" $box_sz2
+     return 1
   fi
 
   # 3. 显示菜单并处理选择
@@ -55,6 +53,6 @@ file_list() {
       fi
     done
   else
-    exit_exec
+    return 1
   fi
 }

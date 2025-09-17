@@ -1,35 +1,20 @@
 #!/bin/bash
-. ~/NumBox/utils/dialog.conf
-. ~/NumBox/utils/export_var_edit.sh
-if [[ ! -z $1 ]]; then
-    export CONTAINER_NAME=$1
-    if [[ ! -d ~/NumBox/data/container/${CONTAINER_NAME} ]]; then
-      echo -e "容器 \e[33m ${CONTAINER_NAME} \e[0m 不存在"
-      exit 1
-    else
-      . ~/NumBox/utils/path.conf
-    fi
-else
-    exit_exec () { . ~/NumBox/Numbox;}
-    . ~/NumBox/utils/file_list.sh
-    file_list "$HOME/NumBox/data/container/" "选择一个容器"
-    if [[ -z $BACK_NAME ]]; then
-      . ~/NumBox/Numbox
-    else
-      export CONTAINER_NAME="${BACK_NAME}"
-      . ~/NumBox/utils/path.conf
-    fi
-fi
+. ~/NumBox/utils/utils.sh
+utilsDoNotReimport=1
+import dialog.sh
+import file_list.sh
+import export_var_edit.sh
+import last_jump.sh
+import select_ctr.sh
+unset_utils_var
+if select_ctr; then
 select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${BACK_NAME}" --menu "\Z3对于变量的解释不一定100%准确，仅供参考\Zn" $box_sz \
   1 "设置容器变量" \
   2 "设置Box64变量" 2>&1 >/dev/tty)
 case $select in
-  "") . ~/NumBox/Set-container.sh "${CONTAINER_NAME}" ;;
-
+  "") last_jump ;;
   # 通用环境变量，总是最后一个应用完成变量覆盖
-
-  1) exit_exec () { . ~/NumBox/Var-setting.sh;}
-  go_back () { set_ctr_var;}
+  1) go_back () { set_ctr_var;}
   set_ctr_var () {
     var_file=$ctr_conf_path/default.conf
     CUSTOM_VAR_EDIT_OPTIONS=("E" "\Z2使用文本编辑器软件打开\Zn" "A" "\Z2添加一个自定义变量\Zn" "D" "\Z2还原默认变量配置\Zn")
@@ -200,8 +185,8 @@ case $select in
         SINGLE_SELECT=(0 禁用 1 启用)
         sed_var_preset_single
         sed_var WINEESYNC $single_select ;;
-        WINEFSYNC=*) aboutVar="启用补丁构建或者proton版本才能使用，不推荐与WINEESYNC一起启用"
-        SINGLE_SELECT=(0 禁用 1 启用)
+        WINEFSYNC=*) aboutVar="启用补丁构建或者proton版本（源码fsync也要修改以适配安卓），且wine使用的c标准库支持futex并且能正确调用到系统内核futex否则真不推荐启用这个，不推荐与WINEESYNC一起启用"
+        SINGLE_SELECT=(0 禁用 1 "启用(不推荐)")
         sed_var_preset_single
         sed_var WINEFSYNC $single_select ;;
         TU_DEBUG=*) aboutVar="如果你的turnip驱动无法正常工作可能需要修改此值"
@@ -258,7 +243,7 @@ case $select in
         "ds-invocations|ds-invocations"
         "cs-invocations|cs-invocations"
         )
-        sed_var_preset_multiple ;;  
+        sed_var_preset_multiple ;;
         ZINK_USE_LAVAPIPE=*) aboutVar="ZINK使用lavapipe"
         SINGLE_SELECT=(false 禁用 true 启用)
         sed_var_preset_single
@@ -409,14 +394,14 @@ case $select in
 
   # BOX64
 
-  2) exit_exec () { . ~/NumBox/Var-setting.sh;}
-  go_back () { set_ctr_box64_var;}
+  2) go_back () { set_ctr_box64_var;}
   set_ctr_box64_var () {
     var_file="$ctr_conf_path/box64.conf"
     CUSTOM_VAR_EDIT_OPTIONS=("E" "\Z2使用文本编辑器软件打开\Zn" "A" "\Z2添加一个自定义变量\Zn" "S" "\Z3选择预设\Zn" "R" "\Z2使用文本编辑器软件打开RCFILE\Zn" P "\Z3选择RCFILE预设\Zn")
     var_list $var_file "${BACK_NAME}" "$HOME/NumBox/data/container/${BACK_NAME}/config/box64.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
     if [[ $BACK_VAR_NUM == E ]]; then
-      . ~/NumBox/utils/empty.sh sd
+      . ~/NumBox/utils/empty.sh 
+      create_dir sd
       cp $var_file $sd_temp/box64.conf
       termux-open --content-type text $sd_temp/box64.conf
       dialog ${dialog_arg[@]} --title "是否保存？" --yesno "$sd_temp/box64.conf" $box_sz2
@@ -425,7 +410,6 @@ case $select in
       fi
       set_ctr_box64_var
     elif [[ $BACK_VAR_NUM == P ]]; then
-      exit_exec () { set_ctr_box64_var;}
       CUSTOM_FILE_LIST_OPTIONS=("U" "我定义的预设文件")
       file_list "$HOME/NumBox/default/box64rc/" "选择一个RCFILE预设"
       if [[ $BACK_NUM == U ]]; then
@@ -444,7 +428,8 @@ case $select in
         go_back
       fi
     elif [[ $BACK_VAR_NUM == R ]]; then
-      . ~/NumBox/utils/empty.sh sd
+      . ~/NumBox/utils/empty.sh 
+      create_dir sd
       cp ~/NumBox/default/box64/box64.box64rc $sd_temp/box64.box64rc
       termux-open --content-type text $sd_temp/box64.box64rc
       dialog ${dialog_arg[@]} --title "是否保存？" --yesno "$sd_temp/box64.box64rc" $box_sz2
@@ -456,7 +441,6 @@ case $select in
         cp $HOME/NumBox/default/box64/${BACK_NAME} $ctr_conf_path/box64.conf && go_back
       fi
     elif [[ $BACK_VAR_NUM == S ]]; then
-      exit_exec () { set_ctr_box64_var;}
       CUSTOM_FILE_LIST_OPTIONS=("U" "我定义的预设文件")
       file_list "$HOME/NumBox/default/box64/" "选择一个预设"
       if [[ $BACK_NUM == U ]]; then
@@ -543,7 +527,7 @@ case $select in
         SINGLE_SELECT=(0 0 1 1)
         sed_var_preset_single
         sed_var BOX64_UNITYPLAYER $single_select ;;
-        box64presetName=*) 
+        box64presetName=*)
         input_box64presetName=$(dialog --title "自定义预设名称" --inputbox "$(awk -F'=' '{print $2}' <<< "$BACK_VAR" | sed 's/^"\|"$//g')" $box_sz2 "" 2>&1 >/dev/tty)
         if [[ -z $input_box64presetName ]] || [[ $input_box64presetName == $varVaule ]]; then
           set_ctr_box64_var
@@ -574,3 +558,6 @@ case $select in
   }
   set_ctr_box64_var ;;
 esac
+else
+  last_jump
+fi

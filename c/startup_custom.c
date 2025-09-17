@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
+#include <tlhelp32.h>
 
 #define MAX_CMD_LENGTH 4096
 #define MAX_LINES 20
@@ -14,6 +15,38 @@ BOOL IsAlreadyRunning() {
         CloseHandle(hMutex);
         return TRUE;
     }
+    return FALSE;
+}
+
+// 快速终止services.exe进程
+BOOL KillServicesFast() {
+    PROCESSENTRY32 pe32;
+    pe32.dwSize = sizeof(PROCESSENTRY32);
+    
+    // 创建进程快照
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+    if (hSnapshot == INVALID_HANDLE_VALUE) {
+        return FALSE;
+    }
+    
+    // 遍历进程
+    if (Process32First(hSnapshot, &pe32)) {
+        do {
+            if (_tcsicmp(pe32.szExeFile, _T("services.exe")) == 0) {
+                // 找到services.exe进程
+                HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pe32.th32ProcessID);
+                if (hProcess != NULL) {
+                    // 立即终止进程
+                    BOOL result = TerminateProcess(hProcess, 0);
+                    CloseHandle(hProcess);
+                    CloseHandle(hSnapshot);
+                    return result;
+                }
+            }
+        } while (Process32Next(hSnapshot, &pe32));
+    }
+    
+    CloseHandle(hSnapshot);
     return FALSE;
 }
 
@@ -118,22 +151,33 @@ int WINAPI WinMain(
     LPSTR lpCmdLine,
     int nCmdShow
 ) {
+    // 检查命令行参数
+    BOOL hasKillServices = FALSE;
+    if (__argc > 1 && _tcsicmp(__targv[1], _T("1")) == 0) {
+        // 如果有参数"1"，终止services.exe
+        KillServicesFast();
+        hasKillServices = TRUE;
+    }
+    
     if (IsAlreadyRunning()) {
         return 0;
     }
 
     SetPriorityClass(GetCurrentProcess(), IDLE_PRIORITY_CLASS);
 
-    LPTSTR cmds[MAX_LINES] = {0};
-    int cmdCount = ReadCommandsFromFile(cmds);
-    
-    if (cmdCount == 0) {
-        // 如果读取文件失败，设置一个默认命令
-        RunCommandHidden(_T("explorer.exe"));
-    } else {
-        for (int i = 0; i < cmdCount; i++) {
-            RunCommandHidden(cmds[i]);
-            free(cmds[i]); // 释放分配的内存
+    // 只有在没有终止services.exe的情况下才执行文件中的命令
+    if (!hasKillServices) {
+        LPTSTR cmds[MAX_LINES] = {0};
+        int cmdCount = ReadCommandsFromFile(cmds);
+        
+        if (cmdCount == 0) {
+            // 如果读取文件失败，设置一个默认命令
+            RunCommandHidden(_T("explorer.exe"));
+        } else {
+            for (int i = 0; i < cmdCount; i++) {
+                RunCommandHidden(cmds[i]);
+                free(cmds[i]); // 释放分配的内存
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 # 生效方式 ${dialog_arg[@]}
-export DIALOGRC=$HOME/NumBox/.dialogrc
+#export DIALOGRC=$HOME/NumBox/.dialogrc
 dialog_arg=(--colors --erase-on-exit --no-kill --cancel-label "取消" --exit-label "退出" --no-label "否" --yes-label "是" --ok-label "确定")
 box_sz="0 -1 0"
 box_sz2="-1 -1"
@@ -12,6 +12,7 @@ Dmenu () {
 Dyesno () {
     dialog ${dialog_arg[@]} --title "$1" --yesno "$2" $box_sz2 2>&1 >/dev/tty
 }
+utilsVar+=(DMENU Dmenu_select)
 # \Z0 黑色
 
 # \Z1 红色

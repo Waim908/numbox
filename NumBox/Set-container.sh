@@ -1,16 +1,15 @@
 #!/bin/bash
-. ~/NumBox/utils/dialog.conf
+. ~/NumBox/utils/dialog.sh
 . ~/NumBox/utils/var_edit.sh
 . ~/NumBox/utils/file_list.sh
 unset var_file
 if [[ ! -z $1 ]]; then
-    export CONTAINER_NAME=$1
-    if [[ ! -d ~/NumBox/data/container/${CONTAINER_NAME} ]]; then
+    export CONTAINER_NAME="$1"
+    if [[ ! -d ~/NumBox/data/container/"${CONTAINER_NAME}" ]]; then
       echo -e "容器 \e[33m ${CONTAINER_NAME} \e[0m 不存在"
       exit 1
     fi
 else
-    exit_exec () { . ~/NumBox/Numbox;}
     file_list "$HOME/NumBox/data/container/" "选择一个容器"
     if [[ -z $BACK_NAME ]]; then
       . ~/NumBox/Numbox
@@ -19,7 +18,7 @@ else
     fi
 fi
 
-. ~/NumBox/utils/path.conf
+. ~/NumBox/utils/path.sh
 # regeistry
 # setname::value
 Dmenu_select=(
@@ -74,8 +73,8 @@ case $DMENU in
     fi
   Dmenu_select=(
     1 "通过termux-x11-preference获取分辨率数据(txp)\Z2推荐,termux-x11设置一下就行了\Zn"
-    2 "通过xrandr获取分辨率数据(xrandr)" 
-    3 "自定义分辨率(set-txp)(强制修改客户端为\Z2custom\Zn)"
+    2 "通过xrandr获取分辨率数据(xrandr)"
+    3 "自定义分辨率(set-txp)(强制修改客户端为\Z2custom\Zn，分辨率获取失败使用此值)"
   )
   Dmenu "分辨率设置" "类型：\Z3${getScreenRes}\Zn 自定义分辨率：\Z3${screenRes_is}\Zn"
   case $DMENU in
@@ -119,7 +118,6 @@ case $DMENU in
   }
   set_screenres_menu ;;
   4) mount_disk_menu () {
-  exit_exec () { Dmsgbox "错误" "目录为空" && mount_disk_menu ;}
 #    CUSTOM_FILE_LIST_OPTIONS=(V 查看挂载盘路径对应关系 A 添加挂载盘)
   Dmenu_select=("A" "\Z2添加或修改挂载盘\Zn" "$(ls --ignore="c:" --ignore="h:" -lA $HOME/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/ | awk '{print $9,$11}')")
   Dmenu "挂载盘设置" "\Z3若进入容器后无法在对应盘符找到你的文件（路径有文件但是为空），请尝试修改路径\Zn"
@@ -147,7 +145,6 @@ case $DMENU in
           mount_disk_menu
         fi ;;
         *) CUSTOM_FILE_LIST_OPTIONS=("T" "\Z2直接使用这个路径\Zn")
-        exit_exec { mount_disk_menu ;}
         file_list "$DMENU"
         if [[ -z $BACK_NAME ]]; then
           mount_disk_menu
@@ -194,10 +191,23 @@ case $DMENU in
   esac
   }
   mount_disk_menu ;;
-  5) Dmenu_select=(1 "Turnip(Adreno)" 2 "Panfrost(Mali)" 3 "LLVMPIPE(CPU)" 4 "VirGL")
-  Dmenu "GPU驱动设置" "当前："
+  5) gpu_driver_menu () {
+  . $ctr_conf_path/ctr.cfg
+  gpuName=$(grep "driverName=" $ctr_conf_path/driver.conf | sed "s%driverName=%%")
+  Dmenu_select=(E "mesa3d拓展变量" 1 "Turnip(Adreno)" 2 "Panfrost(Mali)" 3 "LLVMPIPE(CPU)" 4 "VirGL/Virtio(venus)" 5 "Glibc自动选择")
+  Dmenu "GPU驱动设置" "当前：$(grep "ctr_conf_path")"
   case $DMENU in
     "") ~/NumBox/Set-container.sh "${CONTAINER_NAME}" ;;
-    1) 
+    E) Dyesno "是否启用mesa驱动拓展变量？" "这么做可以提供一部分程序兼容性，也有可能导致未知问题"
+    if
+    ;;
+    1) cp ~/NumBox/default/gpu/turnip_zink.conf $ctr_conf_path/ && gpu_driver_menu ;;
+    2) cp ~/NumBox/default/gpu/panforst.conf $ctr_conf_path/driver.conf && gpu_driver_menu ;;
+    3) cp ~/NumBox/default/gpu/llvmpipe.conf $ctr_conf_path/driver.conf && gpu_driver_menu ;;
+    4) cp ~/NumBox/default/gpu/llvmpipe.conf $ctr_conf_path/driver.conf && gpu_driver_menu ;;
+    5) echo "" > $ctr_conf_path/driver.conf ;;
   esac
+  }
+  gpu_driver_menu ;;
+
 esac

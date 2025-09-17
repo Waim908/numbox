@@ -1,12 +1,16 @@
 #!/bin/bash
-. ~/NumBox/utils/dialog.conf
-. ~/NumBox/utils/load.sh
-. ~/NumBox/data/config/numbox.cfg
-. ~/NumBox/utils/empty.sh sd
-. ~/NumBox/utils/reg_edit.sh
-. ~/NumBox/utils/file_list.sh
-. ~/NumBox/utils/openx11.sh
-. ~/NumBox/utils/echo.sh
+utilsDoNotReimport=1
+. ~/NumBox/utils/utils.sh
+import dialog.sh
+import load.sh
+import numbox.cfg
+import empty.sh 
+import reg_edit.sh
+import file_list.sh
+import openx11.sh
+import echo.sh
+unset_utils_var
+create_dir sd
 stopx11
 # renice -n ${USER_NICE} -p $$
 # rmdir ~/NumBox/data/container/*/
@@ -35,28 +39,26 @@ else
           dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "字符串不能为_Temp" $box_sz2
           . ~/NumBox/Create-container.sh
     fi
-    create_dir=$(mkdir ~/NumBox/data/container/_Temp 2>&1 >/dev/null)
-    if [[ ! -z $create_dir ]]; then
-      dialog ${dialog_arg[@]} --title "\Z1创建\Zn${input}\Z1失败\Zn" --msgbox "原因：$create_dir" $box_sz2
+    temp_dir=$(mkdir ~/NumBox/data/container/_Temp 2>&1 >/dev/null)
+    if [[ ! -z $temp_dir ]]; then
+      dialog ${dialog_arg[@]} --title "\Z1创建\Zn${input}\Z1失败\Zn" --msgbox "原因：$temp_dir" $box_sz2
     else
       # Former select_winever function content
       export CONTAINER_NAME="_Temp"
-      . ~/NumBox/utils/path.conf
+      . ~/NumBox/utils/path.sh
       parallel ::: "mkdir $ctr_path/disk" "mkdir $ctr_path/wine" "mkdir $ctr_path/config" "mkdir $ctr_path/temp"
       parallel ::: "mkdir $ctr_disk_c/windows/system32" "mkdir $ctr_disk_c/windows/syswow64" "mkdir $ctr_path/temp/mesa" "mkdir $ctr_path/temp/windows" "cp ~/NumBox/default/box64rc/box64rc.box64rc $ctr_conf_path/" "cp ~/NumBox/default/ctr/* $ctr_conf_path/" "cp ~/NumBox/default/box64/兼容 $ctr_conf_path/box64.conf"
       . ~/NumBox/utils/package.sh
       tar_arg=("--strip-components=1")
-      exit_exec () {
-        dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2
-        . ~/NumBox/Numbox
-      }
-      export -f exit_exec
       if [[ $(ls ~/NumBox/resources/wine/ | wc -l ) -lt 5 ]]; then
-        select_bottom=1
+        selectBottom=1
       else
-        unset select_bottom
+        unset selectBottom
       fi
-      file_list "/sdcard/NumBox/resources/wine" "/sdcard/NumBox/resources/wine" "选择一个wine版本" "${input}"
+      if ! file_list "/sdcard/NumBox/resources/wine" "/sdcard/NumBox/resources/wine" "选择一个wine版本" "${input}"; then
+        warn "/sdcard/NumBox/resources/wine 目录下没有找到 wine包，请导入"
+        exit 1
+      fi
       if [[ -z $BACK_NAME ]]; then
         dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
       elif [[ -f ~/NumBox/data/resources/wine/${BACK_NAME} ]]; then
@@ -72,10 +74,10 @@ else
       #创建容器
       # Proton 用户名适配
       export USER="steamuser"
-      . ~/NumBox/utils/boot.conf
+      . ~/NumBox/utils/boot.sh
       unset DISPLAY
       unset tar_arg
-      export load_strict=1
+      export loadStrict=1
       if ! load "box64 wineboot -u >$TMPDIR/build_wineboot.log 2>&1" "构建容器..."; then
         cat $TMPDIR/build_wineboot.log
         warn 致命错误,容器构建失败

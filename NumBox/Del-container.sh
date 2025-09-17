@@ -1,9 +1,7 @@
 #!/bin/bash
-. ~/NumBox/utils/dialog.conf
-export load_strict=1
+. ~/NumBox/utils/dialog.sh
+export loadStrict=1
 . ~/NumBox/utils/load.sh
-exit_exec () { . ~/NumBox/Numbox;}
-export -f exit_exec
 . ~/NumBox/utils/file_list.sh
 if [[ -z $(ls -A ~/NumBox/data/container/) ]]; then
     CUSTOM_FILE_LIST_OPTIONS=("C" "\Z2创建容器?\Zn" "E" "\Z1当前没有可删除的容器\Zn")

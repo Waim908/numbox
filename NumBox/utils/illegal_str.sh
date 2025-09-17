@@ -12,3 +12,4 @@ then
 else
     export str_is=bad
 fi
+loadStrict+=("str_is")
