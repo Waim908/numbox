@@ -10,10 +10,7 @@
 
 4.加入更多可选驱动（swrast virtio panfrost）
 
-
-## 关于
-
-在termux上的glibc环境运行wine，支持容器管理和容器的导入导出
+5.插件系统
 
 ## 安装步骤(至少保留>=10G的存储空间用来存放容器和NumBox)
 
@@ -62,8 +59,6 @@
 
 [wine](https://www.winehq.org)
 
-[wine-termux](https://github.com/Waim908/wine-termux)
-
 [termux](https://github.com/termux/termux-app/)
 
 [termux-x11](https://github.com/termux/termux-x11)
@@ -72,4 +67,10 @@
 
 [wine主题](https://github.com/listumps/wine_themes)
 
+# NumBoxProject Subproject 我的子项目
+gstreamer
+glibc
+[wine-termux](https://github.com/Waim908/wine-termux)
+gwow64-wine
+mesa3d-driver
 

@@ -56,3 +56,4 @@ file_list() {
     return 1
   fi
 }
+utilsVar+=(BACK_NUM BACK_NAME)

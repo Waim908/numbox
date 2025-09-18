@@ -186,3 +186,4 @@ else
   fi
 fi
 }
+utilsVar+=(BACK_VAR BACK_VAR_NUM)
