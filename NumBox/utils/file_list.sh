@@ -1,58 +1,48 @@
-# 声明路径>$1 ; 指定说明 标题$2 副标题$3 背景标题$4 ; 排序类型 $list_type
-#. ~/NumBox/utils/dialog.sh
-file_list() {
-  if [[ ! -d $1 ]]; then
-    dialog "${dialog_arg[@]}" --title "错误：路径无效" --msgbox "$1" $box_sz2
-    return 1
-  fi
-  if [[ -z $list_type ]]; then
-    list_type=A
-  fi
-  if [[ -z $list_cmd ]]; then
-    local list_cmd=(ls -"$list_type" -- "$1")
-  fi
-  local MENU_OPTIONS=()
-  
-  # 1. 添加自定义选项（保留原始序号）
-  if [[ ! $selectBottom == 1 ]]; then
-    if [[ ${#CUSTOM_FILE_LIST_OPTIONS[@]} -gt 0 ]]; then
-      MENU_OPTIONS+=("${CUSTOM_FILE_LIST_OPTIONS[@]}")
-    fi
-  fi
-
-  # 2. 添加文件列表（从1开始编号）
-  FILE_COUNT=1
-  while IFS= read -r file; do
-    filename=$(basename "$file")
-    MENU_OPTIONS+=("$FILE_COUNT" "$filename")  # 文件用数字编号
-    ((FILE_COUNT++))
-  done < <("${list_cmd[@]}" 2>/dev/null)
-
-  if [[ $selectBottom == 1 ]]; then
-    if [[ ${#CUSTOM_FILE_LIST_OPTIONS[@]} -gt 0 ]]; then
-      MENU_OPTIONS+=("${CUSTOM_FILE_LIST_OPTIONS[@]}")
-    fi
-  fi
-
-  if [[ ${#MENU_OPTIONS[@]} -eq 0 ]]; then
-     dialog "${dialog_arg[@]}" --title "错误：空目录" --msgbox "$1" $box_sz2
-     return 1
-  fi
-
-  # 3. 显示菜单并处理选择
-  local selection=$(dialog "${dialog_arg[@]}" --title "$2" --backtitle "$4" \
-             --menu "$3" $box_sz "${MENU_OPTIONS[@]}" 2>&1 >/dev/tty)
-
-  if [[ -n $selection ]]; then
-    # 查找选择的项目名称
-    for ((i=1; i<${#MENU_OPTIONS[@]}; i+=2)); do
-      if [[ "${MENU_OPTIONS[$i-1]}" == "$selection" ]]; then
-        export BACK_NUM=$selection
-        export BACK_NAME="${MENU_OPTIONS[$i]}"
-        break
-      fi
-    done
+# 直接重写，之前deepseek写的居然要循环
+file_list () {
+  # Need import dialog
+  if [[ -z $1 ]]; then
+    local list_path="$(pwd)"
   else
+    local list_path=${1}
+  fi
+  if [[ -z $lsArg ]]; then
+    local arg=(-1A)
+  else
+    local arg=${lsArg[@]}
+  fi
+  local get_file_list=($(ls ${arg[@]} $list_path | nl))
+  if [[ ! -z ${otherOptions} ]]; then
+    if [[ -z $listBottom ]]; then
+      local get_file_list=("${otherOptions[@]}" "${get_file_list[@]}")
+    else
+      local get_file_list+=("${otherOptions[@]}")
+    fi
+  fi
+  if [[ -z $get_file_list ]];  then
+    if [[ -d "$list_path" ]]; then
+      local dir_is_true="\Z2yes\Zn"
+    else
+      local dir_is_true="\Z1no\Zn"
+    fi
+    if [[ -z $(ls -1 $list_path) ]]; then
+      local dir_is_empty="\Z1yes\Zn"
+    else
+      local dir_is_empty="\Z2no\Zn"
+    fi
+    if local test=$(ls -1 $list_path);  then
+      local ls_error="\Z2no\Zn"
+    else
+      local ls_error="\Z1${test}\Zn"
+    fi
+    Dmsgbox "\Z1错误\Zn" "可以显示的内容为空:\n=> \"\Z4$list_path\Zn\"\n1.该目录是否存在？=>$dir_is_true\n2.该目录是否为空？=>$dir_is_empty\n3.其他错误？=>$ls_error"
     return 1
   fi
+  local file_list_menu=$(dialog ${dialog_arg[@]} --no-shadow --backtitle "$4" --title "$2" --menu "$3" $box_sz ${get_file_list[@]} 2>&1 >/dev/tty)
+  case $file_list_menu in
+    "") return 0 ;;
+    *) export returnFileListNum="${file_list_menu}"
+    export returnFileName="${get_file_list[$(($file_list_menu+($file_list_menu-1)))]}" ;;
+  esac
 }
+utilsVar+=(returnFileListNum returnFileName)

@@ -6,7 +6,7 @@ edit_var () {
   # varName,varValue
     sed -i "s%^${2}=.*%${2}=\"${3}\"%g" $4
   elif [[ $1 == sed2 ]]; then
-    sed -i "s%^${2}=.*%${3}=\"${4}\"%g" $5  
+    sed -i "s%^${2}=.*%${3}=\"${4}\"%g" $5
   # annotation
   elif [[ $1 == ann ]]; then
     sed -i "s%^${2}=%#${2}=%g" $3
@@ -27,7 +27,7 @@ search_var () {
     echo ${3} | grep --color ${2}
     read -s -n1 -p "输入任意字符返回" && go_back ;;
     file) echo -e "搜索到可用变量的变量值\n"
-    grep --color ${3} ${2} 
+    grep --color ${3} ${2}
     read -s -n1 -p "输入任意字符返回" && go_back ;;
   esac
 }
@@ -63,7 +63,7 @@ sed_var_dialog () {
       edit_var sed2 "$varName" "$newVarName" "$newVarValue" $var_file
       go_back
     else
-      dialog ${dialog_arg[@]} --title "\Z1未知错误\Zn" --msgbox "\$BACK_NAME=${BACK_NAME}"
+      dialog ${dialog_arg[@]} --title "\Z1未知错误\Zn" --msgbox "\$returnFileName=${returnFileName}"
     fi
   else
     form_var=$(dialog ${dialog_arg[@]} --title "编辑" --extra-button --extra-label "删除此行" --form "不是有效的变量值，如果是请删除#号" $box_sz \
@@ -100,6 +100,7 @@ sed_var_preset_multiple () {
   varName="${BACK_VAR%%=*}"
   varValue=$(awk -F'=' '{print $2}' <<< "$BACK_VAR" | sed 's/^"\|"$//g')
   # need $ALL_SELECT
+  # 既无描述 nodesc
   if [[ $2 == nodesc ]]; then
     MULTIPLE_SELECT=()
     for item in ${ALL_SELECT[@]}; do
@@ -186,3 +187,4 @@ else
   fi
 fi
 }
+utilsVar+=(BACK_VAR BACK_VAR_NUM)

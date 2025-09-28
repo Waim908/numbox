@@ -1,4 +1,4 @@
-# 进入glibc环境`grun --shell` 
+# 进入glibc环境`grun --shell`
 
 # 没Key每个小时可以使用60次，有Key 1500/h，其他限制针对LFS (VERSION: 2022)
 # 详情见https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api
@@ -39,7 +39,9 @@ check_var () {
 
 # res_get $1<=type $2<=tag_name
 # 返回值推荐作为数组存储在变量方便处理
-
+# 返回值带双引号!
+# 返回值带双引号!
+# 返回值带双引号!
 gh_get () {
   if [[ -z $apiUrl ]]; then
     local api_url="https://api.github.com/repos/${ghUser}/${ghRepo}"
@@ -65,6 +67,7 @@ gh_get () {
       tag-res) Gcurl "$api_url/releases/tags/${2}" | jq . ;;
       tag-res-body) Gcurl "$api_url/releases/tags/${2}" | jq .body ;;
       tag-res-dl) Gcurl "$api_url/releases/tags/${2}" | jq ".assets[] | .browser_download_url" ;;
+      tag-res-src) Gcurl "$api_url/releases/tags/${2}" | jq .tarball_url ;;
       latest-res-src) Gcurl "$api_url/releases/tags/${2}" | jq .tarball_url ;;
     esac
   fi

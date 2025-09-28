@@ -1,5 +1,5 @@
 pigz
-7z
+p7zip
 xwayland
 termux-x11-nightly 或者本地包
 pulseaudio

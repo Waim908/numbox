@@ -1,22 +1,14 @@
 #!/bin/bash
-. ~/NumBox/utils/dialog.sh
-. ~/NumBox/utils/var_edit.sh
-. ~/NumBox/utils/file_list.sh
-unset var_file
-if [[ ! -z $1 ]]; then
-    export CONTAINER_NAME="$1"
-    if [[ ! -d ~/NumBox/data/container/"${CONTAINER_NAME}" ]]; then
-      echo -e "容器 \e[33m ${CONTAINER_NAME} \e[0m 不存在"
-      exit 1
-    fi
-else
-    file_list "$HOME/NumBox/data/container/" "选择一个容器"
-    if [[ -z $BACK_NAME ]]; then
-      . ~/NumBox/Numbox
-    else
-      export CONTAINER_NAME="${BACK_NAME}"
-    fi
-fi
+main () {
+utilsDoNotReimport=1
+. ~/NumBox/utils/utils.sh
+import dialog.sh
+import var_edit.sh
+import file_list.sh
+import select_ctr.sh
+
+unset_utils_var
+if ! select_ctr ; then
 
 . ~/NumBox/utils/path.sh
 # regeistry
@@ -104,7 +96,7 @@ case $DMENU in
             sed -i "s%screenRes=.*%screenRes=\"${width}x${height}\"%g" $ctr_conf_path/ctr.conf
             set_screenres_menu
           else
-            Dmsgbox "\Z1错误\Zn" "请输入正确的分辨率格式（不能为0），如：1920x1080"      
+            Dmsgbox "\Z1错误\Zn" "请输入正确的分辨率格式（不能为0），如：1920x1080"
             set_screenres_menu
           fi
         fi
@@ -121,7 +113,7 @@ case $DMENU in
 #    CUSTOM_FILE_LIST_OPTIONS=(V 查看挂载盘路径对应关系 A 添加挂载盘)
   Dmenu_select=("A" "\Z2添加或修改挂载盘\Zn" "$(ls --ignore="c:" --ignore="h:" -lA $HOME/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/ | awk '{print $9,$11}')")
   Dmenu "挂载盘设置" "\Z3若进入容器后无法在对应盘符找到你的文件（路径有文件但是为空），请尝试修改路径\Zn"
-    # file_list "$HOME/NumBox/data/container/$CONTAINER_NAME/disk/dosdevices/" "挂载盘设置" 
+    # file_list "$HOME/NumBox/data/container/$CONTAINER_NAME/disk/dosdevices/" "挂载盘设置"
   case $DMENU in
     "") . ~/NumBox/Set-container.sh "${CONTAINER_NAME}" ;;
     A) Dmenu_select=(d: d: c: c: e: e: f: f: g: g: i: i: j: j: k: k: l: l: m: m: n: n: o: o: p: p: q: q: r: r: s: s: t: t: u: u: v: v: w: w: x: x: y: y:)
@@ -146,7 +138,7 @@ case $DMENU in
         fi ;;
         *) CUSTOM_FILE_LIST_OPTIONS=("T" "\Z2直接使用这个路径\Zn")
         file_list "$DMENU"
-        if [[ -z $BACK_NAME ]]; then
+        if [[ -z $returnFileName ]]; then
           mount_disk_menu
         elif [[ $BACK_NUM == T ]]; then
             if ! ln -sf "${DMENU}/" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
@@ -155,7 +147,7 @@ case $DMENU in
             fi
           mount_disk_menu
         else
-          if ! ln -sf "${DMENU}/${BACK_NAME}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
+          if ! ln -sf "${DMENU}/${returnFileName}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
             Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除，或者不存在由于安卓权限限制，可能需要尽量选择子目录而非存储的根目录"
             rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
           fi
@@ -182,11 +174,11 @@ case $DMENU in
         fi ;;
       esac ;;
     esac ;;
-  *:) Dyesno "是否删除此挂载盘？" "$DMENU=>$(readlink ~/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/$DMENU)" 
+  *:) Dyesno "是否删除此挂载盘？" "$DMENU=>$(readlink ~/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/$DMENU)"
   if [[ $? == 0 ]]; then
     rm -rf ~/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/$DMENU && mount_disk_menu
   else
-    mount_disk_menu 
+    mount_disk_menu
   fi ;;
   esac
   }
@@ -211,3 +203,4 @@ case $DMENU in
   gpu_driver_menu ;;
 
 esac
+}

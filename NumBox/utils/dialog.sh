@@ -12,7 +12,10 @@ Dmenu () {
 Dyesno () {
     dialog ${dialog_arg[@]} --title "$1" --yesno "$2" $box_sz2 2>&1 >/dev/tty
 }
-utilsVar+=(DMENU Dmenu_select)
+Dinputbox () {
+    export DINPUTBOX=$(dialog ${dialog_arg[@]} --title "$1" --inputbox "$2" $box_sz2 "$3" 2>&1 >/dev/tty)
+}
+utilsVar+=(DMENU Dmenu_select DINPUT)
 # \Z0 黑色
 
 # \Z1 红色

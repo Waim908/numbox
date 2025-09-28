@@ -4,7 +4,7 @@ utilsDoNotReimport=1
 import dialog.sh
 import load.sh
 import numbox.cfg
-import empty.sh 
+import empty.sh
 import reg_edit.sh
 import file_list.sh
 import openx11.sh
@@ -57,13 +57,13 @@ else
       fi
       if ! file_list "/sdcard/NumBox/resources/wine" "/sdcard/NumBox/resources/wine" "选择一个wine版本" "${input}"; then
         warn "/sdcard/NumBox/resources/wine 目录下没有找到 wine包，请导入"
-        exit 1
+
       fi
-      if [[ -z $BACK_NAME ]]; then
+      if [[ -z $returnFileName ]]; then
         dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
-      elif [[ -f ~/NumBox/data/resources/wine/${BACK_NAME} ]]; then
+      elif [[ -f ~/NumBox/data/resources/wine/${returnFileName} ]]; then
         echo 开始解压文件
-        if ! un_txz "$HOME/NumBox/data/resources/wine/${BACK_NAME}" "$ctr_path/wine"; then
+        if ! un_txz "$HOME/NumBox/data/resources/wine/${returnFileName}" "$ctr_path/wine"; then
             echo 文件解压失败 && exit 1
         fi
       else

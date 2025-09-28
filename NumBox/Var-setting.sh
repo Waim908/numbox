@@ -8,7 +8,7 @@ import last_jump.sh
 import select_ctr.sh
 unset_utils_var
 if select_ctr; then
-select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${BACK_NAME}" --menu "\Z3对于变量的解释不一定100%准确，仅供参考\Zn" $box_sz \
+select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${returnFileName}" --menu "\Z3对于变量的解释不一定100%准确，仅供参考\Zn" $box_sz \
   1 "设置容器变量" \
   2 "设置Box64变量" 2>&1 >/dev/tty)
 case $select in
@@ -18,7 +18,7 @@ case $select in
   set_ctr_var () {
     var_file=$ctr_conf_path/default.conf
     CUSTOM_VAR_EDIT_OPTIONS=("E" "\Z2使用文本编辑器软件打开\Zn" "A" "\Z2添加一个自定义变量\Zn" "D" "\Z2还原默认变量配置\Zn")
-    var_list $var_file "${BACK_NAME}" "$HOME/NumBox/data/container/${BACK_NAME}/config/default.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
+    var_list $var_file "${returnFileName}" "$HOME/NumBox/data/container/${returnFileName}/config/default.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
     if [[ $BACK_VAR_NUM == E ]]; then
       . ~/NumBox/utils/empty.sh sd
       cp $var_file $sd_temp/default.conf
@@ -70,7 +70,7 @@ case $select in
             lcall=$(dialog ${dialog_arg[@]} --title "自定义语言编码(LC_ALL)" --inputbox "格式：语言_区域.编码" $box_sz 2>&1 >/dev/tty)
             if [[ -z $lcall ]]; then
               set_ctr_var
-              
+
             else
               edit_var sed "LC_ALL" "${lcall}" $var_file
               set_ctr_var
@@ -218,7 +218,7 @@ case $select in
         "startup|startup"
         "syncdraw|syncdraw"
         "sysmem|sysmem"
-        "unaligned_store|unaligned_store"        
+        "unaligned_store|unaligned_store"
         )
         sed_var_preset_multiple ;;
         GALLIUM_HUD=*) aboutVar="使用OpenGL渲染时显示帧率和折线图\n 只显示fps:simple,fps \n显示fps和折线图:fps"
@@ -258,7 +258,7 @@ case $select in
             go_back
           else
             sed_var MESA_EXTENSION_MAX_YEAR $input_mesa_year
-          fi 
+          fi
         esac ;;
         LIBGL_ALWAYS_SOFTWARE=*) aboutVar="始终使用软件渲染"
         SINGLE_SELECT=(true 启用 false 禁用 注释 禁用)
@@ -277,7 +277,7 @@ case $select in
           else
             sed_var MESA_GL_VERSION_OVERRIDE $input_mesa_gl_version
           fi
-        else 
+        else
           sed_var MESA_GL_VERSION_OVERRIDE $single_select
         fi ;;
         DXVK_HUD=*) aboutVar="调用dxvk时显信息"
@@ -385,7 +385,11 @@ case $select in
         STAGING_WRITECOPY=*) aboutVar="仅限应用了staging补丁的wine，此变量可能导致大量错误发生，不推荐启用\n 模拟Windows的内存管理系统"
         SINGLE_SELECT=(1 启用 0 禁用)
         sed_var_preset_single
-        sed_var STAGING_SHARED_MEMORY $single_select ;;        
+        sed_var STAGING_SHARED_MEMORY $single_select ;;
+        LARGE_ADDRESS_AWARE=*) aboutVar="仅限应用了LAA补丁的wine，此变量可以使32位应用程序可以使用2G以上的内存(大概到4G?)"
+        SINGLE_SELECT=(1 启用 0禁用)
+        sed_var_preset_single
+        sed_var LARGE_ADDRESS_AWARE $single_select ;;
         *) sed_var_dialog ;;
       esac
     fi
@@ -398,9 +402,9 @@ case $select in
   set_ctr_box64_var () {
     var_file="$ctr_conf_path/box64.conf"
     CUSTOM_VAR_EDIT_OPTIONS=("E" "\Z2使用文本编辑器软件打开\Zn" "A" "\Z2添加一个自定义变量\Zn" "S" "\Z3选择预设\Zn" "R" "\Z2使用文本编辑器软件打开RCFILE\Zn" P "\Z3选择RCFILE预设\Zn")
-    var_list $var_file "${BACK_NAME}" "$HOME/NumBox/data/container/${BACK_NAME}/config/box64.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
+    var_list $var_file "${returnFileName}" "$HOME/NumBox/data/container/${returnFileName}/config/box64.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
     if [[ $BACK_VAR_NUM == E ]]; then
-      . ~/NumBox/utils/empty.sh 
+      . ~/NumBox/utils/empty.sh
       create_dir sd
       cp $var_file $sd_temp/box64.conf
       termux-open --content-type text $sd_temp/box64.conf
@@ -415,30 +419,30 @@ case $select in
       if [[ $BACK_NUM == U ]]; then
         unset CUSTOM_FILE_LIST_OPTIONS
         file_list "$HOME/NumBox/data/box64rc/" "选择一个你定义的预设文件"
-        if [[ -f $HOME/NumBox/data/box64rc/${BACK_NAME} ]]; then
-          cp $HOME/NumBox/data/box64rc/${BACK_NAME} $ctr_conf_path/box64.conf
+        if [[ -f $HOME/NumBox/data/box64rc/${returnFileName} ]]; then
+          cp $HOME/NumBox/data/box64rc/${returnFileName} $ctr_conf_path/box64.conf
         else
-          dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "未能找到文件\Z2$HOME/NumBox/data/box64rc/${BACK_NAME}\Zn!" $box_sz2
+          dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "未能找到文件\Z2$HOME/NumBox/data/box64rc/${returnFileName}\Zn!" $box_sz2
           go_back
         fi
-      elif [[ -z $BACK_NAME ]]; then
+      elif [[ -z $returnFileName ]]; then
         set_ctr_box64_var
       else
-        cp $HOME/NumBox/default/box64rc/${BACK_NAME} $ctr_conf_path/box64.box64rc
+        cp $HOME/NumBox/default/box64rc/${returnFileName} $ctr_conf_path/box64.box64rc
         go_back
       fi
     elif [[ $BACK_VAR_NUM == R ]]; then
-      . ~/NumBox/utils/empty.sh 
+      . ~/NumBox/utils/empty.sh
       create_dir sd
       cp ~/NumBox/default/box64/box64.box64rc $sd_temp/box64.box64rc
       termux-open --content-type text $sd_temp/box64.box64rc
       dialog ${dialog_arg[@]} --title "是否保存？" --yesno "$sd_temp/box64.box64rc" $box_sz2
       if [[ ! $? == 1 ]]; then
         cp $sd_temp/box64.box64rc $var_file
-      elif [[ -z $BACK_NAME ]]; then
+      elif [[ -z $returnFileName ]]; then
         set_ctr_box64_var
       else
-        cp $HOME/NumBox/default/box64/${BACK_NAME} $ctr_conf_path/box64.conf && go_back
+        cp $HOME/NumBox/default/box64/${returnFileName} $ctr_conf_path/box64.conf && go_back
       fi
     elif [[ $BACK_VAR_NUM == S ]]; then
       CUSTOM_FILE_LIST_OPTIONS=("U" "我定义的预设文件")
@@ -446,16 +450,16 @@ case $select in
       if [[ $BACK_NUM == U ]]; then
         unset CUSTOM_FILE_LIST_OPTIONS
         file_list "$HOME/NumBox/data/box64/" "选择一个你定义的预设文件"
-        if [[ -f $HOME/NumBox/data/box64/${BACK_NAME} ]]; then
-          cp $HOME/NumBox/data/box64/${BACK_NAME} $ctr_conf_path/box64.conf
+        if [[ -f $HOME/NumBox/data/box64/${returnFileName} ]]; then
+          cp $HOME/NumBox/data/box64/${returnFileName} $ctr_conf_path/box64.conf
         else
-          dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "未能找到文件\Z2$HOME/NumBox/data/box64/${BACK_NAME}\Zn!" $box_sz2
+          dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "未能找到文件\Z2$HOME/NumBox/data/box64/${returnFileName}\Zn!" $box_sz2
           go_back
         fi
-      elif [[ -z $BACK_NAME ]]; then
+      elif [[ -z $returnFileName ]]; then
         set_ctr_box64_var
       else
-        cp $HOME/NumBox/default/box64/${BACK_NAME} $ctr_conf_path/box64.conf && go_back
+        cp $HOME/NumBox/default/box64/${returnFileName} $ctr_conf_path/box64.conf && go_back
       fi
     elif [[ $BACK_VAR_NUM == A ]]; then
       customForm=$(dialog ${dialog_arg[@]} --title "自定义变量" --form "输入变量值" $box_sz \

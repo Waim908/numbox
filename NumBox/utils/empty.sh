@@ -1,7 +1,7 @@
 create_dir () {
   case $1 in
   sd)
-    sdcard_dir=(  
+    local sdcard_dir=(  
         "/sdcard/NumBox"
         "/sdcard/NumBox/temp"
         "/sdcard/NumBox/ctr_package"
@@ -17,16 +17,17 @@ create_dir () {
         "/sdcard/NumBox/resources/gecko"
         "/sdcard/NumBox/resources/wine"
         "/sdcard/NumBox/resources/drivers"
+        "/sdcard/NumBox/resources/box64"
     )  
-    printf "%s\0" "${sdcard_dir[@]}" | parallel -0 mkdir -p ;;
+    parallel mkdir -p {} ::: ${sdcard_dir[@]} ;;
   data)
-    data_dir=(
+    local data_dir=(
         "$HOME/NumBox/data/container"
         "$HOME/NumBox/data/config"
         "$HOME/NumBox/data/patch"
         "$HOME/NumBox/data/reg"
     )
-    printf "%s\0" "${data_dir[@]}" | parallel -0 mkdir -p ;;
+    parallel mkdir -p ::: ${data_dir[@]} ;;
   esac
 }
 copy_config () {

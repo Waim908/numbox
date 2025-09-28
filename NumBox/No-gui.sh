@@ -11,12 +11,12 @@ if [[ ! -v CONTAINER_NAME ]]; then
     . ~/NumBox/utils/file_list.sh
     CUSTOM_FILE_LIST_OPTIONS=(J "跳过容器选择，glibc Only")
     file_list "$HOME/NumBox/data/container/" "无图形界面启动(Debug Wrapper)" "glibc + wine"
-    if [[ -z $BACK_NAME ]]; then
+    if [[ -z $returnFileName ]]; then
       . ~/NumBox/Numbox
     elif [[ $BACK_NUM == J ]]; then
       unset CONTAINER_NAME
     else
-      export CONTAINER_NAME=${BACK_NAME}
+      export CONTAINER_NAME=${returnFileName}
     fi
   fi
 fi

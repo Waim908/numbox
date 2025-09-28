@@ -1,0 +1,30 @@
+#!/bin/bash
+mian () {
+ln -s ~/NumBox/bin/numbox $PREFIX/bin/numbox
+. ~/NumBox/utils/echo.sh
+. ~/NumBox/utils/file_list.sh
+if [[ -f $PREFIX/bin/parallel ]]; then
+  warn "parallel未安装，执行以下命令安装"
+  info "pkg i parallel"
+fi
+rmdir ~/NumBox/container/*/ &>/dev/null
+mkdir -p ~/.parallel
+touch ~/.parallel/will-cite
+parallel "ln -s ~/NumBox/bin/numbox $PREFIX/bin{}" ::: numbox nb NumBox
+parallel "chmod +x {}" ::: $(ls ~/NumBox/*.sh)
+case $1 in
+  "") . ~/NumBox/numbox.sh ;;
+  *) error "错误的参数"
+  --help) ;;
+  -v|--version) info "NumBox Version: v$(cat ~/NumBox/.version)"
+  echo "ᗜˬᗜ"
+  echo -e "\n" ;;
+  -s|--start) case $2 in
+    "") error "参数为空" ;;
+    *) . ~/NumBox/$2 ;;
+  -m|--menu) file_list "脚本菜单" "~/NumBox/*.sh"
+
+  -d|--debug)
+
+  --shell)
+}

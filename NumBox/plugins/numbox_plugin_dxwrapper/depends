@@ -2,4 +2,3 @@ termux_pkg=(
     "curl"
     "wget"
 )
-plugin=()

@@ -1,5 +1,6 @@
 #!/bin/bash
 load() {
+    if [[ ! $loadDisplayColor == 1 ]]; then
     local colors=(
         "$(tput setaf 21)"
         "$(tput setaf 27)"
@@ -10,7 +11,6 @@ load() {
         "$(tput setaf 39)"
         "$(tput setaf 45)"
     )
-    if [[ $loadNoColor == 1 ]]; then
         local frames=("⣾" "⣽" "⣻" "⢿" "⡿" "⣟" "⣯" "⣷")
         local reset_color=""
     else
@@ -30,7 +30,7 @@ load() {
         printf "\r%s%s %s" "${frames[$((i % 8))]}" "$reset_color" "$2"
         sleep 0.1
         ((i++))
-    done  
+    done
     wait "$pid"
     local status=$?
     if [[ "$loadStrict" == "1" ]]; then
@@ -48,4 +48,5 @@ load() {
 utilsVar+=(
   "loadStrict"
   "loadDebugDisplay"
+  "loadDisplayColor"
 )
