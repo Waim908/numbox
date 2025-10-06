@@ -36,6 +36,18 @@ loadStrict=1
 curlDisplayBar=1
 build_box64_menu () {
   build_cmake () {
+    Dmenu_select=(1 无编译优化-默认 2 当前指令集架构O3优化 3 arm64v8-a通用指令集优化)
+    Dmenu "选择一种编译优化方式"
+    case $DMENU in
+      "") main ;;
+      1) echo "无优化-除非你先前配置过额外的参数" ;;
+      2) export CFLAGS="-O3 -marh=armv8-a -mutune=generic -flto=auto"
+      export CXXFLAGS="-O3 -marh=armv8-a -mutune=generic -flto=auto"
+      export LDFLAGS="-O3 -flto=auto" ;;
+      3) export CFLAGS="-O3 -marh=native -flto=auto"
+      export CXXFLAGS="-O3 -marh=native -flto=auto"
+      export LDFLAGS="-O3 -flto=auto" ;;
+    esac
     mkdir build
     cd build
     info "当前构建参数为：-DCMAKE_INSTALL_PREFIX=$PREFIX/glibc -DCMAKE_BUILD_TYPE=RelWithDebInfo -DARM_DYNAREC=on -DARM64=ON ${cmake_arg[@]}"
@@ -45,7 +57,14 @@ build_box64_menu () {
       return 1
     fi
     info "开始编译"
-    glibc_run "make -j$(nproc)"
+    if ! glibc_run "make -j$(nproc)"; then
+      warn "编译失败！"
+      return 1
+    else
+      unset CFLAGS
+      unset CXXFLAGS
+      unset LDFLAGS
+    fi
     if [[ ! $dont_install == yes ]]; then
       info "开始安装"
       if ! rm -rf /data/data/com.termux/files/usr/glibc/lib/box64-x86_64-linux-gnu/ && glibc_run "make install"; then

@@ -6,6 +6,10 @@ import package.sh
 import github_api.sh
 import file_list.sh
 import free_list.sh
-import
+if [[ ! -z $1 ]]; then
+  res_config="$1"
+else
+  
+fi
 }
-main
+main "$1"

@@ -390,6 +390,10 @@ case $select in
         SINGLE_SELECT=(1 启用 0禁用)
         sed_var_preset_single
         sed_var LARGE_ADDRESS_AWARE $single_select ;;
+        LIBGL_DRI3_DISABLE=*) aboutVar="禁用dri3渲染（可能降低性能）"
+        SINGLE_SELECT=(true 启用 false 禁用)
+        sed_var_preset_single
+        sed_var LIBGL_DRI3_DISABLE $single_select ;;
         *) sed_var_dialog ;;
       esac
     fi

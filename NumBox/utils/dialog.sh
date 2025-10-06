@@ -8,6 +8,9 @@ Dmsgbox () {
 }
 Dmenu () {
     export DMENU=$(dialog ${dialog_arg[@]} --title "$1" --menu "$2" $box_sz ${Dmenu_select[@]} 2>&1 >/dev/tty)
+    if [[ ${#DMENU} -gt 30 ]]; then
+      dialog --title "字符串过长，不影响使用仅提示" --msgbox "$DMENU" $box_sz2
+    fi
 }
 Dyesno () {
     dialog ${dialog_arg[@]} --title "$1" --yesno "$2" $box_sz2 2>&1 >/dev/tty

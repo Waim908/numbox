@@ -54,14 +54,14 @@ fi
 termux-x11 :0 &
 export PIPEWIRE_LATENCY=128/48000
 export PULSE_SERVER=127.0.0.1
-export GST_PLUGIN_PATH=/data/data/com.termux/files/usr/glibc/lib/gstreamer-1.0
+export GST_PLUGIN_PATH=/data/data/com.termux/files/usr/glibc/lib/gstreamer-1.0:/sdcard/NumBox/
 export defaultScreenRes="$screenRes"
 
 case $getScreenRes in
   txp) get_res Pscreen ;;
   xrandr)
   get_res Xscreen ;;
-  set-txp) set_res "${screenRes}" 
+  set-txp) set_res "${screenRes}"
   get_res Pscreen ;;
   *) export screenRes="$defaultScreenRes"
   eventName+=("未定义分辨率类型！从配置文件获取到分辨率为:$screenRes") ;;
@@ -103,7 +103,7 @@ startup_select=$(dialog --no-cancel --title "$CONTAINER_NAME 的菜单" --menu "
   3 "重启容器" \
   4 "详情" 2>&1 >/dev/tty)
 case $startup_select in
-  1) tools_menu () { 
+  1) tools_menu () {
   tools_select=$(dialog --title "$CONTAINER_NAME" --menu "工具箱" 0 -1 0 \
     1 "控制台(Ctrl+b，然后按下D返回)" \
     2 "wine任务管理器" \
@@ -127,12 +127,12 @@ case $startup_select in
   esac
   }
   tools_menu ;;
-  2) parallel ::: "pulseaudio -k" "box64 wineserver -k && echo wineserver已停止 || pkill -f -9 wine" 
+  2) parallel ::: "pulseaudio -k" "box64 wineserver -k && echo wineserver已停止 || pkill -f -9 wine"
   stopx11
   tmux kill-session -t _Ctr ;;
   3) box64 wineserver -k && echo wineserver已停止 || pkill -f -9 wine
   exec_box64_wine ;;
-  4) Dmsgbox "列出所有NumBox启动定义的事件名称" "${eventName[@]}" -1 -1 
+  4) Dmsgbox "列出所有NumBox启动定义的事件名称" "${eventName[@]}" -1 -1
   startup_menu ;;
 esac
 }

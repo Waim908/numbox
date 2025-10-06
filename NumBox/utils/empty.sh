@@ -1,13 +1,14 @@
 create_dir () {
   case $1 in
   sd)
-    local sdcard_dir=(  
+    local sdcard_dir=(
         "/sdcard/NumBox"
         "/sdcard/NumBox/temp"
         "/sdcard/NumBox/ctr_package"
         "/sdcard/NumBox/plugins"
         "/sdcard/NumBox/logs"
         "/sdcard/NumBox/patch"
+        "/sdcard/NumBox/gstreamer_plugins"
         "/sdcard/NumBox/resources"
         "/sdcard/NumBox/resources/dxvk"
         "/sdcard/NumBox/resources/cncddraw"
@@ -18,7 +19,7 @@ create_dir () {
         "/sdcard/NumBox/resources/wine"
         "/sdcard/NumBox/resources/drivers"
         "/sdcard/NumBox/resources/box64"
-    )  
+    )
     parallel mkdir -p {} ::: ${sdcard_dir[@]} ;;
   data)
     local data_dir=(
