@@ -8,6 +8,12 @@ Dmsgbox () {
 }
 Dmenu () {
     export DMENU=$(dialog ${dialog_arg[@]} --title "$1" --menu "$2" $box_sz ${Dmenu_select[@]} 2>&1 >/dev/tty)
+    if [[ ${#DMENU} -gt 30 ]] ; then
+      dialog --title "字符串过长，不影响使用仅提示" --msgbox "选项：$DMENU" $box_sz2
+    fi
+}
+Dmenu-nocancel () {
+    export DMENU=$(dialog ${dialog_arg[@]} --no-cancel --title "$1" --menu "$2" $box_sz ${Dmenu_select[@]} 2>&1 >/dev/tty)
     if [[ ${#DMENU} -gt 30 ]]; then
       dialog --title "字符串过长，不影响使用仅提示" --msgbox "$DMENU" $box_sz2
     fi
@@ -17,6 +23,9 @@ Dyesno () {
 }
 Dinputbox () {
     export DINPUTBOX=$(dialog ${dialog_arg[@]} --title "$1" --inputbox "$2" $box_sz2 "$3" 2>&1 >/dev/tty)
+}
+Dinputbox-nocancel () {
+    export DINPUTBOX=$(dialog ${dialog_arg[@]} --no-cancel --title "$1" --inputbox "$2" $box_sz2 "$3" 2>&1 >/dev/tty)
 }
 utilsVar+=(DMENU Dmenu_select DINPUT)
 # \Z0 黑色

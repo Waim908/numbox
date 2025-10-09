@@ -138,7 +138,7 @@ case $DMENU in
         fi ;;
         *) CUSTOM_FILE_LIST_OPTIONS=("T" "\Z2直接使用这个路径\Zn")
         file_list "$DMENU"
-        if [[ -z $returnFileName ]]; then
+        if [[ -z $returnFileListName ]]; then
           mount_disk_menu
         elif [[ $BACK_NUM == T ]]; then
             if ! ln -sf "${DMENU}/" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
@@ -147,7 +147,7 @@ case $DMENU in
             fi
           mount_disk_menu
         else
-          if ! ln -sf "${DMENU}/${returnFileName}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
+          if ! ln -sf "${DMENU}/${returnFileListName}" $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"; then
             Dmsgbox "\Z1错误\Zn" "路径挂载失败，可能是权限不足，或者文件夹已被删除，或者不存在由于安卓权限限制，可能需要尽量选择子目录而非存储的根目录"
             rm -rf $HOME/NumBox/data/container/"$CONTAINER_NAME"/disk/dosdevices/"$disk_tag"
           fi

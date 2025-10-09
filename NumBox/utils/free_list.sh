@@ -11,7 +11,12 @@ sort_arry () {
 }
 
 free_list () {
-  local get_list=($(sort_arry))
+  # 有自动排序
+  if [[ freeListDoNotSort = 1 ]]; then
+    local get_list=(${freeListArry[@]})
+  else
+    local get_list=($(sort_arry))
+  fi
   if [[ -z $get_list ]]; then
     Dmsgbox "\Z1错误\Zn" "没有可显示的选项，未定义变量或变量为空=> \Z3\$freeListArry\Z3"
     return 1

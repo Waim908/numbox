@@ -10,7 +10,7 @@ select_ctr () {
       if ! file_list "$HOME/NumBox/data/container/" "选择一个容器"; then
         return 1
       else
-        export CONTAINER_NAME="${returnFileName}"
+        export CONTAINER_NAME="${returnFileListName}"
       fi
   fi
 }

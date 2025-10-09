@@ -63,7 +63,7 @@ sed_var_dialog () {
       edit_var sed2 "$varName" "$newVarName" "$newVarValue" $var_file
       go_back
     else
-      dialog ${dialog_arg[@]} --title "\Z1未知错误\Zn" --msgbox "\$returnFileName=${returnFileName}"
+      dialog ${dialog_arg[@]} --title "\Z1未知错误\Zn" --msgbox "\$returnFileListName=${returnFileListName}"
     fi
   else
     form_var=$(dialog ${dialog_arg[@]} --title "编辑" --extra-button --extra-label "删除此行" --form "不是有效的变量值，如果是请删除#号" $box_sz \

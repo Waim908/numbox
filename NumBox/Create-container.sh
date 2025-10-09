@@ -59,11 +59,11 @@ else
         warn "/sdcard/NumBox/resources/wine 目录下没有找到 wine包，请导入"
 
       fi
-      if [[ -z $returnFileName ]]; then
+      if [[ -z $returnFileListName ]]; then
         dialog ${dialog_arg[@]} --msgbox "选择取消" $box_sz2 && . ~/NumBox/Numbox
-      elif [[ -f ~/NumBox/data/resources/wine/${returnFileName} ]]; then
+      elif [[ -f ~/NumBox/data/resources/wine/${returnFileListName} ]]; then
         echo 开始解压文件
-        if ! un_txz "$HOME/NumBox/data/resources/wine/${returnFileName}" "$ctr_path/wine"; then
+        if ! un_txz "$HOME/NumBox/data/resources/wine/${returnFileListName}" "$ctr_path/wine"; then
             echo 文件解压失败 && exit 1
         fi
       else
@@ -115,7 +115,7 @@ else
       echo 开始写入注册表
       set_reg_key "$ctr_path/disk/user.reg" "Control Panel\\Desktop" "LogPixels" "dword:00000078"
       set_reg_key "$ctr_path/disk/user.reg" "Control Panel\\Desktop\\Colors" "background" "\"61 61 61\""
-      set_reg_key "$ctr_path/disk/system.reg" "System\\ControlSet001\\Control\\Session Manager\\Environment" "PATH" "str(2):\"%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\system32\wbem;%SystemRoot%\system32\WindowsPowershell\v1.0;Z:\opt\bin\7z\""
+      # set_reg_key "$ctr_path/disk/system.reg" "System\\ControlSet001\\Control\\Session Manager\\Environment" "PATH" "str(2):\"%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\system32\wbem;%SystemRoot%\system32\WindowsPowershell\v1.0;Z:\opt\bin\7z\""
       if ! load "box64 wine regedit /C \"Z:\home\NumBox\opt\reg\wfm.reg\" >/dev/null 2>&1" "wfm.reg"; then
         error "wfm.reg写入失败"
       fi

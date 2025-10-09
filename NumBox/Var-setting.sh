@@ -8,7 +8,7 @@ import last_jump.sh
 import select_ctr.sh
 unset_utils_var
 if select_ctr; then
-select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${returnFileName}" --menu "\Z3对于变量的解释不一定100%准确，仅供参考\Zn" $box_sz \
+select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${returnFileListName}" --menu "\Z3对于变量的解释不一定100%准确，仅供参考\Zn" $box_sz \
   1 "设置容器变量" \
   2 "设置Box64变量" 2>&1 >/dev/tty)
 case $select in
@@ -18,7 +18,7 @@ case $select in
   set_ctr_var () {
     var_file=$ctr_conf_path/default.conf
     CUSTOM_VAR_EDIT_OPTIONS=("E" "\Z2使用文本编辑器软件打开\Zn" "A" "\Z2添加一个自定义变量\Zn" "D" "\Z2还原默认变量配置\Zn")
-    var_list $var_file "${returnFileName}" "$HOME/NumBox/data/container/${returnFileName}/config/default.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
+    var_list $var_file "${returnFileListName}" "$HOME/NumBox/data/container/${returnFileListName}/config/default.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
     if [[ $BACK_VAR_NUM == E ]]; then
       . ~/NumBox/utils/empty.sh sd
       cp $var_file $sd_temp/default.conf
@@ -161,7 +161,7 @@ case $select in
         SINGLE_SELECT=(true 启用 false 禁用)
         sed_var_preset_single
         sed_var mesa_glthread $single_select ;;
-        WINE_DO_NOT_CREATE_DXGI_DEVICE_MANAGER=*) aboutVar="此变量只存在于补丁构建或者proton版本中，可能与mfplat视频解码相关"
+        WINE_DO_NOT_CREATE_DXGI_DEVICE_MANAGER=*) aboutVar="此变量只存在于补丁构建或者proton版本中，启用可以修复unityH264视频解码问题，但是关闭此变量可能导致某些游戏运行出现问题"
         SINGLE_SELECT=(注释 不启用 1 启用)
         sed_var_preset_single
         case $single_select in
@@ -406,7 +406,7 @@ case $select in
   set_ctr_box64_var () {
     var_file="$ctr_conf_path/box64.conf"
     CUSTOM_VAR_EDIT_OPTIONS=("E" "\Z2使用文本编辑器软件打开\Zn" "A" "\Z2添加一个自定义变量\Zn" "S" "\Z3选择预设\Zn" "R" "\Z2使用文本编辑器软件打开RCFILE\Zn" P "\Z3选择RCFILE预设\Zn")
-    var_list $var_file "${returnFileName}" "$HOME/NumBox/data/container/${returnFileName}/config/box64.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
+    var_list $var_file "${returnFileListName}" "$HOME/NumBox/data/container/${returnFileListName}/config/box64.conf" "部分变量在更新的版本可能已经失效或者发生改变，不保证一定有效"
     if [[ $BACK_VAR_NUM == E ]]; then
       . ~/NumBox/utils/empty.sh
       create_dir sd
@@ -423,16 +423,16 @@ case $select in
       if [[ $BACK_NUM == U ]]; then
         unset CUSTOM_FILE_LIST_OPTIONS
         file_list "$HOME/NumBox/data/box64rc/" "选择一个你定义的预设文件"
-        if [[ -f $HOME/NumBox/data/box64rc/${returnFileName} ]]; then
-          cp $HOME/NumBox/data/box64rc/${returnFileName} $ctr_conf_path/box64.conf
+        if [[ -f $HOME/NumBox/data/box64rc/${returnFileListName} ]]; then
+          cp $HOME/NumBox/data/box64rc/${returnFileListName} $ctr_conf_path/box64.conf
         else
-          dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "未能找到文件\Z2$HOME/NumBox/data/box64rc/${returnFileName}\Zn!" $box_sz2
+          dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "未能找到文件\Z2$HOME/NumBox/data/box64rc/${returnFileListName}\Zn!" $box_sz2
           go_back
         fi
-      elif [[ -z $returnFileName ]]; then
+      elif [[ -z $returnFileListName ]]; then
         set_ctr_box64_var
       else
-        cp $HOME/NumBox/default/box64rc/${returnFileName} $ctr_conf_path/box64.box64rc
+        cp $HOME/NumBox/default/box64rc/${returnFileListName} $ctr_conf_path/box64.box64rc
         go_back
       fi
     elif [[ $BACK_VAR_NUM == R ]]; then
@@ -443,10 +443,10 @@ case $select in
       dialog ${dialog_arg[@]} --title "是否保存？" --yesno "$sd_temp/box64.box64rc" $box_sz2
       if [[ ! $? == 1 ]]; then
         cp $sd_temp/box64.box64rc $var_file
-      elif [[ -z $returnFileName ]]; then
+      elif [[ -z $returnFileListName ]]; then
         set_ctr_box64_var
       else
-        cp $HOME/NumBox/default/box64/${returnFileName} $ctr_conf_path/box64.conf && go_back
+        cp $HOME/NumBox/default/box64/${returnFileListName} $ctr_conf_path/box64.conf && go_back
       fi
     elif [[ $BACK_VAR_NUM == S ]]; then
       CUSTOM_FILE_LIST_OPTIONS=("U" "我定义的预设文件")
@@ -454,16 +454,16 @@ case $select in
       if [[ $BACK_NUM == U ]]; then
         unset CUSTOM_FILE_LIST_OPTIONS
         file_list "$HOME/NumBox/data/box64/" "选择一个你定义的预设文件"
-        if [[ -f $HOME/NumBox/data/box64/${returnFileName} ]]; then
-          cp $HOME/NumBox/data/box64/${returnFileName} $ctr_conf_path/box64.conf
+        if [[ -f $HOME/NumBox/data/box64/${returnFileListName} ]]; then
+          cp $HOME/NumBox/data/box64/${returnFileListName} $ctr_conf_path/box64.conf
         else
-          dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "未能找到文件\Z2$HOME/NumBox/data/box64/${returnFileName}\Zn!" $box_sz2
+          dialog ${dialog_arg[@]} --title "\Z1错误\Zn" --msgbox "未能找到文件\Z2$HOME/NumBox/data/box64/${returnFileListName}\Zn!" $box_sz2
           go_back
         fi
-      elif [[ -z $returnFileName ]]; then
+      elif [[ -z $returnFileListName ]]; then
         set_ctr_box64_var
       else
-        cp $HOME/NumBox/default/box64/${returnFileName} $ctr_conf_path/box64.conf && go_back
+        cp $HOME/NumBox/default/box64/${returnFileListName} $ctr_conf_path/box64.conf && go_back
       fi
     elif [[ $BACK_VAR_NUM == A ]]; then
       customForm=$(dialog ${dialog_arg[@]} --title "自定义变量" --form "输入变量值" $box_sz \

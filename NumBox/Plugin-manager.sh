@@ -14,9 +14,9 @@ case $DMENU in
   1) lastJump=1
   . ~/NumBox/Set-github.com ;;
   2) plugin_menu () {
-  otherOptions=(I "导入插件" A "按照名称排序(默认)" T "按照时间排序" S "按照体积排序")
+  otherFileListOptions=(I "导入插件" A "按照名称排序(默认)" T "按照时间排序" S "按照体积排序")
   file_list "~/NumBox/plugins/" "管理插件"
-  case $returnFileName in
+  case $returnFileListName in
     I) ;;
     A) lsArg=1A
     plugin_menu ;;
@@ -24,7 +24,7 @@ case $DMENU in
     plugin_menu ;;
     S) lsArg=1SA
     plugin_menu ;;
-    *) pluginName="$returnFileName"
+    *) pluginName="$returnFileListName"
 
     Dmenu_select=(1 "插件菜单" 2 "更新插件" 3 "重装插件" 4 "卸载插件")
     Dmenu "$pluginName"

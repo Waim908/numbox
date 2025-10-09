@@ -1,0 +1,7 @@
+{
+  "otherUrl":"https://downloads.fdossena.com/geth.php?r=wined3d-all",
+  "curlArg":"-L -A \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36\"",
+  "curlRedirect":"yes",
+  "pageType":"downloads_list",
+  "downloadUrl":"@curl_redirect@/@downloads_list@"
+}

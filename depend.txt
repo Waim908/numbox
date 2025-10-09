@@ -10,7 +10,8 @@ glow # markdown 文档
 jq # json处理
 ncurses-utils # tput命令支持
 file # 文件类型识别
-# fluidsynth => faild midi support
+git
+# fluidsynth => faild midi support完全不支持
 .termux/
 # allow-external-apps = false => allow-external-apps = true
 glibc环境手动搭建
