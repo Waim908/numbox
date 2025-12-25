@@ -1,16 +1,6 @@
 #!/bin/bash
 load() {
     if [[ ! $loadDisplayColor == 1 ]]; then
-    local colors=(
-        "$(tput setaf 21)"
-        "$(tput setaf 27)"
-        "$(tput setaf 31)"
-        "$(tput setaf 32)"
-        "$(tput setaf 33)"
-        "$(tput setaf 38)"
-        "$(tput setaf 39)"
-        "$(tput setaf 45)"
-    )
         local frames=("⣾" "⣽" "⣻" "⢿" "⡿" "⣟" "⣯" "⣷")
         local reset_color=""
     else

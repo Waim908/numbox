@@ -1,5 +1,18 @@
 #!/bin/bash
 # 源码tar包目录: /sdcard/NumBox/resources/box64/src/
+utilsDoNotReimport=1
+. ~/NumBox/utils/utils.sh
+import dialog.sh
+import github_api.sh
+import echo.sh
+import load.sh
+import last_jump.sh
+import file_list.sh
+import free_list.sh
+import downloader.sh
+import package.sh
+import glibc_run.sh
+unset_utils_var
 main() {
   mkdir -p /sdcard/NumBox/resources/box64/src/
   mkdir -p /sdcard/NumBox/resources/box64/src_output/
@@ -19,35 +32,22 @@ main() {
     info "pkg i git"
     return 1
   fi
-  utilsDoNotReimport=1
-  . ~/NumBox/utils/utils.sh
-  import dialog.sh
-  import github_api.sh
-  import echo.sh
-  import load.sh
-  import last_jump.sh
-  import file_list.sh
-  import free_list.sh
-  import downloader.sh
-  import package.sh
-  import glibc_run.sh
-  unset_utils_var
   loadStrict=1
   build_box64_menu() {
     build_cmake() {
-      Dmenu_select=(1 无编译优化-默认 2 当前指令集架构O3优化 3 arm64v8-a通用指令集优化)
+      Dmenu_select=(1 无编译优化-默认 2 arm64v8-a通用指令集优化 3 当前指令集架构O3优化)
       Dmenu "选择一种编译优化方式"
       case $DMENU in
       "") main ;;
       1) echo "无优化-除非你先前配置过额外的参数" ;;
       2)
-        export CFLAGS="-O3 -marh=armv8-a -mutune=generic -flto=auto"
-        export CXXFLAGS="-O3 -marh=armv8-a -mutune=generic -flto=auto"
+        export CFLAGS="-O3 -march=armv8-a -mtune=generic -flto=auto"
+        export CXXFLAGS="-O3 -march=armv8-a -mtune=generic -flto=auto"
         export LDFLAGS="-O3 -flto=auto"
         ;;
       3)
-        export CFLAGS="-O3 -marh=native -flto=auto"
-        export CXXFLAGS="-O3 -marh=native -flto=auto"
+        export CFLAGS="-O3 -march=native -flto=auto"
+        export CXXFLAGS="-O3 -march=native -flto=auto"
         export LDFLAGS="-O3 -flto=auto"
         ;;
       esac
@@ -70,15 +70,16 @@ main() {
       fi
       if [[ ! $dont_install == yes ]]; then
         info "开始安装"
-        if ! rm -rf /data/data/com.termux/files/usr/glibc/lib/box64-x86_64-linux-gnu/ && glibc_run "make install"; then
+        rm -rf /data/data/com.termux/files/usr/glibc/lib/box64-x86_64-linux-gnu/
+        # rm -rf /data/data/com.termux/files/usr/glibc/lib/box64-i386-linux-gnu/
+        if ! glibc_run "make install"; then
           warn "安装失败"
           return 1
-        else
-          info "命令运行测试"
+        fi
+        info "命令运行测试"
           if ! glibc_run "box64 --version"; then
             warn "box64 --version 命令运行失败"
           fi
-        fi
       else
         info "不再安装"
       fi
@@ -139,14 +140,15 @@ main() {
         build_cmake
         ;;
       6)
-        local cmake_arg_arry=(-DBAD_SIGNAL=on -DNOLOADADDR=on -DSD8G2=on -DSD888=on -DSD865=on -DSD845=on)
+        local cmake_arg_arry=(-DBAD_SIGNAL=on -DNOLOADADDR=on -DSD8G2=on -DSD888=on -DSD865=on -DSD845=on -DWINLATOR_GLIBC=on)
         local cmake_arg_checklist=($(dialog ${dialog_arg[@]} --title "自定义CMake参数" --checklist "强制参数:-DARM_DYNAREC=on -DARM64=on\n选择完成后你可以加入额外的自定义构建参数比如O3优化，不过可能会破坏兼容性" $box_sz \
           1 "BAD_SIGNAL" on \
           2 "NOLOADADDR(老版本可能需要?)" off \
           3 "SD8G2" off \
           4 "SD888" off \
           5 "SD865" off \
-          6 "SD845" off 2>&1 >/dev/tty))
+          6 "SD845" off \
+          7 "WINLATOR_GLIBC(启用winlator环境特性)" off 2>&1 >/dev/tty))
         case $cmake_arg_checklist in
         "") main ;;
         *)
@@ -168,12 +170,8 @@ main() {
     build_box64_sub_menu
   }
 
-  if [[ -z $ghSpeed ]] || [[ $ghSpeed == github.com ]]; then
-    dl_url="https://github.com"
-  else
-    dl_url="https://${ghSpeed}/https://github.com"
-  fi
   . ~/NumBox/data/config/numbox.cfg
+
   ghRepo=box64
   ghUser=ptitSeb
   Dmenu_select=(1 从本地源码构建 2 从本地源码安装 3 构建稳定版-偶数-全部 4 构建开发版-奇数-最新 5 从指定提交构建-git)
@@ -215,7 +213,9 @@ main() {
         return 1
       else
         info "开始安装"
-        if ! rm -rf /data/data/com.termux/files/usr/glibc/lib/box64-x86_64-linux-gnu/ && glibc_run "make install"; then
+        rm -rf /data/data/com.termux/files/usr/glibc/lib/box64-x86_64-linux-gnu/
+        rm -rf /data/data/com.termux/files/usr/glibc/lib/box64-i386-linux-gnu/
+        if ! glibc_run "make install"; then
           warn "安装失败"
           return 1
         else
@@ -249,7 +249,7 @@ main() {
           info "没有设置github加速站"
         else
           info "加速站设置为$ghSpeed"
-          src_url="https://$ghSpped/$src_url"
+          src_url=$(get_gh_download_url $src_url)
         fi
         clean_dl_temp
         if ! download "$src_url" "/sdcard/NumBox/resources/box64/src/box64-${box64_src_tag}.tar.gz"; then
@@ -276,7 +276,7 @@ main() {
       info "没有设置github加速站"
     else
       info "加速站设置为$ghSpeed"
-      src_url="https://$ghSpped/$src_url"
+      src_url=$(get_gh_download_url $src_url)
     fi
     info "开始下载文件"
     clean_dl_temp
@@ -286,7 +286,7 @@ main() {
       warn "下载失败"
       return 1
     else
-      if ! 7zx /sdcard/NumBox/resources/box64/src/$main_zip $TMPDIR/box64_src_output; then
+      if ! 7zx -o$TMPDIR/box64_src_output /sdcard/NumBox/resources/box64/src/$main_zip ; then
         warn "文件解压失败"
         return 1
       else
@@ -308,9 +308,9 @@ main() {
         info "没有设置github加速站"
       else
         info "加速站设置为$ghSpeed"
-        src_url="https://$ghSpped/$src_url"
+        src_url=$(get_gh_download_url $src_url)
       fi
-      if ! git clone -b "DINPUTBOX" $src_url box64_src_output; then
+      if ! git clone -b "$DINPUTBOX" $src_url box64_src_output; then
         warn "克隆提交：$DINPUTBOX 时出现错误！"
         return 1
       else

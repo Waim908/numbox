@@ -1,15 +1,12 @@
 #!/bin/bash
-main () {
 utilsDoNotReimport=1
 . ~/NumBox/utils/utils.sh
 import dialog.sh
 import var_edit.sh
 import file_list.sh
 import select_ctr.sh
-
 unset_utils_var
-if ! select_ctr ; then
-
+main () {
 . ~/NumBox/utils/path.sh
 # regeistry
 # setname::value
@@ -174,8 +171,7 @@ case $DMENU in
         fi ;;
       esac ;;
     esac ;;
-  *:) Dyesno "是否删除此挂载盘？" "$DMENU=>$(readlink ~/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/$DMENU)"
-  if [[ $? == 0 ]]; then
+  *:) if Dyesno "是否删除此挂载盘？" "$DMENU=>$(readlink ~/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/$DMENU)"; then
     rm -rf ~/NumBox/data/container/"${CONTAINER_NAME}"/disk/dosdevices/$DMENU && mount_disk_menu
   else
     mount_disk_menu

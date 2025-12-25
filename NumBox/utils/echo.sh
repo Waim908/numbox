@@ -1,12 +1,19 @@
 # cyan
-info () {
+info() {
   echo -e "\e[36m\e[1mINFO: \e[36m${1}\e[0m"
 }
 # yellow
-error () {
+error() {
   echo -e "\e[33m\e[1mERROR: \e[33m${1}\e[0m"
 }
 # red
-warn () {
+warn() {
   echo -e "\e[31m\e[1mWARN: \e[31m${1}\e[0m"
+}
+
+debug() {
+  if [[ $writeLog == 1 ]]; then
+    local arg=">> $3"
+  fi
+  eval echo "[$1] $2" $arg
 }

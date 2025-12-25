@@ -50,6 +50,8 @@ case $DMENU in
     warn "PING测试失败"
   fi
   info "测试结束"
-  read -s -n1 -p "输入任意字符返回" && . ~/NumBox/Set-github.com ;;
+  read -s -n1 -p "输入任意字符返回"
+  main ;;
 esac
 }
+main

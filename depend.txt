@@ -11,6 +11,7 @@ jq # json处理
 ncurses-utils # tput命令支持
 file # 文件类型识别
 git
+st # 最简单且占用最小的图形化终端模拟器
 # fluidsynth => faild midi support完全不支持
 .termux/
 # allow-external-apps = false => allow-external-apps = true
@@ -22,7 +23,7 @@ bash-completion-glibc
 bash-glibc
 binutils-glibc
 binutils-libs-glibc
-box64-glibc <= 可能无法使用，手动在glibc环境编译
+box64-glibc <= 无法使用，手动在glibc环境编译
 brotli-glibc
 ca-certificates-glibc
 cmake-glibc

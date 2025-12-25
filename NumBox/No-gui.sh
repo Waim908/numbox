@@ -1,11 +1,14 @@
 #!/bin/bash
-. ~/NumBox/utils/dialog.sh
+utilsDoNotReimport=1
+. ~/NumBox/utils/utils.sh
+import ~/NumBox/utils/dialog.sh
+main () {
 if [[ ! -v CONTAINER_NAME ]]; then
   if [[ ! -z $1 ]]; then
     export CONTAINER_NAME="$1"
     if [[ ! -d ~/NumBox/data/container/"${CONTAINER_NAME}" ]]; then
       echo -e "容器 \e[33m ${CONTAINER_NAME} \e[0m 不存在"
-      exit 1
+      return 1
     fi
   else
     . ~/NumBox/utils/file_list.sh
@@ -36,3 +39,5 @@ else
 fi
 #export PS1="(glibc)\u@\h \w $ "
 $PREFIX/glibc/bin/bash
+}
+main

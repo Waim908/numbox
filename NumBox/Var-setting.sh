@@ -7,7 +7,7 @@ import export_var_edit.sh
 import last_jump.sh
 import select_ctr.sh
 unset_utils_var
-if select_ctr; then
+main () {
 select=$(dialog ${dialog_arg[@]} --title "变量设置" --backtitle "容器：${returnFileListName}" --menu "\Z3对于变量的解释不一定100%准确，仅供参考\Zn" $box_sz \
   1 "设置容器变量" \
   2 "设置Box64变量" 2>&1 >/dev/tty)
@@ -150,7 +150,7 @@ case $select in
         sed_var_preset_single
         sed_var MESA_SHADER_CACHE_MAX_SIZE $single_select ;;
         MESA_VK_WSI_DEBUG=*) aboutVar="垂直同步(Vulkan)"
-        SINGLE_SELECT=(sw "启用（通常）" sws "性能最好，可能导致渲染错误，例如条纹画面撕裂（默认）")
+        SINGLE_SELECT=(sw "启用（通常）" sws "禁用，性能最好，可能导致渲染错误，例如条纹画面撕裂（默认）")
         sed_var_preset_single
         sed_var MESA_VK_WSI_DEBUG $single_select ;;
         MESA_VK_WSI_PRESENT_MODE=*) aboutVar="overrides the WSI present mode clients specify in VkSwapchainCreateInfoKHR::presentMode. Values can be fifo, relaxed, mailbox or immediate."
@@ -566,6 +566,9 @@ case $select in
   }
   set_ctr_box64_var ;;
 esac
+}
+if select_ctr; then
+  main $1
 else
   last_jump
 fi
