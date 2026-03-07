@@ -1,4 +1,0 @@
-termux_pkg=(
-    "curl"
-    "wget"
-)
